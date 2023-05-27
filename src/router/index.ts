@@ -93,25 +93,25 @@ const employeesRoutes = {
     },
   ],
 }
-const coursesRoutes = {
-  path: "courses",
+const contentsRoutes = {
+  path: "contents",
   meta: { layout: "main" },
   children: [
     {
       path: "add",
-      name: "courses-add",
-      component: () => import(/* webpackChunkName: "courses" */ "./views/management/courses/add.vue"),
+      name: "contents-add",
+      component: () => import(/* webpackChunkName: "contents" */ "./views/management/contents/add.vue"),
     },
     {
       path: "details/:id",
-      name: "courses-details",
-      component: () => import(/* webpackChunkName: "courses" */ "./views/management/courses/details.vue"),
+      name: "contents-details",
+      component: () => import(/* webpackChunkName: "contents" */ "./views/management/contents/details.vue"),
     },
     {
       path: "",
       default: true,
-      name: "courses-index",
-      component: () => import(/* webpackChunkName: "employees" */ "./views/management/courses/list.vue"),
+      name: "contents-index",
+      component: () => import(/* webpackChunkName: "employees" */ "./views/management/contents/list.vue"),
     },
   ],
 }
@@ -123,7 +123,7 @@ const managementRoutes = [
     component: () => import(/* webpackChunkName: "management" */ "./views/management/index.vue"),
     children: [
       employeesRoutes,
-      coursesRoutes,
+      contentsRoutes,
       {
         path: "academique",
         meta: { layout: "main" },

@@ -24,14 +24,14 @@ import { useRouter } from "vue-router"
 const router = useRouter()
 const currentTab = computed(() => tabsGestion.value.find((tab) => tab.current)!.name.toLowerCase())
 const tabsGestion = ref([
-  { name: "courses", current: true },
+  { name: "contents", current: true },
   { name: "filieres", current: false },
   { name: "documents", current: false },
   { name: "employees", current: false },
   { name: "academique", current: false },
 ])
 onMounted(() => {
-  // if (currentTab.value == "employees" || currentTab.value == "courses") {
+  // if (currentTab.value == "employees" || currentTab.value == "contents") {
   //router.push(`${currentTab.value}-index`)
   // } else {
   // 	goto(`${currentTab.value}-index`)
@@ -41,7 +41,7 @@ onMounted(() => {
 watch(currentTab, function (newval, oldval) {
   // if (newval != oldval && newval != "employees") {
   //router.push(`${newval}-index`)
-  // } else if (newval == oldval && ["employees", "courses"].includes(newval)) {
+  // } else if (newval == oldval && ["employees", "contents"].includes(newval)) {
   // 	goto(`${newval}-list`)
   // } else {
   // 	goto(`${newval}-list`)

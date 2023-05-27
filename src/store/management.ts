@@ -1,5 +1,5 @@
 import mgntAPI from "@/api/management"
-import coursesAPI from "@/api/courses"
+import contentsAPI from "@/api/contents"
 
 import { toast } from "@/utils/index"
 import { defineStore } from "pinia"
@@ -10,7 +10,7 @@ import { useConfig } from "@/store/config"
 const router = useRouter()
 export const useManagement = defineStore("management", {
 	state: () => ({
-		courses: [],
+		contents: [],
 		laptops: [],
 		routeurs: [],
 		listDocuments: [],
@@ -437,7 +437,7 @@ export const useManagement = defineStore("management", {
 	},
 	getters: {
 		getCars: (state) => state.cars,
-		getCourses: (state) => state.courses,
+		getCourses: (state) => state.contents,
 		getEmployees: (state) => state.employees,
 		getLaptops: (state) => state.laptops,
 		getRouteurs: (state) => state.routeurs,

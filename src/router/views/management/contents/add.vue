@@ -1,7 +1,7 @@
 <template>
   <div class="card h-full w-1/2 m-auto">
-    <Form class="col justify-between w-full space-y-4" @submit="submit" v-slot="{ isSubmitting, resetForm }" :validation-schema="courseSchema" :initial-values="initialCourseValue" @invalid-submit="onInvalidCourse">
-      <div class="row w-full">Add new course</div>
+    <Form class="col justify-between w-full space-y-4" @submit="submit" v-slot="{ isSubmitting, resetForm }" :validation-schema="contentSchema" :initial-values="initialCourseValue" @invalid-submit="onInvalidCourse">
+      <div class="row w-full">Add new content</div>
       <Field name="title" v-slot="{ field, errorMessage }">
         <div class="relative group h-10">
           <input v-bind="field" type="text" id="title" required class="input peer" />
@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import * as yup from "yup"
-import { useCourses } from "@/store/courses"
+import { useCourses } from "@/store/contents"
 import { toast, goto } from "@/utils/index"
 import { useFileDialog, get } from "@vueuse/core"
 import { ref, watch, computed } from "vue"
@@ -67,13 +67,13 @@ const img = computed({
   },
 })
 
-const courseSchema = yup.object({
+const contentSchema = yup.object({
   title: yup.string().required().label("Name"),
   description: yup.string().required().label("Description"),
   expiredate: yup.string().notRequired().label("Expire date"),
 })
 const initialCourseValue = ref({
-  title: "course title",
+  title: "content title",
   expiredate: "2024-10-10",
   description:
     "Mollit consectetur aute enim aliquip labore aliqua anim enim nulla aliqua. Id adipisicing elit id nulla do id nulla tempor. Commodo reprehenderit veniam sint adipisicing proident et do ad do enim et non adipisicing quis. Voluptate mollit laboris consectetur Lorem id. Occaecat nulla deserunt labore dolor aliqua.",
@@ -89,13 +89,13 @@ async function submit(values, { resetForm, setFieldError }) {
   try {
     var result = await store.addCourse(values)
     if (!result) {
-      goto("courses-index")
+      goto("contents-index")
       toast.success("Course added successfully !")
     } else {
       for (const key in result) {
         setFieldError(key, result[key][0])
       }
-      toast.error(`Can't add new course ${JSON.stringify(result)}`)
+      toast.error(`Can't add new content ${JSON.stringify(result)}`)
     }
   } catch (error) {
     console.log(error)

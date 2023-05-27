@@ -1,7 +1,7 @@
 import axios from "@/api/myaxios"
 import { defineStore } from "pinia"
 import { useStudents } from "./students"
-import { useCourses } from "./courses"
+import { useCourses } from "./contents"
 import { useManagement } from "./management"
 import { toast } from "@/utils/index"
 import { useRouter } from "vue-router"
@@ -52,7 +52,7 @@ export const useConfig = defineStore("config", {
         active: false,
         mouseHover: false,
         children: [
-          { text: "Courses", to: "/courses", icon: "message-square", active: false, mouseHover: false },
+          { text: "Courses", to: "/contents", icon: "message-square", active: false, mouseHover: false },
           { text: "Filieres", to: "/filieres", icon: "message-square", active: false, mouseHover: false },
           { text: "Employees", to: "/employees", icon: "message-square", active: false, mouseHover: false },
           { text: "Documents", to: "/documents", icon: "message-square", active: false, mouseHover: false },
@@ -78,13 +78,13 @@ export const useConfig = defineStore("config", {
     async init() {
       this.setAxios()
       const students = useStudents()
-      const courses = useCourses()
+      const contents = useCourses()
       const mngt = useManagement()
       this.onReloadSide()
       try {
         await mngt.init()
         await students.init()
-        await courses.init()
+        await contents.init()
       } catch (error) {
         console.log(error)
       }

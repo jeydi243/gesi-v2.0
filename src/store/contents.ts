@@ -1,4 +1,4 @@
-import coursesAPI from "@/api/courses"
+import contentsAPI from "@/api/contents"
 import { defineStore } from "pinia"
 import { useAuth } from "./authentication"
 
@@ -7,19 +7,19 @@ export interface IStoreContent {
   defaultContent: IContent
 }
 
-export const useCourses = defineStore("courses", {
-  state: (): IStoreContent => ({ contents: [], defaultContent: { parts: [], images: [], tags: [], title: "", description: "", type: "course", price: 0 } }),
+export const useCourses = defineStore("contents", {
+  state: (): IStoreContent => ({ contents: [], defaultContent: { parts: [], images: [], tags: [], title: "", description: "", type: "content", price: 0 } }),
   actions: {
     async init() {
       try {
-        await this.getcourses()
+        await this.getcontents()
       } catch (er) {
         console.log("Error initializing: ", er)
       }
     },
-    async getcourses() {
+    async getcontents() {
       try {
-        const { data, status } = await coursesAPI.getAll()
+        const { data, status } = await contentsAPI.getAll()
         if (status || 200 || status == 201) {
           console.log(data)
           data.forEach((element: IContent) => {
@@ -35,7 +35,7 @@ export const useCourses = defineStore("courses", {
     },
     async updateCourse({ idCourse, update }) {
       try {
-        const { status, data } = await coursesAPI.updateById(idCourse, update)
+        const { status, data } = await contentsAPI.updateById(idCourse, update)
         if (status == 200 || status == 201) {
           var foundIndex = this.contents.findIndex((t) => t.id == data.idCourse)
           if (foundIndex) {
@@ -48,11 +48,11 @@ export const useCourses = defineStore("courses", {
         console.log(er)
       }
     },
-    async addCourse(course) {
+    async addCourse(content) {
       const auth = useAuth()
       // let dat
       try {
-        const { status, data } = await coursesAPI.add({ ...this.defaultContent, ...course, authors: [auth.user.id], createdBy: auth.user.id })
+        const { status, data } = await contentsAPI.add({ ...this.defaultContent, ...content, authors: [auth.user.id], createdBy: auth.user.id })
         console.log({ data })
         // dat = data
         if (status == 200 || status == 201) {
@@ -67,7 +67,7 @@ export const useCourses = defineStore("courses", {
     },
   },
   getters: {
-    mycourses: (state) =>
+    contents: (state) =>
       function (filter) {
         if (filter) {
           return state.contents.find((content: IContent) => content.title.toLowerCase().includes(filter.toLowerCase()))
