@@ -8,7 +8,10 @@ import { useToast } from "vue-toastification"
 const pinia = createPinia()
 
 let app = createApp(App).use(pinia).use(router)
-
+const useImage = (url) => {
+  return new URL(`/src/${url}`, import.meta.url).href
+}
+app.config.globalProperties.$image = useImage;
 app.config.globalProperties.filters = {
   firstUpper(value) {
     return value.charAt(0).toUpperCase() + value.slice(1)
@@ -23,7 +26,7 @@ app.config.errorHandler = (err, vm, info) => {
   console.log(`${err.message}`, `${err.stack}`)
 }
 app.config.warnHandler = (msg, instance, trace) => {
-  console.log(msg, JSON.stringify(trace, null, 4))
+  console.log(instance, JSON.stringify(trace, null, 4))
 }
 
 app.mount("#app")

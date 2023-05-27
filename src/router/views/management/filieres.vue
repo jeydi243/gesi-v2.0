@@ -13,7 +13,7 @@
           <div class="flex justify-center">
             <div class="rounded-lg shadow-lg bg-white max-w-sm">
               <a href="#!" class="aspect-h-16 aspect-w-9">
-                <img class="rounded-t-lg" :src="require(`@/assets/img/academic-${indexFiliere + 1}.jpg`)" :alt="`Image - ${indexFiliere}`" />
+                <img class="rounded-t-lg" :src="`@/assets/img/academic-${indexFiliere + 1}.jpg`" :alt="`Image - ${indexFiliere}`" />
               </a>
               <div class="p-6">
                 <h5 class="text-gray-900 text-xl font-medium mb-2">Card title</h5>
