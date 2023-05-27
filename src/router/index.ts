@@ -97,7 +97,7 @@ const coursesRoutes = {
   path: "courses",
   meta: { layout: "main" },
   // redirect: "courses-list",
-  // component: () => import(/* webpackChunkName: "courses" */ "./views/management/courses/index.vue"),
+
   children: [
     {
       path: "add",
@@ -110,7 +110,7 @@ const coursesRoutes = {
       component: () => import(/* webpackChunkName: "courses" */ "./views/management/courses/details.vue"),
     },
     {
-      path: "",
+      path: "/",
       default: true,
       name: "courses-index",
       component: () => import(/* webpackChunkName: "employees" */ "./views/management/courses/list.vue"),

@@ -112,8 +112,8 @@
 	</div>
 </template>
 
-<script setup>
-	import MyModal from "@/components/mymodal"
+<script setup lang="ts">
+	import MyModal from "@/components/mymodal.vue"
 	import * as yup from "yup"
 	import { toast } from "@/utils/index"
 	import { useManagement } from "@/store/management"

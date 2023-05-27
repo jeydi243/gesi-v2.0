@@ -3,10 +3,35 @@ import { defineStore } from "pinia"
 import { useStudents } from "./students"
 import { useCourses } from "./courses"
 import { useManagement } from "./management"
-import configAPI from "@/api/config"
+
+export interface IMenu {
+  text: string
+  to: string
+  icon: string
+  active: boolean
+  mouseHover: boolean
+  children?: Array<IMenu>
+}
+
+export interface ILevel {
+  id: string
+  name: string
+  short: string
+  color: string
+  current: boolean
+}
+export interface IStoreConfig {
+  layout: any
+  organizations: Array<IOrganization>
+  config: {}
+  sideMenus: Array<IMenu>
+  listLevel: Array<ILevel>
+  requestError: any
+  responseError: any
+  listStatus: Array<any>
+}
 export const useConfig = defineStore("config", {
-  state: () => ({
-    count: 0,
+  state: (): IStoreConfig => ({
     organizations: [],
     layout: "main",
     config: {},
@@ -16,7 +41,19 @@ export const useConfig = defineStore("config", {
       { text: "Teachers", to: "/teachers", icon: "adjust", active: false, mouseHover: false },
       { text: "Calendar", to: "/calendar", icon: "message-square", active: false, mouseHover: false },
       { text: "Library", to: "/library", icon: "library", active: false, mouseHover: false },
-      { text: "Management", to: "/management", icon: "book", active: false, mouseHover: false, children: [{ text: "Courses", to: "/courses", icon: "message-square", active: false, mouseHover: false }] },
+      {
+        text: "Management",
+        to: "/management",
+        icon: "book",
+        active: false,
+        mouseHover: false,
+        children: [
+          { text: "Courses", to: "/courses", icon: "message-square", active: false, mouseHover: false },
+          { text: "Filieres", to: "/filieres", icon: "message-square", active: false, mouseHover: false },
+          { text: "Employees", to: "/employees", icon: "message-square", active: false, mouseHover: false },
+          { text: "Documents", to: "/documents", icon: "message-square", active: false, mouseHover: false },
+        ],
+      },
       { text: "Settings", to: "/settings", icon: "cog", active: false, mouseHover: false },
     ],
     listLevel: [
@@ -104,17 +141,17 @@ export const useConfig = defineStore("config", {
     },
     onReloadSide() {
       console.log("Reload side menu")
-      this.sideMenus = []
-      const side = [
-        { text: "Home", to: "/home", icon: "home", active: true, mouseHover: false },
-        { text: "Settings", to: "/settings", icon: "cog", active: false, mouseHover: false },
-        { text: "Students", to: "/students", icon: "group", active: false, mouseHover: false },
-        { text: "Library", to: "/library", icon: "library", active: false, mouseHover: false },
-        { text: "Teachers", to: "/teachers", icon: "adjust", active: false, mouseHover: false },
-        { text: "Management", to: "/management", icon: "book", active: false, mouseHover: false },
-        { text: "Calendar", to: "/calendar", icon: "message-square", active: false, mouseHover: false },
-      ]
-      side.forEach((e) => this.sideMenus.push(e))
+      // this.sideMenus = []
+      // const side = [
+      //   { text: "Home", to: "/home", icon: "home", active: true, mouseHover: false },
+      //   { text: "Settings", to: "/settings", icon: "cog", active: false, mouseHover: false },
+      //   { text: "Students", to: "/students", icon: "group", active: false, mouseHover: false },
+      //   { text: "Library", to: "/library", icon: "library", active: false, mouseHover: false },
+      //   { text: "Teachers", to: "/teachers", icon: "adjust", active: false, mouseHover: false },
+      //   { text: "Management", to: "/management", icon: "book", active: false, mouseHover: false },
+      //   { text: "Calendar", to: "/calendar", icon: "message-square", active: false, mouseHover: false },
+      // ]
+      // side.forEach((e) => this.sideMenus.push(e))
     },
     add() {
       this.sideMenus.push({ text: "Management", to: "/management", icon: "book", active: false, mouseHover: false })
@@ -160,13 +197,13 @@ export const useConfig = defineStore("config", {
     getListLevel: (state) => state.listLevel,
     getListStatus: (state) => state.listStatus,
     currentLevel(state) {
-      return state.listLevel.find((tabLevel) => tabLevel.current == true).name
+      return state.listLevel.find((tabLevel) => tabLevel.current == true)!.name
     },
     sideActive(state) {
       return state.sideMenus.find((side) => side.active == true)
     },
     currentLevelShort(state) {
-      return state.listLevel.find((tabLevel) => tabLevel.current == true).short
+      return state.listLevel.find((tabLevel) => tabLevel.current == true)!.short
     },
   },
 })

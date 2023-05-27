@@ -3,7 +3,15 @@ import vue from "@vitejs/plugin-vue"
 import path from "path"
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-  plugins: [vue()],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => ["box-icon"].includes(tag),
+        },
+      },
+    }),
+  ],
   // prevent vite from obscuring rust errors
   clearScreen: false,
   // tauri expects a fixed port, fail if that port is not available

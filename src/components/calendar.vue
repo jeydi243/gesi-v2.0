@@ -81,7 +81,7 @@
 	import { Form, Field, ErrorMessage } from "vee-validate"
 	import { isLength, isDate, isEmail } from "validator"
 	import calendar from "vue-cal"
-	import MyModal from "@/components/mymodal"
+	import MyModal from "@/components/mymodal.vue"
 	import { CirclesToRhombusesSpinner } from "epic-spinners"
 	const modalEventAdd = ref(false)
 	const nowformatted = format(new Date(), "yyyy-MM-dd")

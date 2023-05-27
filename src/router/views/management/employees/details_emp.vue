@@ -557,7 +557,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useRoute } from "vue-router"
 import { parseISO } from "date-fns"
 import { ref, computed, onBeforeMount } from "vue"
@@ -567,7 +567,7 @@ import { onBeforeRouteUpdate } from "vue-router"
 import { isLength, isDate, isEmail } from "validator"
 import { CirclesToRhombusesSpinner } from "epic-spinners"
 import { Form, Field, ErrorMessage } from "vee-validate"
-import MyModal from "@/components/mymodal"
+import MyModal from "@/components/mymodal.vue"
 import api_resources from "@/api/resources.js"
 
 const error = computed(() => store.error)

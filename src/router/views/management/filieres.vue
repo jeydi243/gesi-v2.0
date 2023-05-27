@@ -81,150 +81,145 @@
   </div>
 </template>
 
-<script>
-  import { mapState, mapActions } from "pinia"
-  import * as yup from "yup"
-  import MyModal from "@/components/mymodal"
-  import { useManagement } from "@/store/management"
-  import { CirclesToRhombusesSpinner } from "epic-spinners"
-  import { Form, Field, ErrorMessage } from "vee-validate"
-  import { AcademicCapIcon, PlusIcon, UserIcon } from "@heroicons/vue/solid"
-  import { isLength } from "validator"
-  export default {
-    name: "index-filiere",
-    components: { AcademicCapIcon, MyModal, CirclesToRhombusesSpinner, Form, Field, ErrorMessage },
-    data() {
-      const filiereSchema = {
-        img(value) {
-          if (value) {
-            if (value[0] instanceof File || value[0] instanceof Blob) {
-              return true
-            }
-          }
-          return "Veuillez choisir une image"
-        },
-        name(value) {
-          return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
-        },
-        manager(value) {
-          return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
-        },
-        sub_manager(value) {
-          return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
-        },
-        description(value) {
-          return isLength(value, { min: 6, max: 500 }) ? true : "Le minimum de caracteres est 6 et le maximum 500"
-        },
-        long_name(value) {
-          return isLength(value, { min: 6, max: 12 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
-        },
+<script lang="ts" setup>
+import { mapState, mapActions } from "pinia"
+import * as yup from "yup"
+import MyModal from "@/components/mymodal.vue"
+import { useManagement } from "@/store/management"
+import { CirclesToRhombusesSpinner } from "epic-spinners"
+import { Form, Field, ErrorMessage } from "vee-validate"
+import { AcademicCapIcon, PlusIcon, UserIcon } from "@heroicons/vue/solid"
+import { isLength } from "validator"
+import { ref } from "vue"
+
+
+
+const filiereSchema = {
+  img(value) {
+    if (value) {
+      if (value[0] instanceof File || value[0] instanceof Blob) {
+        return true
       }
-      //links to 5 unsplash profiles pictures
-      // const img = [
-      // 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-      // 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-      // 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-      // 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-      // 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-      // ];
-      return {
-        filiereSchema,
-        previewSRC: null,
-        filieres: [
-          {
-            name: "G1",
-            img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-            manager: "John Doe",
-            long_name: "Genie Logiciel - Systemes informatique",
-            sub_manager: "Pere Nsuko",
-          },
-          {
-            name: "G2",
-            img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-            long_name: "Genie Logiciel - Gestion",
-            manager: "John Doe",
-            sub_manager: "Nsulo George",
-          },
-          {
-            name: "G3",
-            img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-            long_name: "Design et Multimedia",
-            manager: "John Doe",
-            sub_manager: "Ndize Mbirwe",
-          },
-          {
-            name: "Prépa",
-            img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-            long_name: "Reseau et telecom",
-            manager: "John Doe",
-            sub_manager: "Kongolo Nbiko",
-          },
-          {
-            name: "G3",
-            img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-            long_name: "Design et Multimedia",
-            manager: "John Doe",
-            sub_manager: "Ndize Mbirwe",
-          },
-          {
-            name: "Prepa",
-            img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-            long_name: "Reseau et telecom",
-            sub_manager: "Kongolo Nbiko",
-            manager: "John Doe",
-          },
-        ],
-        showModalFiliere: false,
-        initialFiliereValue: {
-          name: "",
-          img: null,
-          long_name: "",
-          manager: "",
-          description: "Pariatur ea ut commodo duis.Id irure elit in non nostrud consectetur qui mollit fugiat eu eu.",
-          sub_manager: "",
-        },
-      }
-    },
-    computed: {
-      ...mapState(useManagement, ["getEmployees"]),
-    },
-    methods: {
-      ...mapActions(useManagement, ["addFiliere"]),
-      add(values, { resetForm }) {
-        try {
-          var response = this.addFiliere(values)
-          if (res) {
-            toast.success("Document modifié avec succes")
-          } else {
-            this.closeModal()
-            resetForm()
-          }
-        } catch (e) {}
-      },
-      closeModal() {
-        this.showModalFiliere = false
-      },
-      pickPicture() {
-        document.getElementById("bind-profile").click()
-        const fi = document.getElementById("bind-profile")
-        console.log(fi)
-        fi.addEventListener("change", this.onProfilePictureChange)
-      },
-      onProfilePictureChange(event) {
-        console.log("Profile picture change and is ", event.target.files[0])
-        if (event.target.files && event.target.files[0]) {
-          this.previewSRC = window.URL.createObjectURL(event.target.files[0])
-          window.URL.revokeObjectURL(event.target.files[0]) // free memory
-        } else {
-          this.previewSRC = null
-        }
-      },
-      clickOutside() {},
-      onInvalidFiliere({ values, result, errors }) {
-        console.log(errors)
-      },
-    },
+    }
+    return "Veuillez choisir une image"
+  },
+  name(value) {
+    return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
+  },
+  manager(value) {
+    return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
+  },
+  sub_manager(value) {
+    return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
+  },
+  description(value) {
+    return isLength(value, { min: 6, max: 500 }) ? true : "Le minimum de caracteres est 6 et le maximum 500"
+  },
+  long_name(value) {
+    return isLength(value, { min: 6, max: 12 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
+  },
+}
+//links to 5 unsplash profiles pictures
+// const img = [
+// 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+// 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+// 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+// 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+// 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+// ];
+
+
+const previewSRC = ref(null)
+const filieres = ref([
+  {
+    name: "G1",
+    img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+    manager: "John Doe",
+    long_name: "Genie Logiciel - Systemes informatique",
+    sub_manager: "Pere Nsuko",
+  },
+  {
+    name: "G2",
+    img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+    long_name: "Genie Logiciel - Gestion",
+    manager: "John Doe",
+    sub_manager: "Nsulo George",
+  },
+  {
+    name: "G3",
+    img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+    long_name: "Design et Multimedia",
+    manager: "John Doe",
+    sub_manager: "Ndize Mbirwe",
+  },
+  {
+    name: "Prépa",
+    img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+    long_name: "Reseau et telecom",
+    manager: "John Doe",
+    sub_manager: "Kongolo Nbiko",
+  },
+  {
+    name: "G3",
+    img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+    long_name: "Design et Multimedia",
+    manager: "John Doe",
+    sub_manager: "Ndize Mbirwe",
+  },
+  {
+    name: "Prepa",
+    img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+    long_name: "Reseau et telecom",
+    sub_manager: "Kongolo Nbiko",
+    manager: "John Doe",
+  },
+])
+const showModalFiliere = ref(false)
+const initialFiliereValue = ref({
+  name: "",
+  img: null,
+  long_name: "",
+  manager: "",
+  description: "Pariatur ea ut commodo duis.Id irure elit in non nostrud consectetur qui mollit fugiat eu eu.",
+  sub_manager: "",
+})
+
+
+const { addFiliere } = useManagement()
+
+function add(values, { resetForm }) {
+  try {
+    var response = this.addFiliere(values)
+    if (res) {
+      toast.success("Document modifié avec succes")
+    } else {
+      this.closeModal()
+      resetForm()
+    }
+  } catch (e) { }
+}
+function closeModal() {
+  this.showModalFiliere = false
+}
+function pickPicture() {
+  document.getElementById("bind-profile").click()
+  const fi = document.getElementById("bind-profile")
+  console.log(fi)
+  fi.addEventListener("change", this.onProfilePictureChange)
+}
+function onProfilePictureChange(event) {
+  console.log("Profile picture change and is ", event.target.files[0])
+  if (event.target.files && event.target.files[0]) {
+    this.previewSRC = window.URL.createObjectURL(event.target.files[0])
+    window.URL.revokeObjectURL(event.target.files[0]) // free memory
+  } else {
+    this.previewSRC = null
   }
+}
+function clickOutside() { }
+function onInvalidFiliere({ values, result, errors }) {
+  console.log(errors)
+}
 </script>
 
 <style scoped></style>

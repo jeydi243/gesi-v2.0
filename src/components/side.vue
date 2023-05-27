@@ -6,25 +6,23 @@
 			<!-- <div id="jog" :class="`bg-red-500 rounded-md h-8 w-10 relative z-0 transition-all duration-500 ease-in-out`"></div> -->
 			<TransitionGroup name="fadeSlideY">
 				<template v-for="(item, index) in sideMenus">
-					<details v-if="item.children">
-						<summary class="ml-2 text-sm font-medium">
-							<router-link :to="item.to" @click="config.changeActive(item.to)" @hover="item.mouseHover = !item.mouseHover" :id="item.text" :ref="item.text" :data-index="index" :key="index" class="router-link relative z-1" :class="{ 'router-link-active': item.active }">{{ item.text }}
-								<span class="justify-self-end ml-auto text-xs">lklm</span>
-							</router-link>
+					<details v-if="item.children" class="flex row w-full items-start" open>
+						<summary class="flex row items-start justify-start select-none w-full router-link">
+							{{ item.text }}
 						</summary>
 						<template v-for="(sub, index2) in item.children">
-							<router-link :to="sub.to">
-								{{ sub.text }}
-							</router-link>
+							<div class="col place-items-start w-full mt-1 relative pl-[50px]">
+								<router-link :to="`${item.to}${sub.to}`" class="router-link-sub relative z-1" :class="{ 'router-link-active': item.active }">
+									{{ sub.text }}
+								</router-link>
+							</div>
 						</template>
 					</details>
 					<router-link v-else :to="item.to" @click="config.changeActive(item.to)" @hover="item.mouseHover = !item.mouseHover" :id="item.text" :ref="item.text" :data-index="index" :key="index" class="router-link relative z-1 flex row" :class="{ 'router-link-active': item.active }">
 						<box-icon type="regular" :name="item.icon" color="white"></box-icon>
 						<span class="ml-2 text-sm font-medium">{{ item.text }}</span>
-
 					</router-link>
 				</template>
-
 			</TransitionGroup>
 		</div>
 	</div>
@@ -67,4 +65,13 @@ function rem() {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="css" scoped>
+details>summary::-webkit-details-marker {
+	display: none;
+}
+
+details[open]>summary {
+	/* background-color: #10108a; */
+	@apply bg-red-600;
+}
+</style>

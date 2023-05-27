@@ -23,7 +23,13 @@
 .router-link {
   @apply transition-colors hover:border-l-2 hover:border-l-green-500 ease-in-out duration-700 flex items-center w-full h-9 px-3 mt-2 hover:text-white hover:font-bold;
 }
+.router-link-sub {
+  @apply transition-colors hover:border-l-2 hover:border-l-green-200 ease-in-out duration-700 flex items-center w-full h-8 px-3 mt-2 hover:text-white hover:font-bold;
+}
 .router-link-active {
+  @apply bg-green-500 bg-opacity-50 border-l-2 border-l-green-500 font-bold text-white;
+}
+.router-link-sub-active {
   @apply bg-green-500 bg-opacity-50 border-l-2 border-l-green-500 font-bold text-white;
 }
 .profile {
