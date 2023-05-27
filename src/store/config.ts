@@ -3,6 +3,8 @@ import { defineStore } from "pinia"
 import { useStudents } from "./students"
 import { useCourses } from "./courses"
 import { useManagement } from "./management"
+import { toast } from "@/utils/index"
+import { useRouter } from "vue-router"
 
 export interface IMenu {
   text: string
@@ -28,6 +30,7 @@ export interface IStoreConfig {
   listLevel: Array<ILevel>
   requestError: any
   responseError: any
+  token: string
   listStatus: Array<any>
 }
 export const useConfig = defineStore("config", {
@@ -35,6 +38,7 @@ export const useConfig = defineStore("config", {
     organizations: [],
     layout: "main",
     config: {},
+    token: "",
     sideMenus: [
       { text: "Home", to: "/home", icon: "home", active: true, mouseHover: false },
       { text: "Students", to: "/students", icon: "group", active: false, mouseHover: false },
@@ -106,6 +110,7 @@ export const useConfig = defineStore("config", {
         },
         (error) => {
           this.responseError = error.response.data
+          const router = useRouter()
           console.log("AXIOS INTERCEPTORS: %o", error.response)
           if (error.code == "ECONNABORTED") {
             toast.error("La requete a pris trop de temps. Verifier votre connexion et retenter dans quelques temps", {

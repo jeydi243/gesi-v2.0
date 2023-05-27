@@ -37,7 +37,7 @@
           <p class="input-error">{{ message }}</p>
         </ErrorMessage>
         <Field name="manager" id="select-doc" as="select" class="rounded form-select block w-full" placeholder="Manager">
-          <option :value="employee.name" v-for="(personne, index) in getEmployees" :key="index" :selected="index == 0">{{ doc.name }}</option>
+          <option :value="employee.name" v-for="(employee, index) in employees" :key="index" :selected="index == 0">{{ doc.name }}</option>
         </Field>
         <ErrorMessage name="manager" v-slot="{ message }">
           <p class="input-error">{{ message }}</p>
@@ -82,18 +82,20 @@
 </template>
 
 <script lang="ts" setup>
-import { mapState, mapActions } from "pinia"
 import * as yup from "yup"
+import { mapState, mapActions } from "pinia"
 import MyModal from "@/components/mymodal.vue"
 import { useManagement } from "@/store/management"
 import { CirclesToRhombusesSpinner } from "epic-spinners"
 import { Form, Field, ErrorMessage } from "vee-validate"
 import { AcademicCapIcon, PlusIcon, UserIcon } from "@heroicons/vue/solid"
 import { isLength } from "validator"
-import { ref } from "vue"
+import { computed, ref } from "vue"
+import { toast } from "../../../utils"
 
 
 
+const store = useManagement()
 const filiereSchema = {
   img(value) {
     if (value) {
@@ -127,9 +129,9 @@ const filiereSchema = {
 // 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
 // 	"https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
 // ];
+const employees = computed(() => store.employees)
 
-
-const previewSRC = ref(null)
+let previewSRC = ref<null | string>(null)
 const filieres = ref([
   {
     name: "G1",
@@ -189,31 +191,31 @@ const { addFiliere } = useManagement()
 
 function add(values, { resetForm }) {
   try {
-    var response = this.addFiliere(values)
-    if (res) {
+    var response = addFiliere(values)
+    if (response) {
       toast.success("Document modifié avec succes")
     } else {
-      this.closeModal()
+      closeModal()
       resetForm()
     }
   } catch (e) { }
 }
 function closeModal() {
-  this.showModalFiliere = false
+  showModalFiliere.value = false
 }
 function pickPicture() {
-  document.getElementById("bind-profile").click()
+  document.getElementById("bind-profile")?.click()
   const fi = document.getElementById("bind-profile")
   console.log(fi)
-  fi.addEventListener("change", this.onProfilePictureChange)
+  fi!.addEventListener("change", onProfilePictureChange)
 }
 function onProfilePictureChange(event) {
   console.log("Profile picture change and is ", event.target.files[0])
   if (event.target.files && event.target.files[0]) {
-    this.previewSRC = window.URL.createObjectURL(event.target.files[0])
+    previewSRC.value = window.URL.createObjectURL(event.target.files[0])
     window.URL.revokeObjectURL(event.target.files[0]) // free memory
   } else {
-    this.previewSRC = null
+    previewSRC.value = null
   }
 }
 function clickOutside() { }

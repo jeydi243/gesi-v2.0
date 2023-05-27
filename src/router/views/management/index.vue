@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div class="flex border-b border-gray-200 mb-2 select-none">
+    <!-- <div class="flex border-b border-gray-200 mb-2 select-none">
       <TransitionGroup :css="false" @before-enter="beforeEnterList" @enter="enterList" @leave="leaveList" mode="out-in">
         <a v-for="({ current, name }, indexTab) in tabsGestion" :key="indexTab" :data-index="indexTab" class="btn-tab first-letter:uppercase" :class="{ 'btn-tab-active': current }" @click="changeTab(indexTab)">{{ name }}</a>
       </TransitionGroup>
-    </div>
+    </div> -->
     <div class="contentTab h-full w-full">
       <router-view v-slot="{ Component, route }">
         <Transition name="fadeSlideX" mode="out-in">
-          <div :key="route.name">
+          <div :key="route.hash">
             <component :is="Component" />
           </div>
         </Transition>
@@ -22,7 +22,7 @@ import { ref, onMounted, computed, watch } from "vue"
 import { beforeEnterList, enterList, leaveList } from "@/utils/index"
 import { useRouter } from "vue-router"
 const router = useRouter()
-const currentTab = computed(() => tabsGestion.value.find((tab) => tab.current).name.toLowerCase())
+const currentTab = computed(() => tabsGestion.value.find((tab) => tab.current)!.name.toLowerCase())
 const tabsGestion = ref([
   { name: "courses", current: true },
   { name: "filieres", current: false },
@@ -32,7 +32,7 @@ const tabsGestion = ref([
 ])
 onMounted(() => {
   // if (currentTab.value == "employees" || currentTab.value == "courses") {
-  router.push(`${currentTab.value}-index`)
+  //router.push(`${currentTab.value}-index`)
   // } else {
   // 	goto(`${currentTab.value}-index`)
   // }
@@ -40,7 +40,7 @@ onMounted(() => {
 
 watch(currentTab, function (newval, oldval) {
   // if (newval != oldval && newval != "employees") {
-  router.push(`${newval}-index`)
+  //router.push(`${newval}-index`)
   // } else if (newval == oldval && ["employees", "courses"].includes(newval)) {
   // 	goto(`${newval}-list`)
   // } else {

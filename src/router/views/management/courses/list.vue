@@ -87,7 +87,7 @@
 import { computed, ref } from "vue"
 import { UseImage } from "@vueuse/components"
 import { onBeforeEnter, onEnter, onLeave, goto, chance } from "@/utils/index"
-import { useTeachers } from "../../../../store/teachers";
+import { useTeachers } from "@/store/teachers";
 
 const store = useTeachers()
 const authors = computed(()=> store.authors)
