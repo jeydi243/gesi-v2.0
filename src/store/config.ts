@@ -4,7 +4,7 @@ import { useStudents } from "./students"
 import { useContents } from "./contents"
 import { useManagement } from "./management"
 import { toast } from "@/utils/index"
-import { useRouter } from "vue-router"
+import router from "@/router/index"
 
 export interface IMenu {
   text: string
@@ -112,7 +112,6 @@ export const useConfig = defineStore("config", {
         },
         (error) => {
           this.responseError = error.response.data
-          const router = useRouter()
           console.log("AXIOS INTERCEPTORS: %o", error.response)
           if (error.code == "ECONNABORTED") {
             toast.error("La requete a pris trop de temps. Verifier votre connexion et retenter dans quelques temps", {
@@ -147,7 +146,7 @@ export const useConfig = defineStore("config", {
       )
     },
     onReloadSide() {
-      console.log("Reload side menu")
+      // console.log("Reload side menu")
       // this.sideMenus = []
       // const side = [
       //   { text: "Home", to: "/home", icon: "home", active: true, mouseHover: false },

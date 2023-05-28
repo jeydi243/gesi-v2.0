@@ -8,7 +8,18 @@ export interface IStoreContent {
 }
 
 export const useContents = defineStore("contents", {
-  state: (): IStoreContent => ({ contents: [], defaultContent: { parts: [], images: [], tags: [], title: "", description: "", type: "content", price: 0 } }),
+  state: (): IStoreContent => ({
+    contents: [],
+    defaultContent: {
+      parts: [],
+      images: [],
+      tags: [],
+      title: "",
+      description: "",
+      type: "content",
+      price: 0,
+    },
+  }),
   actions: {
     async init() {
       try {
@@ -20,12 +31,12 @@ export const useContents = defineStore("contents", {
     async getcontents() {
       try {
         const { data, status } = await contentsAPI.getAll()
+        console.log(data)
         if (status || 200 || status == 201) {
-          console.log(data)
-          data.forEach((element: IContent) => {
-            this.contents.unshift(element)
-            setTimeout(() => {}, 1000)
-          })
+          for (let index = 0; index < data.length; index++) {
+            const content = data[index]
+            this.contents.push(content)
+          }
           return true
         }
         return false
@@ -67,7 +78,7 @@ export const useContents = defineStore("contents", {
     },
   },
   getters: {
-    contents: (state) =>
+    mycontents: (state) =>
       function (filter) {
         if (filter) {
           return state.contents.find((content: IContent) => content.title.toLowerCase().includes(filter.toLowerCase()))
