@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="row w-full justify-end mb-2">
-			<button @click="goto('contents-add')" class="btn-primary"><box-icon name="plus" color="white"></box-icon>Add Course</button>
+			<button @click="goto('contents-add')" class="btn-primary"><box-icon name="plus" color="white"></box-icon>Add Content</button>
 		</div>
 		<div class="justify-start items-start flex-wrap row space-x-2 space-y-4">
 			<TransitionGroup :css="false" @before-enter="onBeforeEnter" @enter="onEnter" @leave="onLeave">
@@ -88,11 +88,11 @@
 <script setup lang="ts">
 import { UseImage } from "@vueuse/components"
 import { computed } from "vue"
-import { useCourses } from "@/store/contents";
+import { useContents } from "@/store/contents";
 import { useTeachers } from "@/store/teachers";
 import { onBeforeEnter, onEnter, onLeave, goto, chance } from "@/utils/index"
 
-const store = useCourses()
+const store = useContents()
 const contents = computed(() => store.contents)
 function rand(max: number) {
 	return Math.floor(Math.random() * max)

@@ -142,6 +142,18 @@ const managementRoutes = [
         name: "documents-index",
         component: () => import(/* webpackChunkName: "management" */ "./views/management/documents.vue"),
       },
+      {
+        path: "classes",
+        meta: { layout: "main" },
+        name: "classes",
+        component: () => import(/* webpackChunkName: "management" */ "./views/management/classes.vue"),
+      },
+      {
+        path: "lookups",
+        meta: { layout: "main" },
+        name: "lookups",
+        component: () => import(/* webpackChunkName: "management" */ "./views/management/lookups.vue"),
+      },
     ],
   },
 ]

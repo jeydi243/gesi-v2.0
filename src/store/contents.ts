@@ -7,7 +7,7 @@ export interface IStoreContent {
   defaultContent: IContent
 }
 
-export const useCourses = defineStore("contents", {
+export const useContents = defineStore("contents", {
   state: (): IStoreContent => ({ contents: [], defaultContent: { parts: [], images: [], tags: [], title: "", description: "", type: "content", price: 0 } }),
   actions: {
     async init() {
@@ -33,11 +33,11 @@ export const useCourses = defineStore("contents", {
         console.log(er)
       }
     },
-    async updateCourse({ idCourse, update }) {
+    async updateContent({ idContent, update }) {
       try {
-        const { status, data } = await contentsAPI.updateById(idCourse, update)
+        const { status, data } = await contentsAPI.updateById(idContent, update)
         if (status == 200 || status == 201) {
-          var foundIndex = this.contents.findIndex((t) => t.id == data.idCourse)
+          var foundIndex = this.contents.findIndex((t) => t.id == data.idContent)
           if (foundIndex) {
             this.contents[foundIndex] = data
           }
@@ -48,7 +48,7 @@ export const useCourses = defineStore("contents", {
         console.log(er)
       }
     },
-    async addCourse(content) {
+    async addContent(content) {
       const auth = useAuth()
       // let dat
       try {

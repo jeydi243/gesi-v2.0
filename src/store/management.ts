@@ -437,7 +437,7 @@ export const useManagement = defineStore("management", {
 	},
 	getters: {
 		getCars: (state) => state.cars,
-		getCourses: (state) => state.contents,
+		getContents: (state) => state.contents,
 		getEmployees: (state) => state.employees,
 		getLaptops: (state) => state.laptops,
 		getRouteurs: (state) => state.routeurs,

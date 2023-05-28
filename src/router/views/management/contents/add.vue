@@ -1,6 +1,6 @@
 <template>
   <div class="card h-full w-1/2 m-auto">
-    <Form class="col justify-between w-full space-y-4" @submit="submit" v-slot="{ isSubmitting, resetForm }" :validation-schema="contentSchema" :initial-values="initialCourseValue" @invalid-submit="onInvalidCourse">
+    <Form class="col justify-between w-full space-y-4" @submit="submit" v-slot="{ isSubmitting, resetForm }" :validation-schema="contentSchema" :initial-values="initialContentValue" @invalid-submit="onInvalidContent">
       <div class="row w-full">Add new content</div>
       <Field name="title" v-slot="{ field, errorMessage }">
         <div class="relative group h-10">
@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import * as yup from "yup"
-import { useCourses } from "@/store/contents"
+import { useContents } from "@/store/contents"
 import { toast, goto } from "@/utils/index"
 import { useFileDialog, get } from "@vueuse/core"
 import { ref, watch, computed } from "vue"
@@ -57,7 +57,7 @@ import { Form, ErrorMessage, Field } from "vee-validate"
 import { CirclesToRhombusesSpinner } from "epic-spinners"
 const { files, open, reset } = useFileDialog()
 
-const store = useCourses()
+const store = useContents()
 const img = computed({
   get() {
     return URL.createObjectURL(files.value![0])
@@ -72,7 +72,7 @@ const contentSchema = yup.object({
   description: yup.string().required().label("Description"),
   expiredate: yup.string().notRequired().label("Expire date"),
 })
-const initialCourseValue = ref({
+const initialContentValue = ref({
   title: "content title",
   expiredate: "2024-10-10",
   description:
@@ -81,16 +81,16 @@ const initialCourseValue = ref({
 watch(files, (newv, oldv) => {
   console.log({ myfiles: get(newv) })
 })
-function onInvalidCourse({ values, result, errors }) {
+function onInvalidContent({ values, result, errors }) {
   console.log(errors)
 }
 async function submit(values, { resetForm, setFieldError }) {
   console.log({ values })
   try {
-    var result = await store.addCourse(values)
+    var result = await store.addContent(values)
     if (!result) {
       goto("contents-index")
-      toast.success("Course added successfully !")
+      toast.success("Content added successfully !")
     } else {
       for (const key in result) {
         setFieldError(key, result[key][0])

@@ -1,6 +1,7 @@
 <template>
     <div>
-        Details d'un Content
+        Lookups
+
     </div>
 </template>
 
@@ -8,5 +9,4 @@
 
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style scoped></style>
