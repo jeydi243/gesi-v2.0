@@ -4,9 +4,7 @@
 		<!-- {{ b }} -->
 		<ol class="list-rese flex">
 			<li v-for="(item, index) in b" :key="index">
-				<router-link :to="item">
-					{{ item }}
-				</router-link>
+				<span>{{ item }}</span>
 				<span v-if="index != b.length - 1" class="mx-2">/</span>
 			</li>
 		</ol>

@@ -6,21 +6,24 @@ import { defineStore } from "pinia"
 import { useTeachers } from "./teachers"
 import router from "@/router/index"
 import { useConfig } from "@/store/config"
-import { IEmployee } from "models/employee"
+import { IEmployee } from "@/models/employee"
 
 export interface IStoreManagement {
   laptops: []
   routeurs: []
-  listDocuments: []
+  documents: Array<any>
   employees: Array<IEmployee>
+  filieres: Array<any>
+
 }
 
 export const useManagement = defineStore("management", {
   state: (): IStoreManagement => ({
     laptops: [],
     routeurs: [],
-    listDocuments: [],
+    documents: [],
     employees: [],
+    filieres: [],
   }),
 
   actions: {
@@ -37,7 +40,7 @@ export const useManagement = defineStore("management", {
 
     async getAllDocuments() {
       this.listDocuments = []
-      console.log("getAllDocuments")
+      // console.log("getAllDocuments")
       try {
         const { data, status } = await mgntAPI.getDocuments()
         console.log({ data }, { status })
@@ -156,7 +159,7 @@ export const useManagement = defineStore("management", {
         const { data, status } = await mgntAPI.addEmergencyContact(employeeID, contact)
         if (status == 201 || status === 200) {
           let index = this.employees.findIndex((em) => em._id == employeeID)
-          this.employees[index].emergencyContacts.unshift(data)
+          this.employees[index].contacts.unshift(data)
           return true
         }
         return false
@@ -192,9 +195,9 @@ export const useManagement = defineStore("management", {
         const { data, status, headers } = await mgntAPI.deleteContact(employeeID, contactID)
         if ((status == 200 || status == 201) && data != "") {
           const indexEmp = this.employees.findIndex((emp) => emp._id == employeeID)
-          const indexContact = this.employees[indexEmp].emergencyContacts.findIndex((educ) => educ.id == contactID)
+          const indexContact = this.employees[indexEmp].contacts.findIndex((educ) => educ.id == contactID)
           if (indexContact != -1) {
-            this.employees[indexEmp].emergencyContacts.splice(indexContact, 1)
+            this.employees[indexEmp].contacts.splice(indexContact, 1)
             return true
           } else {
             console.log("Ce contact n'exige déja plus")
@@ -287,7 +290,7 @@ export const useManagement = defineStore("management", {
           }
           return true
         } else if (status == 304) {
-          console.log("Biography can't be updated ", { headers })
+          console.log("Biography can't be updated ")
           return false
         }
       } catch (er) {
@@ -380,7 +383,7 @@ export const useManagement = defineStore("management", {
         console.log({ data })
         if (status < 300) {
           var index = this.listDocuments.findIndex((doc) => doc.code == data.code)
-          if (index != -1) this.listDocuments[index] = { ...data, show: true }
+          if (index != -1) this.documents[index] = { ...data, show: true }
           return true
         }
         return false
@@ -392,7 +395,7 @@ export const useManagement = defineStore("management", {
       try {
         const { data, status } = await mgntAPI.addFiliere(newFiliere)
         if (status < 300) {
-          this.listFilieres.unshift({ ...data, show: false })
+          this.filieres.unshift({ ...data, show: false })
           return true
         }
         console.log(data)
@@ -441,7 +444,6 @@ export const useManagement = defineStore("management", {
   },
   getters: {
     getCars: (state) => state.cars,
-    getContents: (state) => state.contents,
     getEmployees: (state) => state.employees,
     getLaptops: (state) => state.laptops,
     getRouteurs: (state) => state.routeurs,

@@ -57,9 +57,6 @@ watch(sideActive, function (newval, oldval) {
 	}
 })
 
-function add() {
-	config.add()
-}
 function rem() {
 	config.rem()
 }

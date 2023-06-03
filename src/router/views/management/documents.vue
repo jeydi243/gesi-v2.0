@@ -134,7 +134,7 @@
 	const showModalAdd = ref(false)
 	const showModalUpdate = ref(false)
 	const initialDocValue = ref({ name: "Bulletin 5eme secondaire", code: "2022", description: "la description du document" })
-	const listDocuments = computed(() => store.listDocuments)
+	const listDocuments = computed(() => store.documents)
 
 	onMounted(() => {
 		window.onclick = (e) => {

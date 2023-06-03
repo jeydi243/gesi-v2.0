@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="h-screen w-screen">
+  <div id="app" class="h-screen w-screen drawer">
     <div class="row h-full w-full relative" v-bind="$attrs">
       <SideBar class="flex w-[15%] h-full bg-gray-900 relative transition-all duration-700 ease-out" v-if="isMain" />
 

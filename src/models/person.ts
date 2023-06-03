@@ -1,5 +1,5 @@
 interface IPerson {
-  id: string
+  _id: string
   name: string
   birthday: Date
   sexe: string
