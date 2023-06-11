@@ -5,6 +5,11 @@
     </div>
     <div class="justify-start items-start flex-wrap row space-x-2 space-y-4">
       {{ contents[0] }}
+      #dialog
+      <dialog class="dialog" id="dialog">
+      
+      </dialog>
+      <button onclick="modal.showModal()">Open Dialog</button>
       <!-- <TransitionGroup :css="false" @before-enter="onBeforeEnter" @enter="onEnter" @leave="onLeave"> -->
       <div class="grid grid-cols-4 gap-2 justify-center items-center">
         <article v-for="(content, index) in contents" :key="index" class="overflow-hidden rounded-lg bg-white border border-gray-100 shadow-sm">
@@ -20,7 +25,7 @@
               Molestias explicabo corporis voluptatem?
             </p>
 
-            <a href="#" @click="goto('contents-details','21151' /*content.id*/)" class="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600">
+            <a href="#" @click="goto('contents-details',21151 /*content.id*/)" class="group mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600">
               Find out more
               <span aria-hidden="true" class="block transition group-hover:translate-x-0.5"> &rarr; </span>
             </a>
@@ -29,7 +34,7 @@
             </router-link>
           </div>
           <footer class="flex items-center justify-start leading-none bottom-0 left-0 p-2 h-[20%] w-full">
-            <img @click="goto('teachers-details', content.authors[0])" class="block avatar rounded-full" :src="`https://mdbcdn.b-cdn.net/img/new/avatars/${rand(20)}.webp`" />
+            <img @click="goto('teachers-details', content!.authors![0])" class="block avatar rounded-full" :src="`https://mdbcdn.b-cdn.net/img/new/avatars/${rand(20)}.webp`" />
             <router-link :to="{ name: 'teachers-details' }" class="flex cursor-pointer items-center no-underline hover:underline text-black">
               <p class="ml-2 text-sm text-black">By {{ chance.name() }}</p>
             </router-link>
