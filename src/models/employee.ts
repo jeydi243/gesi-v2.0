@@ -4,4 +4,5 @@ export interface IEmployee extends IPerson {
   experiences?: Array<any>
   biography?: string
   onboarding?: any
+  resume_file: string
 }

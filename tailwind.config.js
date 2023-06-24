@@ -830,6 +830,7 @@ module.exports = {
   },
   plugins: [
     require("preline/plugin"),
+    require("tw-elements/dist/plugin.cjs"),
     require("@tailwindcss/forms")({
       strategy: "class",
     }),

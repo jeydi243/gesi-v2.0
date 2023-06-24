@@ -14,9 +14,17 @@ export interface IStoreManagement {
   routeurs: []
   classes: Array<any>
   lookups: ILookups[]
+  error: any
   documents: Array<any>
+  organizations: Array<IOrganization>
   employees: Array<IEmployee>
   filieres: Array<any>
+}
+export interface IOrganization {
+  _id: string
+  lookups_id: string
+  code_organization: string
+  name_organization: string
 }
 export interface ILookups {
   _id: string
@@ -28,8 +36,13 @@ export interface ILookups {
 export const useManagement = defineStore("management", {
   state: (): IStoreManagement => ({
     laptops: [],
+    error: "",
     routeurs: [],
-    classes: [{ name: "Type d'organisation", code: "ORG-001", id: "" }],
+    organizations: [],
+    classes: [
+      { name: "Type d'organisation", code: "LKP-001", id: "" },
+      { name: "Type de Documents", code: "LKP-002", id: "" },
+    ],
     lookups: [],
     documents: [],
     employees: [],
@@ -43,13 +56,13 @@ export const useManagement = defineStore("management", {
         t.init()
         await this.getAllDocuments()
         await this.getAllEmployees()
-      } catch (error:any) {
+      } catch (error: any) {
         console.log(error)
       }
     },
 
     async getAllDocuments() {
-      this.listDocuments = []
+      this.documents = []
       // console.log("getAllDocuments")
       try {
         const { data, status } = await mgntAPI.getDocuments()
@@ -60,7 +73,7 @@ export const useManagement = defineStore("management", {
               doc["show"] = false
               return doc
             })
-            .forEach((doc) => this.listDocuments.unshift(doc))
+            .forEach((doc) => this.documents.unshift(doc))
           return true
         }
 
@@ -125,7 +138,7 @@ export const useManagement = defineStore("management", {
         const { data, status } = await mgntAPI.addExperience(id, experience)
         if (status == 200 || status == 201) {
           const index = this.employees.findIndex((emp) => emp._id == data.id)
-          this.employees[index].experiences.unshift(data)
+          this.employees[index]!.experiences!.unshift(data)
           return true
         }
         return false
@@ -265,9 +278,9 @@ export const useManagement = defineStore("management", {
         console.log({ data, status, headers })
         if ((status == 200 || status == 201) && data != "") {
           const index = this.employees.findIndex((emp) => emp._id == employeeID)
-          const indexExp = this.employees[index].experiences.findIndex((exp) => exp.id == experienceID)
+          const indexExp = this.employees[index]!.experiences!.findIndex((exp) => exp.id == experienceID)
           if (indexExp != -1) {
-            this.employees[index].experiences[indexExp] = data
+            this.employees[index]!.experiences![indexExp] = data
           } else {
             return false
           }
@@ -323,17 +336,17 @@ export const useManagement = defineStore("management", {
     },
     async changedoc(employeeID, newDoc) {
       try {
-        const { data, status } = await mgntAPI.updateDocument(employeeID, newDoc)
+        const { data, status } = await mgntAPI.updateDocument({ employeeID, ...newDoc })
         if ((status == 200 || status == 201) && data != "") {
           const index = this.employees.findIndex((emp) => emp._id == employeeID)
           if (index != -1) {
-            this.employees[index].resume_file = data //link to file on server
+            this.employees[index]!.resume_file = data //link to file on server
           } else {
             return false
           }
           return true
         } else if (status == 304) {
-          console.log("Biography can't be updated ", { headers })
+          console.log("Biography can't be updated ")
           return false
         }
       } catch (er) {
@@ -352,7 +365,7 @@ export const useManagement = defineStore("management", {
           }
           return true
         } else if (status == 304) {
-          console.log("Onboarding can't be updated ", { headers })
+          console.log("Onboarding can't be updated ")
           return false
         }
       } catch (er) {
@@ -363,11 +376,11 @@ export const useManagement = defineStore("management", {
       try {
         const { data, status } = await mgntAPI.addDocument(newDocument)
         if (status == 200 || status == 201) {
-          this.listDocuments.unshift({ ...data, show: false })
+          this.documents.unshift({ ...data, show: false })
           return true
         }
         return false
-      } catch (error:any) {
+      } catch (error: any) {
         console.log(error)
         return error["data"]["message"]
       }
@@ -376,8 +389,8 @@ export const useManagement = defineStore("management", {
       try {
         const { data, status } = await mgntAPI.removeDocument(idDocument)
         if (status == 200 || status == 201) {
-          var index = this.listDocuments.findIndex((doc) => doc.idDocument == idDocument)
-          this.listDocuments.splice(index, 1)
+          var index = this.documents.findIndex((doc) => doc.idDocument == idDocument)
+          this.documents.splice(index, 1)
           console.log(data)
           return true
         }
@@ -391,8 +404,8 @@ export const useManagement = defineStore("management", {
         const { data, status } = await mgntAPI.deleteDocument(code)
         console.log({ data }, { status })
         if (status == 200 || status == 201) {
-          var index = this.listDocuments.findIndex((doc) => doc.code == code)
-          if (index != -1) this.listDocuments.splice(index, 1)
+          var index = this.documents.findIndex((doc) => doc.code == code)
+          if (index != -1) this.documents.splice(index, 1)
           return true
         }
         return false
@@ -406,7 +419,7 @@ export const useManagement = defineStore("management", {
         const { data, status } = await mgntAPI.updateDocument(newValues)
         console.log({ data })
         if (status < 300) {
-          var index = this.listDocuments.findIndex((doc) => doc.code == data.code)
+          var index = this.documents.findIndex((doc) => doc.code == data.code)
           if (index != -1) this.documents[index] = { ...data, show: true }
           return true
         }
@@ -431,27 +444,27 @@ export const useManagement = defineStore("management", {
       try {
         const { data, status } = await mgntAPI.removeFiliere(idFiliere)
         if (status == 200 || status == 201) {
-          var index = this.listFilieres.findIndex((filiere) => filiere.id == data.id)
-          this.listFilieres.splice(index, 1)
+          var index = this.filieres.findIndex((filiere) => filiere.id == data.id)
+          this.filieres.splice(index, 1)
           console.log(data)
           return true
         }
         return false
       } catch (er) {
-        console.log(err)
+        console.log(er)
       }
     },
     async updateFiliere(newValues) {
       try {
         const { data, status } = await mgntAPI.updateFiliere(newValues)
         if (status == 200 || status == 201) {
-          const index = this.listFilieres.findIndex((filiere) => filiere.id == data.id)
-          this.listFilieres[index] = data
+          const index = this.filieres.findIndex((filiere) => filiere.id == data.id)
+          this.filieres[index] = data
           return true
         }
         return false
-      } catch (er) {
-        console.log(err)
+      } catch (error: any) {
+        console.log(error)
       }
     },
     async updateEmployeeConnexion(employeeID, values) {
@@ -467,11 +480,12 @@ export const useManagement = defineStore("management", {
     },
   },
   getters: {
-    getCars: (state) => state.cars,
-    getEmployees: (state) => state.employees,
+    filieres: (state) => state.organizations.filter((fil) => fil.lookups_id == "10"),
+    errorCall: (state) => state.error,
     getLaptops: (state) => state.laptops,
     getRouteurs: (state) => state.routeurs,
-    getListDocuments: (state) => state.listDocuments,
-    errorCall: (state) => state.error,
+    getdocuments: (state) => state.documents,
+    getEmployees: (state) => state.employees,
+    organizations: (state) => state.organizations,
   },
 })

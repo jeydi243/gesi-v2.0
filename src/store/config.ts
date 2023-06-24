@@ -1,10 +1,11 @@
-import axios from "@/api/myaxios"
+import { axios, myfetch } from "@/api/myaxios"
 import { defineStore } from "pinia"
 import { useStudents } from "./students"
 import { useContents } from "./contents"
 import { useManagement } from "./management"
 import { toast } from "@/utils/index"
 import router from "@/router/index"
+import { TYPE } from "vue-toastification"
 
 export interface IMenu {
   text: string
@@ -85,7 +86,7 @@ export const useConfig = defineStore("config", {
         await mngt.init()
         await students.init()
         await contents.init()
-      } catch (error:any) {
+      } catch (error: any) {
         console.log(error)
       }
     },
@@ -93,16 +94,15 @@ export const useConfig = defineStore("config", {
       axios.interceptors.request.use(
         (config) => {
           if (this.token) {
-            config.headers.Authorization = `Bearer ${this.token}`
+            config!.headers!.Authorization = `Bearer ${this.token}`
           }
           return config
         },
-        (error:any) => {
+        (error: any) => {
           // Do something with request error
           this.requestError = error
           return Promise.reject(error)
-        },
-        { synchronous: true }
+        }
       )
       axios.interceptors.response.use(
         (response) => {
@@ -110,22 +110,11 @@ export const useConfig = defineStore("config", {
           this.responseError = null
           return response
         },
-        (error:any) => {
+        (error: any) => {
           this.responseError = error.response.data
           console.log("AXIOS INTERCEPTORS: %o", error.response)
           if (error.code == "ECONNABORTED") {
-            toast.error("La requete a pris trop de temps. Verifier votre connexion et retenter dans quelques temps", {
-              type: "error",
-              duration: 50000,
-              singleton: true,
-              action: {
-                text: "Relancer la page",
-                onClick: (e, toastObject) => {
-                  console.log("Relaod after error")
-                  // router.go()
-                },
-              },
-            })
+            toast.error("La requete a pris trop de temps. Verifier votre connexion et retenter dans quelques temps", { pauseOnHover: true })
             console.log({ error })
           } else if (error.code === "ERR_CONNECTION_REFUSED") {
             console.log("[ECONNABORTED] Impossible de contacter le serveur :", {

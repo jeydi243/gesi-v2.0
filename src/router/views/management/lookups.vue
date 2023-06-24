@@ -1,7 +1,7 @@
 <template>
   <div class="row w-full h-screen">
     <div class="grid grid-cols-4 gap-4 min-h-full">
-      <div class="col bg-white p-2 h-full rounded-md ml-3 hover:shadow-lg transition-all duration-700">
+      <div class="col-span-1 bg-white p-2 h-full rounded-md ml-3 hover:shadow-lg transition-all duration-700">
         <div v-for="({ name, code }, key) in classes" class="hover:bg-blue-400 pt-2 pl-2 pb-2 hover:bg-opacity-5 h-[55px] w-full cursor-default rounded-lg hover:outline-1 hover transition-all duration-1000">
           <p>
             <strong>{{ name }}</strong>
@@ -9,7 +9,7 @@
           <h1 class="text-xs">{{ code }}</h1>
         </div>
       </div>
-      <div class="col-span-3 bg-white p-2 h-full rounded-md ml-3 hover:shadow-lg transition-all duration-700">
+      <div class="col-span-3 bg-red-500 p-2 h-full rounded-md ml-3 hover:shadow-lg transition-all duration-700">
         <div class="flex flex-row-reverse mb-2">
           <button @click="openModal" class="btn-primary" data-hs-overlay="#drawerOP">
             <PlusIcon class="h-5 w-5 text-white" />
@@ -47,7 +47,7 @@
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">45</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">New York No. 1 Lake Park</td>
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a class="text-blue-500 hover:text-blue-700" href="#">Delete</a>
+                        <a class="text-blue-500 hover:text-blue-700" data-hs-overlay="#drawerOP">Delete</a>
                       </td>
                     </tr>
                   </tbody>
@@ -57,72 +57,94 @@
           </div>
         </div>
       </div>
-      <div id="drawerOP" class="hs-overlay hs-overlay-open:translate-x-0 hidden translate-x-full fixed top-0 right-0 transition-all duration-700 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-white dark:border-gray-700" tabindex="-1">
-        <div class="flex justify-between items-center py-3 px-4 border-b dark:border-gray-700">
-          <h1 class="font-bold text-black ">Add Lookups</h1>
-          <button
-            type="button"
-            class="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white text-sm dark:text-gray-500 dark:hover:text-gray-400 dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800"
-            data-hs-overlay="#drawerOP"
-          >
-            <span class="sr-only">Close modal</span>
-            <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M0.258206 1.00652C0.351976 0.912791 0.479126 0.860131 0.611706 0.860131C0.744296 0.860131 0.871447 0.912791 0.965207 1.00652L3.61171 3.65302L6.25822 1.00652C6.30432 0.958771 6.35952 0.920671 6.42052 0.894471C6.48152 0.868271 6.54712 0.854471 6.61352 0.853901C6.67992 0.853321 6.74572 0.865971 6.80722 0.891111C6.86862 0.916251 6.92442 0.953381 6.97142 1.00032C7.01832 1.04727 7.05552 1.1031 7.08062 1.16454C7.10572 1.22599 7.11842 1.29183 7.11782 1.35822C7.11722 1.42461 7.10342 1.49022 7.07722 1.55122C7.05102 1.61222 7.01292 1.6674 6.96522 1.71352L4.31871 4.36002L6.96522 7.00648C7.05632 7.10078 7.10672 7.22708 7.10552 7.35818C7.10442 7.48928 7.05182 7.61468 6.95912 7.70738C6.86642 7.80018 6.74102 7.85268 6.60992 7.85388C6.47882 7.85498 6.35252 7.80458 6.25822 7.71348L3.61171 5.06702L0.965207 7.71348C0.870907 7.80458 0.744606 7.85498 0.613506 7.85388C0.482406 7.85268 0.357007 7.80018 0.264297 7.70738C0.171597 7.61468 0.119017 7.48928 0.117877 7.35818C0.116737 7.22708 0.167126 7.10078 0.258206 7.00648L2.90471 4.36002L0.258206 1.71352C0.164476 1.61976 0.111816 1.4926 0.111816 1.36002C0.111816 1.22744 0.164476 1.10028 0.258206 1.00652Z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
-        </div>
-        <div class="p-4">
-          <Form class="col justify-between w-full space-y-4" @submit="addLookups" v-slot="{ isSubmitting, resetForm }" :validation-schema="lookupsSchema" :initial-values="initialLookupsValue" @invalid-submit="onInvalidLookups">
-            <div class="row w-full">Add new Content</div>
-            <Field name="title" v-slot="{ field, errorMessage }">
-              <div class="relative group h-10">
-                <input v-bind="field" type="text" id="title" required class="input peer" />
-                <label for="title" class="placeholder-label">Title </label>
-                <p class="input-error">{{ errorMessage }}</p>
-              </div>
-            </Field>
-
-            <Field name="description" v-slot="{ field, errorMessage }">
-              <div class="relative group">
-                <textarea v-bind="field" id="description" required class="input-textarea peer" rows="4"></textarea>
-                <label for="description" class="placeholder-label">Description </label>
-                <p class="input-error">{{ errorMessage }}</p>
-              </div>
-            </Field>
-            <Field name="expiredate" v-slot="{ field, errorMessage }">
-              <div class="relative group h-10">
-                <input v-bind="field" type="text" id="expiredate" required class="input peer" />
-                <label for="expiredate" class="placeholder-label peer-invalid:text-red-600">Expire date </label>
-                <p class="input-error">{{ errorMessage }}</p>
-              </div>
-            </Field>
-            <div class="flex flex-row h-1/2 w-full items-center justify-between">
-              <button class="btn-unstate" @click.prevent.stop="resetForm()">Cancel</button>
-              <button type="submit" class="btn-primary">
-                <box-icon type="solid" name="file-plus" color="white"></box-icon>
-                <span class="font-bold text-white">Add</span>
-                <CirclesToRhombusesSpinner :size="5" color="#FFF" class="text-white" v-if="isSubmitting" />
-              </button>
-            </div>
-          </Form>
-        </div>
-      </div>
     </div>
+    <!-- <div id="drawerOP" class="hs-overlay hs-overlay-open:translate-x-0 hidden translate-x-full fixed top-0 right-0 transition-all duration-700 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-white dark:border-gray-700" tabindex="-1">
+      <div class="flex justify-between items-center py-3 px-4 border-b dark:border-gray-700">
+        <h1 class="font-bold text-black ">Add Lookups</h1>
+        <button
+          type="button"
+          class="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white text-sm dark:text-gray-500 dark:hover:text-gray-400 dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800"
+          data-hs-overlay="#drawerOP"
+        >
+          <span class="sr-only">Close modal</span>
+          <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M0.258206 1.00652C0.351976 0.912791 0.479126 0.860131 0.611706 0.860131C0.744296 0.860131 0.871447 0.912791 0.965207 1.00652L3.61171 3.65302L6.25822 1.00652C6.30432 0.958771 6.35952 0.920671 6.42052 0.894471C6.48152 0.868271 6.54712 0.854471 6.61352 0.853901C6.67992 0.853321 6.74572 0.865971 6.80722 0.891111C6.86862 0.916251 6.92442 0.953381 6.97142 1.00032C7.01832 1.04727 7.05552 1.1031 7.08062 1.16454C7.10572 1.22599 7.11842 1.29183 7.11782 1.35822C7.11722 1.42461 7.10342 1.49022 7.07722 1.55122C7.05102 1.61222 7.01292 1.6674 6.96522 1.71352L4.31871 4.36002L6.96522 7.00648C7.05632 7.10078 7.10672 7.22708 7.10552 7.35818C7.10442 7.48928 7.05182 7.61468 6.95912 7.70738C6.86642 7.80018 6.74102 7.85268 6.60992 7.85388C6.47882 7.85498 6.35252 7.80458 6.25822 7.71348L3.61171 5.06702L0.965207 7.71348C0.870907 7.80458 0.744606 7.85498 0.613506 7.85388C0.482406 7.85268 0.357007 7.80018 0.264297 7.70738C0.171597 7.61468 0.119017 7.48928 0.117877 7.35818C0.116737 7.22708 0.167126 7.10078 0.258206 7.00648L2.90471 4.36002L0.258206 1.71352C0.164476 1.61976 0.111816 1.4926 0.111816 1.36002C0.111816 1.22744 0.164476 1.10028 0.258206 1.00652Z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="p-4">
+        <Form class="col justify-between w-full space-y-4" @submit="addLookups" v-slot="{ isSubmitting, resetForm }" :validation-schema="lookupsSchema" :initial-values="initialLookupsValue" @invalid-submit="onInvalidLookups">
+          <div class="row w-full">Add new Content</div>
+          <Field name="title" v-slot="{ field, errorMessage }">
+            <div class="relative group h-10">
+              <input v-bind="field" type="text" id="title" required class="input peer" />
+              <label for="title" class="placeholder-label">Title </label>
+              <p class="input-error">{{ errorMessage }}</p>
+            </div>
+          </Field>
+
+          <Field name="description" v-slot="{ field, errorMessage }">
+            <div class="relative group">
+              <textarea v-bind="field" id="description" required class="input-textarea peer" rows="4"></textarea>
+              <label for="description" class="placeholder-label">Description </label>
+              <p class="input-error">{{ errorMessage }}</p>
+            </div>
+          </Field>
+          <Field name="expiredate" v-slot="{ field, errorMessage }">
+            <div class="relative group h-10">
+              <input v-bind="field" type="text" id="expiredate" required class="input peer" />
+              <label for="expiredate" class="placeholder-label peer-invalid:text-red-600">Expire date </label>
+              <p class="input-error">{{ errorMessage }}</p>
+            </div>
+          </Field>
+          <div class="flex flex-row h-1/2 w-full items-center justify-between">
+            <button class="btn-unstate" @click.prevent.stop="resetForm()">Cancel</button>
+            <button type="submit" class="btn-primary">
+              <box-icon type="solid" name="file-plus" color="white"></box-icon>
+              <span class="font-bold text-white">Add</span>
+              <CirclesToRhombusesSpinner :size="5" color="#FFF" class="text-white" v-if="isSubmitting" />
+            </button>
+          </div>
+        </Form>
+      </div>
+    </div> -->
+    <!-- <Dialog :open="isOpen" @close="setIsOpen">
+      <DialogPanel>
+        <DialogTitle>Deactivate account</DialogTitle>
+        <DialogDescription> This will permanently deactivate your account </DialogDescription>
+
+        <p>Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.</p>
+
+        <button @click="setIsOpen(false)">Deactivate</button>
+        <button @click="setIsOpen(false)">Cancel</button>
+      </DialogPanel>
+    </Dialog> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref,computed} from "vue"
+import {ref,computed,onMounted} from "vue"
 import { CirclesToRhombusesSpinner } from "epic-spinners"
 import * as yup from "yup"
+import {    Dialog,    DialogPanel,    DialogTitle,    DialogDescription,  } from '@headlessui/vue'
 import { Form, ErrorMessage, Field } from "vee-validate"
+import { InvalidSubmissionContext } from 'vee-validate';
 import { useManagement } from '@/store/management';
 import { PlusIcon } from "@heroicons/vue/solid";
-import { InvalidSubmissionContext } from 'vee-validate';
 import { useToast } from 'vue-toastification';
+import { Datepicker, Input, initTE } from "tw-elements";
+
+onMounted(() => {
+  initTE({ Datepicker, Input });
+});
+
+
+function setIsOpen(value) {
+    isOpen.value = value
+}
 const store = useManagement()
 const toast = useToast()
 
