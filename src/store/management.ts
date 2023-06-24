@@ -1,6 +1,7 @@
 import mgntAPI from "@/api/management"
 import contentsAPI from "@/api/contents"
-
+import { useAxios } from "@vueuse/integrations/useAxios"
+import { myfetch } from "@/api/myaxios"
 import { toast } from "@/utils/index"
 import { defineStore } from "pinia"
 import { useTeachers } from "./teachers"
@@ -11,16 +12,25 @@ import { IEmployee } from "@/models/employee"
 export interface IStoreManagement {
   laptops: []
   routeurs: []
+  classes: Array<any>
+  lookups: ILookups[]
   documents: Array<any>
   employees: Array<IEmployee>
   filieres: Array<any>
-
 }
-
+export interface ILookups {
+  _id: string
+  classe: string
+  parent_lookups_id: string
+  name: string
+  description: string
+}
 export const useManagement = defineStore("management", {
   state: (): IStoreManagement => ({
     laptops: [],
     routeurs: [],
+    classes: [{ name: "Type d'organisation", code: "ORG-001", id: "" }],
+    lookups: [],
     documents: [],
     employees: [],
     filieres: [],
@@ -33,7 +43,7 @@ export const useManagement = defineStore("management", {
         t.init()
         await this.getAllDocuments()
         await this.getAllEmployees()
-      } catch (error) {
+      } catch (error:any) {
         console.log(error)
       }
     },
@@ -138,6 +148,20 @@ export const useManagement = defineStore("management", {
         return false
       } catch (er) {
         console.log(er)
+      }
+    },
+    async addLookups(newLookups: ILookups) {
+      try {
+        const response = await myfetch("/management/lookups", { method: "POST", body: { ...newLookups, leka: "leka" } }) //mgntAPI.addLookups(id, lookups);
+        if (!response) {
+          const index = this.lookups.findIndex((lk) => lk._id == response._id)
+          this.lookups!.unshift(response)
+          return true
+        }
+        return false
+      } catch (er) {
+        console.log(er)
+        return false
       }
     },
     async addEducation(employeeID, education) {
@@ -343,7 +367,7 @@ export const useManagement = defineStore("management", {
           return true
         }
         return false
-      } catch (error) {
+      } catch (error:any) {
         console.log(error)
         return error["data"]["message"]
       }

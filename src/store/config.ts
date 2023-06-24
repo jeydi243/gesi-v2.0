@@ -85,7 +85,7 @@ export const useConfig = defineStore("config", {
         await mngt.init()
         await students.init()
         await contents.init()
-      } catch (error) {
+      } catch (error:any) {
         console.log(error)
       }
     },
@@ -97,7 +97,7 @@ export const useConfig = defineStore("config", {
           }
           return config
         },
-        (error) => {
+        (error:any) => {
           // Do something with request error
           this.requestError = error
           return Promise.reject(error)
@@ -110,7 +110,7 @@ export const useConfig = defineStore("config", {
           this.responseError = null
           return response
         },
-        (error) => {
+        (error:any) => {
           this.responseError = error.response.data
           console.log("AXIOS INTERCEPTORS: %o", error.response)
           if (error.code == "ECONNABORTED") {

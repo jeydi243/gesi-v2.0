@@ -25,7 +25,7 @@ export const useOrganization = defineStore("organization", {
         if (status == 200 || status == 201) {
           this.organizations.unshift(data)
         }
-      } catch (error) {
+      } catch (error:any) {
         console.log("Can't add organization: ", error)
       }
     },
@@ -38,7 +38,7 @@ export const useOrganization = defineStore("organization", {
             this.organizations.unshift(element)
           })
         }
-      } catch (error) {
+      } catch (error:any) {
         console.log("Can't retrieve all organizations: ", error)
       }
     },

@@ -1,4 +1,4 @@
-import axios from "./myaxios"
+import { axios, myfetch } from "./myaxios"
 
 export default {
   getAll: async function () {

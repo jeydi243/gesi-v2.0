@@ -5,10 +5,8 @@
     </div>
     <div class="justify-start items-start flex-wrap row space-x-2 space-y-4">
       {{ contents[0] }}
-      #dialog
-      <dialog class="dialog" id="dialog">
-      
-      </dialog>
+
+      <dialog class="dialog" id="dialog">Le contenu du dialog</dialog>
       <button onclick="modal.showModal()">Open Dialog</button>
       <!-- <TransitionGroup :css="false" @before-enter="onBeforeEnter" @enter="onEnter" @leave="onLeave"> -->
       <div class="grid grid-cols-4 gap-2 justify-center items-center">

@@ -1,13 +1,13 @@
-import axios from "./myaxios"
+import { axios, myfetch } from "./myaxios"
 
 export default {
-	get: async function () {
-		return await axios.get("/resources")
-	},
-	getById: async function (id) {
-		return await axios.get(`/resources/file/${id}`)
-	},
-	add: async function (payload) {
-		return await axios.post("/resources", payload)
-	},
+  get: async function () {
+    return await axios.get("/resources")
+  },
+  getById: async function (id) {
+    return await axios.get(`/resources/file/${id}`)
+  },
+  add: async function (payload) {
+    return await axios.post("/resources", payload)
+  },
 }

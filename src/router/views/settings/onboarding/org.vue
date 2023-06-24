@@ -109,7 +109,7 @@ function submit(values) {
       toast("J'ai reussi")
       router.push("/")
     }
-  } catch (error) {
+  } catch (error:any) {
     console.log(error)
   }
 }

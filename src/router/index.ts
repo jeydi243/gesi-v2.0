@@ -213,7 +213,7 @@ const router = createRouter({
   routes,
 })
 
-router.onError((error) => {
+router.onError((error:any) => {
   console.error(error)
 })
 

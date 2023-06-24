@@ -265,7 +265,7 @@ async function submitEmployee(values) {
     } else {
       toast.error(`Can't add new employee`)
     }
-  } catch (error) {
+  } catch (error:any) {
     console.log(error)
   }
 }

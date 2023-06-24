@@ -6,13 +6,18 @@
       </TransitionGroup>
     </div> -->
     <div class="contentTab h-full w-full">
-      <router-view v-slot="{ Component, route }">
+      <!-- <router-view v-slot="{ Component, route }">
         <Transition name="fadeSlideX" mode="out-in">
           <div :key="route.hash">
             <component :is="Component" />
           </div>
         </Transition>
-      </router-view>
+      </router-view> -->
+      <router-view v-slot="{ Component }">
+            <Transition name="fadeSlideX" mode="out-in">
+              <component :is="Component" />
+            </Transition>
+          </router-view>
     </div>
   </div>
 </template>

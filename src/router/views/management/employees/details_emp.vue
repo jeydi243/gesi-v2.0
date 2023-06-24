@@ -775,7 +775,7 @@ async function updateExperience(updatedExperience) {
     } else {
       toast.error("Can't update experience for this employee")
     }
-  } catch (error) {
+  } catch (error:any) {
     console.log(error)
   }
 }
@@ -788,7 +788,7 @@ async function updateEducation(updatedEducation) {
     } else {
       toast.error("Can't update education for this employee")
     }
-  } catch (error) {
+  } catch (error:any) {
     console.log(error)
   }
 }
@@ -801,7 +801,7 @@ async function updateBiography(biography) {
     } else {
       toast.error("Can't update biography for this employee")
     }
-  } catch (error) {
+  } catch (error:any) {
     console.log(error)
   }
 }

@@ -6,12 +6,13 @@ import router from "./router/index"
 import { createPinia } from "pinia"
 import { useToast } from "vue-toastification"
 const pinia = createPinia()
+import("preline")
 
 let app = createApp(App).use(pinia).use(router)
 const useImage = (url) => {
   return new URL(`/src/${url}`, import.meta.url).href
 }
-app.config.globalProperties.$image = useImage;
+app.config.globalProperties.$image = useImage
 app.config.globalProperties.filters = {
   firstUpper(value) {
     return value.charAt(0).toUpperCase() + value.slice(1)
@@ -23,7 +24,7 @@ app.config.globalProperties.filters = {
 app.config.globalProperties.toast = useToast()
 
 app.config.errorHandler = (err, vm, info) => {
-  console.log(`${err.message}`, `${err.stack}`)
+  console.log(`${err!}`, `${err}`)
 }
 app.config.warnHandler = (msg, instance, trace) => {
   console.log(instance, JSON.stringify(trace, null, 4))

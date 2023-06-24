@@ -1,4 +1,4 @@
-import axios from "./myaxios"
+import { axios, myfetch } from "./myaxios"
 
 export default {
   login: async function (user) {

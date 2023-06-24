@@ -378,7 +378,7 @@ function goNext(values) {
       const re = store.addStudent(values)
       console.log(re)
     }
-  } catch (error) {}
+  } catch (error:any) {}
 
   step.value++
 }

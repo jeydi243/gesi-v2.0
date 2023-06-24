@@ -97,7 +97,7 @@ async function submit(values, { resetForm, setFieldError }) {
       }
       toast.error(`Can't add new content ${JSON.stringify(result)}`)
     }
-  } catch (error) {
+  } catch (error:any) {
     console.log(error)
   }
   // resetForm()

@@ -38,7 +38,7 @@ export const useStudents = defineStore("students", {
           console.log("Student already exists. HEARDS=>%o", headers)
         }
         return false
-      } catch (er) {
+      } catch (er: any) {
         console.log(er.data)
       }
     },
@@ -47,9 +47,7 @@ export const useStudents = defineStore("students", {
     getListDocuments: (state) => state.listDocuments,
     mystudents(state) {
       const config = useConfig()
-      return state.students.filter(
-        (student: IStudent) => student.level.toLowerCase() == config.currentLevelShort.toLowerCase()
-      )
+      return state.students.filter((student: IStudent) => student.level.toLowerCase() == config.currentLevelShort.toLowerCase())
     },
   },
 })
