@@ -1,8 +1,8 @@
 <template>
   <div class="row w-full h-screen">
-    <div class="grid grid-cols-4 gap-4 min-h-full">
-      <div class="col-span-1 bg-white p-2 h-full rounded-md ml-3 hover:shadow-lg transition-all duration-700">
-        <div v-for="({ name, code }, key) in classes" class="hover:bg-blue-400 pt-2 pl-2 pb-2 hover:bg-opacity-5 h-[55px] w-full cursor-default rounded-lg hover:outline-1 hover transition-all duration-1000">
+    <div class="grid grid-cols-4 gap-4">
+      <div class=" bg-white p-2 h-full rounded-md ml-3 hover:shadow-lg transition-all duration-700">
+        <div @click="setIsOpen" v-for="({ name, code }, key) in classes" class="hover:bg-blue-400 pt-2 pl-2 pb-2 hover:bg-opacity- h-[55px] w-full cursor-default rounded-lg hover:outline-1 hover transition-all duration-1000">
           <p>
             <strong>{{ name }}</strong>
           </p>
@@ -58,6 +58,7 @@
         </div>
       </div>
     </div>
+
     <!-- <div id="drawerOP" class="hs-overlay hs-overlay-open:translate-x-0 hidden translate-x-full fixed top-0 right-0 transition-all duration-700 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-white dark:border-gray-700" tabindex="-1">
       <div class="flex justify-between items-center py-3 px-4 border-b dark:border-gray-700">
         <h1 class="font-bold text-black ">Add Lookups</h1>
@@ -135,15 +136,10 @@ import { InvalidSubmissionContext } from 'vee-validate';
 import { useManagement } from '@/store/management';
 import { PlusIcon } from "@heroicons/vue/solid";
 import { useToast } from 'vue-toastification';
-import { Datepicker, Input, initTE } from "tw-elements";
+import emitter from "@/utils/EventBus"
 
-onMounted(() => {
-  initTE({ Datepicker, Input });
-});
-
-
-function setIsOpen(value) {
-    isOpen.value = value
+function setIsOpen() {
+     emitter.emit('changeDrawerState')
 }
 const store = useManagement()
 const toast = useToast()

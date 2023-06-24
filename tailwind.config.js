@@ -1,7 +1,7 @@
 const colors = require("tailwindcss/colors")
 
 module.exports = {
-  content: ["./src/**/*.{html,js,vue}", "./node_modules/tw-elements/dist/js/**/*.js", "node_modules/preline/dist/*.js"],
+  content: ["./src/**/*.{html,js,vue}", "node_modules/preline/dist/*.js"],
   theme: {
     screens: {
       sm: "640px",
@@ -830,7 +830,7 @@ module.exports = {
   },
   plugins: [
     require("preline/plugin"),
-    require("tw-elements/dist/plugin.cjs"),
+
     require("@tailwindcss/forms")({
       strategy: "class",
     }),

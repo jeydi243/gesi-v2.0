@@ -27,6 +27,7 @@ export interface IStoreConfig {
   layout: any
   organizations: Array<IOrganization>
   config: {}
+  isOpen:boolean
   sideMenus: Array<IMenu>
   listLevel: Array<ILevel>
   requestError: any
@@ -38,6 +39,7 @@ export const useConfig = defineStore("config", {
   state: (): IStoreConfig => ({
     organizations: [],
     layout: "main",
+    isOpen:false,
     config: {},
     token: "",
     sideMenus: [

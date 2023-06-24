@@ -16,6 +16,7 @@
         </div>
         <Footer v-if="isMain" />
       </main>
+      <div class="block z-[500] bg-red-500 h-screen w-screen" :class="{'hidden':isOpen}">dfdf</div>
     </div>
   </div>
 </template>
@@ -23,10 +24,10 @@
 import Footer from "@/components/footer.vue"
 import SideBar from "@/components/side.vue"
 import MyHeader from "@/components/myheader.vue"
-// import Splitting from "splitting"
 import BreadCrumbs from "@/components/breadcrumbs.vue"
 import { gsap } from "gsap"
 import { useConfig } from "@/store/config"
+import emitter from "@/utils/EventBus"
 import { ref, onMounted, computed, onUpdated } from "vue"
 const results = ref(null)
 const store = useConfig()
@@ -34,7 +35,7 @@ const layout = computed(() => store.layout)
 const isMain = computed(() => store.layout != "auth")
 const sideMenus = computed(() => store.sideMenus)
 let showBreadCrumbs = ref(false)
-
+const isOpen = ref(false)
 onUpdated(() => {
   animeMe()
 })
@@ -45,6 +46,10 @@ onMounted(() => {
   //   key: null,
   //   matching: "span",
   // })
+  emitter.on('changeDrawerState',()=> {
+console.log("Eyy^");
+    isOpen.value = !isOpen.value
+    })
 
   store
     .init()
