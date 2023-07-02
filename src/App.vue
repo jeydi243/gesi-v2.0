@@ -16,38 +16,32 @@
         </div>
         <Footer v-if="isMain" />
       </main>
-      <div class="block z-[500] bg-red-500 h-screen w-screen" :class="{'hidden':isOpen}">dfdf</div>
+      <!-- <Transition name="fadeSlideX" mode="out-in">
+        <div class="absolute z-[1200] bg-red-50 transition-all duration-1000 h-screen w-screen" v-if="isOpen">
+          <button type="button" @click="isOpen = !isOpen">Close</button>
+          <div class="col bg-teal-300 h-screen w-[40%] overflow-hidden">fdfdfdfdf</div>
+        </div>
+      </Transition> -->
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import Footer from "@/components/footer.vue"
+import emitter from "@/utils/EventBus"
 import SideBar from "@/components/side.vue"
 import MyHeader from "@/components/myheader.vue"
 import BreadCrumbs from "@/components/breadcrumbs.vue"
-import { gsap } from "gsap"
 import { useConfig } from "@/store/config"
-import emitter from "@/utils/EventBus"
-import { ref, onMounted, computed, onUpdated } from "vue"
-const results = ref(null)
+import { ref, onMounted, computed } from "vue"
+
 const store = useConfig()
-const layout = computed(() => store.layout)
 const isMain = computed(() => store.layout != "auth")
-const sideMenus = computed(() => store.sideMenus)
-let showBreadCrumbs = ref(false)
+const showBreadCrumbs = ref(false)
 const isOpen = ref(false)
-onUpdated(() => {
-  animeMe()
-})
+
 onMounted(() => {
-  // results.value = Splitting({
-  //   target: "[data-splitting]",
-  //   by: "chars",
-  //   key: null,
-  //   matching: "span",
-  // })
   emitter.on('changeDrawerState',()=> {
-console.log("Eyy^");
+    console.log("Eyy^");
     isOpen.value = !isOpen.value
     })
 
@@ -59,17 +53,7 @@ console.log("Eyy^");
     .catch((er: any) => {
       console.log("Impossible d'initier le store", er)
     })
-
-  animeMe()
 })
-function animeMe() {
-  // console.log(results.value[0].el)
-  // results.value.forEach(({ el, chars }, i) => {
-  // 	console.log({ el })
-  // 	gsap.fromTo(el, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 2, delay: i * 0.15 })
-  // 	chars.forEach((e, index) => gsap.fromTo(e, { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 2, delay: index * 0.15 }))
-  // })
-}
 </script>
 <style>
 .fade-enter-active,

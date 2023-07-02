@@ -68,7 +68,10 @@ details>summary::-webkit-details-marker {
 }
 
 details[open]>summary {
-	/* background-color: #10108a; */
-	@apply bg-red-600;
+	@apply border-teal-400 border-l-2 transition-all duration-1000 translate-x-1;
+}
+
+details[open] {
+	@apply transition-all duration-1000 translate-x-1;
 }
 </style>

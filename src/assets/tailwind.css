@@ -21,16 +21,16 @@
   @apply bg-gray-800 w-screen h-screen mx-auto;
 }
 .router-link {
-  @apply transition-colors hover:border-l-2 hover:border-l-green-500 ease-in-out duration-700 flex items-center w-full h-9 px-3 mt-2 hover:text-white hover:font-bold;
+  @apply transition-colors hover:border-l-2 hover:border-l-teal-500 ease-in-out duration-700 flex items-center w-full h-9 px-3 mt-2 hover:text-white hover:font-bold;
 }
 .router-link-sub {
-  @apply transition-colors hover:border-l-2 hover:border-l-green-200 ease-in-out duration-700 flex items-center w-full h-8 px-3 mt-2 hover:text-white hover:font-bold;
+  @apply transition-colors hover:border-l-2 hover:border-l-teal-200 ease-in-out duration-700 flex items-center w-full h-8 px-3 mt-2 hover:text-white hover:font-bold;
 }
 .router-link-active {
-  @apply bg-green-500 bg-opacity-50 border-l-2 border-l-green-500 font-bold text-white;
+  @apply bg-green-500 bg-opacity-50 border-l-2 border-l-teal-200 font-bold text-white;
 }
 .router-link-sub-active {
-  @apply bg-green-500 bg-opacity-50 border-l-2 border-l-green-500 font-bold text-white;
+  @apply bg-green-500 bg-opacity-50 border-l-2 border-l-teal-200 font-bold text-white;
 }
 .profile {
   @apply flex bg-green-100 h-[100px] w-[100px] ring-2 ring-green-200 rounded-full self-center items-center justify-center cursor-pointer;
@@ -135,7 +135,7 @@ input:valid + span:after {
   @apply form-checkbox border-none focus:ring-green-500 bg-gray-400 h-4 w-4 py-1 rounded my-2 text-green-500;
 }
 .placeholder-label {
-  @apply transform group-focus-within:font-bold transition-all italic group-focus-within:not-italic  text-gray-900 group-focus-within:text-gray-900 absolute top-0 left-0 h-full flex items-center pl-1 text-sm group-focus-within:text-xs peer-valid:text-xs group-focus-within:h-1/2 peer-valid:h-1/2 group-focus-within:-translate-y-full peer-valid:-translate-y-full group-focus-within:pl-0 peer-valid:pl-0;
+  @apply transform group-focus-within:font-bold transition-all text-gray-900 group-focus-within:text-gray-900 absolute top-0 left-0 h-full flex items-center pl-1 text-sm group-focus-within:text-xs peer-valid:text-xs group-focus-within:h-1/2 peer-valid:h-1/2 group-focus-within:-translate-y-full peer-valid:-translate-y-full group-focus-within:pl-0 peer-valid:pl-0;
 }
 .input-group {
   @apply py-1 flex flex-col relative mb-2;

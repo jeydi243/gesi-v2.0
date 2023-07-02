@@ -4,35 +4,38 @@ import { useAxios } from "@vueuse/integrations/useAxios"
 import { myfetch } from "@/api/myaxios"
 import { toast } from "@/utils/index"
 import { defineStore } from "pinia"
-import { useTeachers } from "./teachers"
 import router from "@/router/index"
 import { useConfig } from "@/store/config"
 import { IEmployee } from "@/models/employee"
+import { useAuth } from "./authentication"
 
+export interface ILookups {
+  _id: string
+  classe: string
+  code: string
+  parent_lookups_id: string
+  name: string
+  description: string
+}
+export interface IClasse {
+  _id?: string
+  code: string
+  parent_classe_id?: string
+  name: string
+  description: string
+}
 export interface IStoreManagement {
   laptops: []
   routeurs: []
-  classes: Array<any>
+  classes: IClasse[]
   lookups: ILookups[]
   error: any
   documents: Array<any>
   organizations: Array<IOrganization>
   employees: Array<IEmployee>
-  filieres: Array<any>
+  filieres?: Array<any>
 }
-export interface IOrganization {
-  _id: string
-  lookups_id: string
-  code_organization: string
-  name_organization: string
-}
-export interface ILookups {
-  _id: string
-  classe: string
-  parent_lookups_id: string
-  name: string
-  description: string
-}
+
 export const useManagement = defineStore("management", {
   state: (): IStoreManagement => ({
     laptops: [],
@@ -40,22 +43,20 @@ export const useManagement = defineStore("management", {
     routeurs: [],
     organizations: [],
     classes: [
-      { name: "Type d'organisation", code: "LKP-001", id: "" },
-      { name: "Type de Documents", code: "LKP-002", id: "" },
+      { name: "Type d'organisation", code: "LKP-001", _id: "2078er23", description: "Type d'organisation" },
+      { name: "Type de Documents", code: "LKP-002", _id: "XPOG57", description: "Type de Documents" },
     ],
     lookups: [],
     documents: [],
     employees: [],
-    filieres: [],
   }),
 
   actions: {
     async init() {
       try {
-        const t = useTeachers()
-        t.init()
         await this.getAllDocuments()
         await this.getAllEmployees()
+        await this.getAllClasses()
       } catch (error: any) {
         console.log(error)
       }
@@ -94,6 +95,26 @@ export const useManagement = defineStore("management", {
             datat.forEach((em) => this.employees.unshift(em))
           } else {
             this.employees = data
+          }
+          return true
+        }
+        return false
+      } catch (er) {
+        console.log(er)
+      }
+    },
+    async getAllClasses() {
+      this.classes = []
+      try {
+        const classes = await myfetch<Array<IClasse>>(mgntAPI.getClasses, { method: "GET" }) // await mgntAPI.getClasses()
+        if (classes) {
+          // console.log({ employees: JSON.parse(data) })
+          // const datat = data /* JSON.parse(data)*/
+          if (classes.length > 0) {
+            // this.classes.forEach(this.classes.unshift)
+            classes.forEach((classe) => this.classes.unshift(classe))
+          } else {
+            this.classes = classes
           }
           return true
         }
@@ -164,11 +185,29 @@ export const useManagement = defineStore("management", {
       }
     },
     async addLookups(newLookups: ILookups) {
+      const { getCurrentUser } = useAuth()
       try {
-        const response = await myfetch("/management/lookups", { method: "POST", body: { ...newLookups, leka: "leka" } }) //mgntAPI.addLookups(id, lookups);
+        const response = await myfetch("/management/lookups", { method: "POST", body: { ...newLookups, createdBy: getCurrentUser._id } }) //mgntAPI.addLookups(id, lookups);
         if (!response) {
           const index = this.lookups.findIndex((lk) => lk._id == response._id)
           this.lookups!.unshift(response)
+          return true
+        }
+        return false
+      } catch (er) {
+        console.log(er)
+        return false
+      }
+    },
+    async addClasse(newClasse: IClasse) {
+      const { getCurrentUser } = useAuth()
+      try {
+        const response: IClasse = await myfetch<IClasse>("/management/classes", { method: "POST", body: { ...newClasse, createdBy: getCurrentUser._id } }) //mgntAPI.addLookups(id, lookups);
+        console.log({ response })
+
+        if (response) {
+          // const index = this.classes.findIndex((lk) => lk._id == response._id)
+          this.classes!.unshift(response)
           return true
         }
         return false
@@ -486,5 +525,6 @@ export const useManagement = defineStore("management", {
     getRouteurs: (state) => state.routeurs,
     getdocuments: (state) => state.documents,
     getEmployees: (state) => state.employees,
+    getClasses: (state) => state.classes,
   },
 })

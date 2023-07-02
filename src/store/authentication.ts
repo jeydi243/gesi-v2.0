@@ -2,15 +2,24 @@ import { axios, myfetch } from "@/api/myaxios"
 import usersAPI from "@/api/users"
 import { defineStore } from "pinia"
 
+export interface IUser {
+  _id: string
+  token?: string | null
+  username?: string
+}
+export interface StoreAuthentication {
+  user: IUser
+  authResponse: any
+}
 export const useAuth = defineStore("authentication", {
-  state: () => ({ user: { id: "647371e67535e423ab920fcf" }, token: null, authResponse: null }),
+  state: (): StoreAuthentication => ({ user: { _id: "647371e67535e423ab920fcf", token: null }, authResponse: null }),
 
   actions: {
     async init() {
-      await this.getAllStudents()
+      // await this.getAllStudents()
     },
     async logout() {
-      return await usersAPI.logout()
+      // return await usersAPI.logout()
     },
     async login(payload) {
       console.log({ payload })
@@ -18,7 +27,7 @@ export const useAuth = defineStore("authentication", {
         const { data, status } = await usersAPI.login(payload)
         if (/*data.token && */ status == 200 || status == 201) {
           console.log({ token: data.token })
-          this.token = data.token
+          this.user.token = data.token
           this.user = data.user
           return this.setAxiosInterceptor()
         } else console.log("No token for this user")
@@ -29,11 +38,10 @@ export const useAuth = defineStore("authentication", {
     setAxiosInterceptor() {
       axios.interceptors.request.use(
         function (config) {
-          config.headers.Authorization = `Bearer ${this.token}`
+          config.headers!.Authorization = `Bearer ${this.user.token}`
           return config
-        },
-        null,
-        { synchronous: true }
+        }
+
       )
       axios.interceptors.response.use(
         function (response) {
@@ -49,7 +57,7 @@ export const useAuth = defineStore("authentication", {
   },
   getters: {
     getCurrentUser: (state) => state.user,
-    getToken: (state) => state.token,
+    getToken: (state) => state.user.token,
     getAuthResponse: (state) => state.authResponse,
   },
 })

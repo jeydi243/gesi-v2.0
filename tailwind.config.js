@@ -830,7 +830,7 @@ module.exports = {
   },
   plugins: [
     require("preline/plugin"),
-
+    require("@headlessui/tailwindcss"),
     require("@tailwindcss/forms")({
       strategy: "class",
     }),

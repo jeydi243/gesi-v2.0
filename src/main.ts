@@ -7,7 +7,7 @@ import { createPinia } from "pinia"
 import { useToast } from "vue-toastification"
 const pinia = createPinia()
 import("preline")
-
+import("@headlessui/vue")
 let app = createApp(App).use(pinia).use(router)
 const useImage = (url) => {
   return new URL(`/src/${url}`, import.meta.url).href
@@ -28,6 +28,7 @@ app.config.errorHandler = (err, vm, info) => {
 }
 app.config.warnHandler = (msg, instance, trace) => {
   console.log(instance, JSON.stringify(trace, null, 4))
+  console.log(msg)
 }
 
 app.mount("#app")

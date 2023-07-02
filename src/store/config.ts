@@ -59,7 +59,7 @@ export const useConfig = defineStore("config", {
           { text: "Filieres", to: "/filieres", icon: "message-square", active: false, mouseHover: false },
           { text: "Employees", to: "/employees", icon: "message-square", active: false, mouseHover: false },
           { text: "Documents", to: "/documents", icon: "message-square", active: false, mouseHover: false },
-          { text: "Classes", to: "/classes", icon: "message-square", active: false, mouseHover: false },
+          // { text: "Classes", to: "/classes", icon: "message-square", active: false, mouseHover: false },
           { text: "Lookups", to: "/lookups", icon: "message-square", active: false, mouseHover: false },
         ],
       },

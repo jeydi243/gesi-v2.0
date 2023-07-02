@@ -147,7 +147,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue"
 import { parseISO } from "date-fns"
 import { UserIcon } from "@heroicons/vue/solid"
@@ -158,8 +158,12 @@ import { Field, Form, ErrorMessage } from "vee-validate"
 import { mapActions } from "pinia"
 import { useManagement } from "@/store/management"
 import { goto, chance } from "@/utils/index"
+import { useRouter } from "vue-router"
+
+
 const store = useManagement()
-const src = ref(null)
+const src = ref<string | null>(null)
+const router = useRouter()
 
 const employeeSchema = {
   first_name(value) {
@@ -224,19 +228,19 @@ const employeeValues = {
 }
 
 function beforeCancel(values) {
-  if (values == this.employeeValues) {
-    this.$router.back()
+  if (values == employeeValues) {
+    router.back()
   } else {
-    this.$router.back()
+    router.back()
   }
 }
 function onInvalidEmployee({ values, errors, results }) {
   console.log({ errors })
 }
 function pickFile(idInput) {
-  const file_input = document.getElementById(idInput)
-  file_input.click()
-  file_input.addEventListener("change", this.onFileChange)
+  const file_input: HTMLElement | null = document.getElementById(idInput)
+  file_input?.click()
+  file_input?.addEventListener("change", onFileChange)
 }
 function onFileChange(event) {
   if (event.target.files && event.target.files[0]) {
@@ -265,7 +269,7 @@ async function submitEmployee(values) {
     } else {
       toast.error(`Can't add new employee`)
     }
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error)
   }
 }
