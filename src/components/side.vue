@@ -11,7 +11,7 @@
 							{{ item.text }}
 						</summary>
 						<template v-for="(sub, index2) in item.children">
-							<div class="col place-items-start w-full mt-1 relative pl-[50px]">
+							<div id="contentList" class="col place-items-start w-full mt-1 relative pl-[50px]">
 								<router-link :to="`${item.to}${sub.to}`" class="router-link-sub relative z-1" :class="{ 'router-link-active': item.active }">
 									{{ sub.text }}
 								</router-link>
@@ -67,11 +67,11 @@ details>summary::-webkit-details-marker {
 	display: none;
 }
 
-details[open]>summary {
+/* details[open]>summary {
 	@apply border-teal-400 border-l-2 transition-all duration-1000 translate-x-1;
-}
+} */
 
-details[open] {
+details[open] > #contentList {
 	@apply transition-all duration-1000 translate-x-1;
 }
 </style>

@@ -1,17 +1,12 @@
 import mgntAPI from "@/api/management"
-import contentsAPI from "@/api/contents"
-import { useAxios } from "@vueuse/integrations/useAxios"
 import { myfetch } from "@/api/myaxios"
-import { toast } from "@/utils/index"
 import { defineStore } from "pinia"
-import router from "@/router/index"
-import { useConfig } from "@/store/config"
 import { IEmployee } from "@/models/employee"
 import { useAuth } from "./authentication"
 
 export interface ILookups {
-  _id: string
-  classe: string
+  _id?: string
+  classe_id: string
   code: string
   parent_lookups_id: string
   name: string
@@ -54,6 +49,9 @@ export const useManagement = defineStore("management", {
   actions: {
     async init() {
       try {
+        myfetch.create({ onResponseError: this.onResponseError })
+
+        await this.getAllLookups()
         await this.getAllDocuments()
         await this.getAllEmployees()
         await this.getAllClasses()
@@ -64,11 +62,10 @@ export const useManagement = defineStore("management", {
 
     async getAllDocuments() {
       this.documents = []
-      // console.log("getAllDocuments")
       try {
         const { data, status } = await mgntAPI.getDocuments()
-        console.log({ data }, { status })
         if (status == 200 || status == 201 || status == 304) {
+          console.log("Fetch successfully %d Documents !", data.length)
           data
             .map((doc) => {
               doc["show"] = false
@@ -86,15 +83,13 @@ export const useManagement = defineStore("management", {
     async getAllEmployees() {
       this.employees = []
       try {
-        const { data, status } = await mgntAPI.getEmployees()
-        if (status == 200 || status == 201 || status == 304) {
-          // console.log({ employees: JSON.parse(data) })
-          const datat = data /* JSON.parse(data)*/
-          if (datat.length > 0) {
-            // employees.forEach(this.employees.unshift)
-            datat.forEach((em) => this.employees.unshift(em))
+        const employees: Array<IEmployee> = await myfetch<Array<IEmployee>>(mgntAPI.getEmployees, { method: "GET" })
+        console.log(`Fetch successfully %d ${employees.length} Employees !`, "color: #ff8040; font-weight: bold;")
+        if (employees) {
+          if (employees.length > 0) {
+            employees.forEach((em) => this.employees.unshift(em))
           } else {
-            this.employees = data
+            this.employees = employees
           }
           return true
         }
@@ -106,18 +101,33 @@ export const useManagement = defineStore("management", {
     async getAllClasses() {
       this.classes = []
       try {
-        const classes = await myfetch<Array<IClasse>>(mgntAPI.getClasses, { method: "GET" }) // await mgntAPI.getClasses()
+        const classes: Array<IClasse> = await myfetch<Array<IClasse>>(mgntAPI.getClasses, { method: "GET" }) // await mgntAPI.getClasses()
         if (classes) {
-          // console.log({ employees: JSON.parse(data) })
-          // const datat = data /* JSON.parse(data)*/
           if (classes.length > 0) {
-            // this.classes.forEach(this.classes.unshift)
+            console.log(`Fetch successfully ${classes.length} classes !`, "color: #ff8040; font-weight: bold;")
             classes.forEach((classe) => this.classes.unshift(classe))
           } else {
             this.classes = classes
           }
           return true
         }
+        return false
+      } catch (er) {
+        console.log(er)
+      }
+    },
+    async getAllLookups() {
+      this.lookups = []
+      try {
+        const lookupsALL = await myfetch<Array<ILookups>>(mgntAPI.getLookups, { method: "GET" }) // await mgntAPI.getClasses()
+        console.log(`%cFetch successfully ${lookupsALL.length} lookups !`, "color: #ff8040; font-weight: bold;")
+
+        if (lookupsALL.length > 0) {
+          lookupsALL.forEach((classe) => this.lookups.unshift(classe))
+        } else {
+          this.lookups = lookupsALL
+        }
+
         return false
       } catch (er) {
         console.log(er)
@@ -141,7 +151,7 @@ export const useManagement = defineStore("management", {
         return false
       }
     },
-    async employeeBy(employeeID) {
+    async employeeById(employeeID) {
       try {
         const { data, status } = await mgntAPI.employeeBy(employeeID)
         if (status == 200 || status == 201) {
@@ -184,12 +194,21 @@ export const useManagement = defineStore("management", {
         console.log(er)
       }
     },
+    onResponseError({ response, options }) {
+      console.log(response)
+    },
+    /**
+     * Adds new lookups to the management system.
+     *
+     * @param {ILookups} newLookups - The new lookups to be added.
+     * @return {Promise<boolean>} - A boolean indicating if the lookups were successfully added.
+     */
     async addLookups(newLookups: ILookups) {
       const { getCurrentUser } = useAuth()
       try {
-        const response = await myfetch("/management/lookups", { method: "POST", body: { ...newLookups, createdBy: getCurrentUser._id } }) //mgntAPI.addLookups(id, lookups);
+        const response: ILookups = await myfetch<ILookups>("/management/lookups", { method: "POST", body: { ...newLookups, createdBy: getCurrentUser._id }, onResponseError: this.onResponseError }) //mgntAPI.addLookups(id, lookups);
         if (!response) {
-          const index = this.lookups.findIndex((lk) => lk._id == response._id)
+          // const index = this.lookups.findIndex((lk) => lk._id == response._id)
           this.lookups!.unshift(response)
           return true
         }
@@ -266,6 +285,13 @@ export const useManagement = defineStore("management", {
         return false
       }
     },
+    /**
+     * Delete a contact.
+     *
+     * @param {type} employeeID - The ID of the employee.
+     * @param {type} contactID - The ID of the contact.
+     * @return {type} True if the contact was deleted successfully, false otherwise.
+     */
     async deleteContact(employeeID, contactID) {
       try {
         const { data, status, headers } = await mgntAPI.deleteContact(employeeID, contactID)
@@ -525,6 +551,11 @@ export const useManagement = defineStore("management", {
     getRouteurs: (state) => state.routeurs,
     getdocuments: (state) => state.documents,
     getEmployees: (state) => state.employees,
-    getClasses: (state) => state.classes,
+    getClasses:
+      (state) =>
+      (search = "") =>
+        search == "" ? state.classes : state.classes.filter((classe) => classe.name.includes(search) || classe.description.includes(search) || classe.code.includes(search)),
+    getClasses2: (state) => state.classes, //: state.classes.filter((classe) => classe.name.includes(search) || classe.description.includes(search)),
+    getLookups: (state) => (classeID?: string) => classeID == "" ? state.lookups : state.lookups.filter((lookups) => lookups.classe_id == classeID),
   },
 })

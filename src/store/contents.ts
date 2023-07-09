@@ -31,8 +31,8 @@ export const useContents = defineStore("contents", {
     async getcontents() {
       try {
         const { data, status } = await contentsAPI.getAll()
-        console.log(data)
         if (status || 200 || status == 201) {
+          console.log("Fetch successfully %d contents !", data.length)
           for (let index = 0; index < data.length; index++) {
             const content = data[index]
             this.contents.push(content)
@@ -61,18 +61,17 @@ export const useContents = defineStore("contents", {
     },
     async addContent(content) {
       const auth = useAuth()
-      // let dat
+
       try {
-        const { status, data } = await contentsAPI.add({ ...this.defaultContent, ...content, authors: [auth.user.id], createdBy: auth.user.id })
+        const { status, data } = await contentsAPI.add({ ...this.defaultContent, ...content, authors: [auth.user._id], createdBy: auth.user._id })
         console.log({ data })
-        // dat = data
         if (status == 200 || status == 201) {
           this.contents.unshift(data)
           return true
         }
         return false
-      } catch (err) {
-        // console.log({ err })
+      } catch (err: any) {
+        console.log({ err })
         //return err!?.data?.dto_validation_error
       }
     },

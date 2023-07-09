@@ -41,7 +41,6 @@ const isOpen = ref(false)
 
 onMounted(() => {
   emitter.on('changeDrawerState',()=> {
-    console.log("Eyy^");
     isOpen.value = !isOpen.value
     })
 

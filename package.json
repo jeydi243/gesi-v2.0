@@ -8,7 +8,8 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "tail": "npx tailwindcss -i ./src/assets/tailwind.css -o ./src/assets/css/style.css --watch",
-    "t": "tauri"
+    "t": "tauri",
+    "td": "tauri dev"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",

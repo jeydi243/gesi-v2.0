@@ -27,10 +27,10 @@
   @apply transition-colors hover:border-l-2 hover:border-l-teal-200 ease-in-out duration-700 flex items-center w-full h-8 px-3 mt-2 hover:text-white hover:font-bold;
 }
 .router-link-active {
-  @apply bg-green-500 bg-opacity-50 border-l-2 border-l-teal-200 font-bold text-white;
+  @apply bg-teal-500 bg-opacity-50 border-l-2 border-l-teal-200 font-bold text-white;
 }
 .router-link-sub-active {
-  @apply bg-green-500 bg-opacity-50 border-l-2 border-l-teal-200 font-bold text-white;
+  @apply bg-teal-500 bg-opacity-50 border-l-2 border-l-teal-200 font-bold text-white;
 }
 .profile {
   @apply flex bg-green-100 h-[100px] w-[100px] ring-2 ring-green-200 rounded-full self-center items-center justify-center cursor-pointer;

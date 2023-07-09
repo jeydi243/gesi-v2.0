@@ -48,7 +48,6 @@
 	import { useStudents } from "@/store/students"
 	import { mapState, mapActions } from "pinia"
 	import { UserAddIcon, SearchIcon, RefreshIcon } from "@heroicons/vue/solid"
-	import { gsap } from "gsap"
 	import { goto, onBeforeEnter, onEnter, onLeave } from "@/utils/index"
 	export default {
 		name: "list-student",

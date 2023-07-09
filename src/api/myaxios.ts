@@ -8,5 +8,19 @@ axios.defaults.validateStatus = (status) => {
 }
 // export default axios
 
-const myfetch = ofetch.create({ baseURL })
+const myfetch = ofetch.create({
+  baseURL,
+  onRequestError(context) {
+    console.log({ context })
+  },
+  /**
+   * A description of the entire function.
+   *
+   * @param {any} context - the context parameter
+   * @return {void} no return value
+   */
+  onResponseError(context) {
+    console.log(context)
+  },
+})
 export { myfetch, axios }

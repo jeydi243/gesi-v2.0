@@ -5,6 +5,8 @@ export default {
   routeFilieres: "/management/filieres",
   routeEmployees: "/employees", // /employees
   getClasses: "/management/classes", // /employees
+  getLookups: "/management/lookups", // /employees
+  getEmployees: "/employees",
   getDocuments: async function () {
     return axios.get(`${this.routeDocuments}`)
   },
@@ -41,9 +43,6 @@ export default {
   // Employees routes
   addEmployee: async function (data) {
     return axios.post(`${this.routeEmployees}`, data)
-  },
-  getEmployees: async function () {
-    return axios.get(`${this.routeEmployees}`)
   },
   employeeBy: async function (id) {
     return axios.get(`${this.routeEmployees}`, { params: { id } })
