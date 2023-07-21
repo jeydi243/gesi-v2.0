@@ -44,7 +44,6 @@ export const useStudents = defineStore("students", {
     },
   },
   getters: {
-    getListDocuments: (state) => state.listDocuments,
     mystudents(state) {
       const config = useConfig()
       return state.students.filter((student: IStudent) => student.level.toLowerCase() == config.currentLevelShort.toLowerCase())

@@ -76,7 +76,7 @@
       <div id="drawerOP" class="hs-overlay hs-overlay-open:translate-x-0 hidden -translate-x-full fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700" tabindex="-1">
         <div class="flex justify-between items-center py-2 px-2 border-b dark:border-gray-400">
 
-          <div class="row w-full text-2xl font-bold">Add Lookups</div>
+          <div class="row w-full text-2xl font-bold">Add Lookups <img src="@/assets/icons/duotone/PNG/36px/alarm.png" alt="" srcset=""> </div>
           <button type="button" class="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white text-sm dark:text-gray-500 dark:hover:text-gray-400 dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800" data-hs-overlay="#drawerOP">
             <span class="sr-only">Close modal</span>
             <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -219,9 +219,10 @@
 import * as yup from "yup"
 import { gsap } from "gsap"
 import { chance } from "@/utils/index"
-import { IClasse } from '@/store/management'
+import { IClasse, ILookups } from '@/store/management'
 import { useToast } from 'vue-toastification';
 import { isLength } from "validator"
+import { useFetch } from '@vueuse/core'
 import { useManagement } from '@/store/management';
 import { ref, computed, watch } from "vue"
 import { InvalidSubmissionContext } from 'vee-validate';
@@ -229,12 +230,17 @@ import { CirclesToRhombusesSpinner } from "epic-spinners"
 import { PlusIcon, CheckIcon, ChevronDoubleDownIcon } from "@heroicons/vue/solid";
 import { Field, Form, ErrorMessage } from "vee-validate"
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild, Combobox, ComboboxOptions, ComboboxButton, ComboboxOption } from '@headlessui/vue'
+import c from "@/api/management"
+import { useConfig } from "@/store/config";
+import { myfetch } from "@/api/myfetch";
 
 let _searchLookups = ref<string>('')
 let _searchClasse = ref<string>('')
 const query = ref('')
 const toast = useToast()
 const store = useManagement()
+const config = useConfig()
+
 const isOpenDrawer = ref(false)
 const isOpenDialog = ref(false)
 const isOpenDeleteDialog = ref(false)
@@ -263,7 +269,6 @@ const filteredPeople = computed(() =>
       return person.toLowerCase().includes(query.value.toLowerCase())
     })
 )
-
 const lookupsSchema = yup.object({
   // classe_id?: yup.string().required().label("Classe ID"),
   code: yup.string().required().label("Code"),
@@ -330,19 +335,27 @@ function openDeleteDialog(should: boolean = true) {
 }
 async function submitLookups(values, { resetForm, setFieldError, setErrors }) {
   try {
-    var result: boolean | Record<string, any> = await addLookups({ ...values, classe_id: currentClasse.value!._id })
-    if (typeof result == 'boolean') {
+console.log(currentClasse.value);
+
+    const { isFetching, error, data } = myfetch<ILookups>(c.getLookups,).post({ ...values, classe_id: currentClasse.value!._id })
+    // var result: boolean | Record<string, any> = await addLookups({ ...values, classe_id: currentClasse.value!._id })
+    console.log(data);
+    console.log(error);
+
+    if (data) {
       closeDrawer()
       resetForm()
       toast.success("Lookups added successfully !")
-    } else if ('message' in result) {
-      toast.error(`Can't add new lookups !${result['message']}`)
-      
+    } else {
+      toast.error(`Can't add new lookups !${error}`)
+
       // setFieldError('description', 'qsfdgqsfgqsdfqsdf')
       setErrors({ 'code': "Error code", "description": 'test error' })
+      return false;
     }
   } catch (error: any) {
     console.log(error)
+    return false
   }
 }
 async function submitClasse(values) {
@@ -358,7 +371,6 @@ async function submitClasse(values) {
     console.log(error)
   }
 }
-
 async function onInvalidClasse(ctx: InvalidSubmissionContext) {
   const { errors } = ctx
   console.log(errors);

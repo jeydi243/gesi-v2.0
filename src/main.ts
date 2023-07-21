@@ -4,9 +4,10 @@ import "./assets/css/style2.css"
 import App from "./App.vue"
 import router from "./router/index"
 import { createPinia } from "pinia"
-import { configure } from 'vee-validate';
-import "vue-toastification/dist/index.css";
-import Toast from "vue-toastification";
+import { configure } from "vee-validate"
+import "vue-toastification/dist/index.css"
+import Toast from "vue-toastification"
+import { createFetch } from "@vueuse/core"
 const pinia = createPinia()
 import("preline")
 import("@headlessui/vue")
@@ -20,8 +21,8 @@ configure({
   validateOnChange: true, // controls if `change` events should trigger validation with `handleChange` handler
   validateOnInput: false, // controls if `input` events should trigger validation with `handleChange` handler
   validateOnModelUpdate: true, // controls if `update:modelValue` events should trigger validation with `handleChange` handler
-});
-app.config.globalProperties.$image = useImage
+})
+app.config.globalProperties.image = useImage
 app.config.globalProperties.filters = {
   firstUpper(value) {
     return value.charAt(0).toUpperCase() + value.slice(1)
@@ -37,5 +38,5 @@ app.config.warnHandler = (msg, instance, trace) => {
   console.log(instance, JSON.stringify(trace, null, 4))
   console.log(msg)
 }
-app.use(Toast);
+app.use(Toast)
 app.mount("#app")

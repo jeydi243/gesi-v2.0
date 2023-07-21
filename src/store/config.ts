@@ -1,3 +1,4 @@
+import { $Fetch, FetchContext, ofetch } from "ofetch"
 import { axios, myfetch } from "@/api/myaxios"
 import { defineStore } from "pinia"
 import { useStudents } from "./students"
@@ -6,7 +7,7 @@ import { useManagement } from "./management"
 import { toast } from "@/utils/index"
 import router from "@/router/index"
 import { TYPE } from "vue-toastification"
-
+import { createFetch, useFetch } from "@vueuse/core"
 export interface IMenu {
   text: string
   to: string
@@ -27,10 +28,13 @@ export interface IStoreConfig {
   layout: any
   organizations: Array<IOrganization>
   config: {}
-  isOpen:boolean
+  isOpen: boolean
   sideMenus: Array<IMenu>
   listLevel: Array<ILevel>
   requestError: any
+  myfetch?: $Fetch
+  // useMyFetch: typeof useFetch | null
+  baseURL: string
   responseError: any
   token: string
   listStatus: Array<any>
@@ -38,8 +42,10 @@ export interface IStoreConfig {
 export const useConfig = defineStore("config", {
   state: (): IStoreConfig => ({
     organizations: [],
+    baseURL: "http://localhost:9000",
     layout: "main",
-    isOpen:false,
+    // useMyFetch: null,
+    isOpen: false,
     config: {},
     token: "",
     sideMenus: [
@@ -79,11 +85,12 @@ export const useConfig = defineStore("config", {
 
   actions: {
     async init() {
-      this.setAxios()
+      // this.setAxios()
+      this.setMyFetch()
       const students = useStudents()
       const contents = useContents()
       const mngt = useManagement()
-      this.onReloadSide()
+
       try {
         await mngt.init()
         await students.init()
@@ -136,19 +143,32 @@ export const useConfig = defineStore("config", {
         }
       )
     },
-    onReloadSide() {
-      // console.log("Reload side menu")
-      // this.sideMenus = []
-      // const side = [
-      //   { text: "Home", to: "/home", icon: "home", active: true, mouseHover: false },
-      //   { text: "Settings", to: "/settings", icon: "cog", active: false, mouseHover: false },
-      //   { text: "Students", to: "/students", icon: "group", active: false, mouseHover: false },
-      //   { text: "Library", to: "/library", icon: "library", active: false, mouseHover: false },
-      //   { text: "Teachers", to: "/teachers", icon: "adjust", active: false, mouseHover: false },
-      //   { text: "Management", to: "/management", icon: "book", active: false, mouseHover: false },
-      //   { text: "Calendar", to: "/calendar", icon: "message-square", active: false, mouseHover: false },
-      // ]
-      // side.forEach((e) => this.sideMenus.push(e))
+    setMyFetch() {
+      this.myfetch = ofetch.create({
+        baseURL: this.baseURL,
+        // onRequestError: this.onRequestError,
+        // onResponseError: this.onResponseError,
+        ignoreResponseError: false,
+      })
+      // this.useMyFetch = createFetch({
+      //   baseUrl: "http://localhost:9000",
+      //   options: {
+      //     async beforeFetch({ options }) {
+      //       const myToken = ""
+      //       options["headers"]!["Authorization"] = `Bearer ${myToken}`
+      //       return { options }
+      //     },
+      //   },
+      //   fetchOptions: {
+      //     mode: "cors",
+      //   },
+      // })
+    },
+    onRequestError({ response }: FetchContext) {
+      console.log({ response })
+    },
+    onResponseError({ response }: FetchContext) {
+      console.log(`Data on response Error:${response!["_data"]}`)
     },
     add() {
       this.sideMenus.push({ text: "Management", to: "/management", icon: "book", active: false, mouseHover: false })
@@ -156,7 +176,6 @@ export const useConfig = defineStore("config", {
     rem() {
       this.sideMenus.pop()
     },
-
     changeLayout(data) {
       this.layout = data
     },

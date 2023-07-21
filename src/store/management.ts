@@ -1,8 +1,9 @@
 import mgntAPI from "@/api/management"
-import { myfetch } from "@/api/myaxios"
 import { defineStore } from "pinia"
 import { IEmployee } from "@/models/employee"
 import { useAuth } from "./authentication"
+import { useConfig } from "./config"
+import { $Fetch } from "ofetch"
 
 export interface ILookups {
   _id?: string
@@ -25,6 +26,7 @@ export interface IStoreManagement {
   classes: IClasse[]
   lookups: ILookups[]
   error: any
+  myfetch?: $Fetch
   documents: Array<any>
   organizations: Array<IOrganization>
   employees: Array<IEmployee>
@@ -49,7 +51,8 @@ export const useManagement = defineStore("management", {
   actions: {
     async init() {
       try {
-        myfetch.create({ onResponseError: this.onResponseError })
+        const config = useConfig()
+        this.myfetch = config.myfetch
 
         await this.getAllLookups()
         await this.getAllDocuments()
@@ -83,8 +86,8 @@ export const useManagement = defineStore("management", {
     async getAllEmployees() {
       this.employees = []
       try {
-        const employees: Array<IEmployee> = await myfetch<Array<IEmployee>>(mgntAPI.getEmployees, { method: "GET" })
-        console.log(`Fetch successfully %d ${employees.length} Employees !`, "color: #ff8040; font-weight: bold;")
+        const employees: Array<IEmployee> = await this.myfetch!<Array<IEmployee>>(mgntAPI.getEmployees, { method: "GET" })
+        console.log(`%cFetch successfully ${employees.length} Employees !`, "color: #0080c0; font-weight: bold;")
         if (employees) {
           if (employees.length > 0) {
             employees.forEach((em) => this.employees.unshift(em))
@@ -101,10 +104,10 @@ export const useManagement = defineStore("management", {
     async getAllClasses() {
       this.classes = []
       try {
-        const classes: Array<IClasse> = await myfetch<Array<IClasse>>(mgntAPI.getClasses, { method: "GET" }) // await mgntAPI.getClasses()
+        const classes: Array<IClasse> = await this.myfetch!<Array<IClasse>>(mgntAPI.getClasses, { method: "GET" }) // await mgntAPI.getClasses()
         if (classes) {
           if (classes.length > 0) {
-            console.log(`Fetch successfully ${classes.length} classes !`, "color: #ff8040; font-weight: bold;")
+            console.log(`%cFetch successfully ${classes.length} Classes !`, "color: #f44a68; font-weight: bold;")
             classes.forEach((classe) => this.classes.unshift(classe))
           } else {
             this.classes = classes
@@ -119,7 +122,7 @@ export const useManagement = defineStore("management", {
     async getAllLookups() {
       this.lookups = []
       try {
-        const lookupsALL = await myfetch<Array<ILookups>>(mgntAPI.getLookups, { method: "GET" }) // await mgntAPI.getClasses()
+        const lookupsALL = await this.myfetch!<Array<ILookups>>(mgntAPI.getLookups, { method: "GET" }) // await mgntAPI.getClasses()
         console.log(`%cFetch successfully ${lookupsALL.length} lookups !`, "color: #ff8040; font-weight: bold;")
 
         if (lookupsALL.length > 0) {
@@ -194,9 +197,7 @@ export const useManagement = defineStore("management", {
         console.log(er)
       }
     },
-    onResponseError({ response, options }) {
-      console.log(response)
-    },
+
     /**
      * Adds new lookups to the management system.
      *
@@ -206,22 +207,22 @@ export const useManagement = defineStore("management", {
     async addLookups(newLookups: ILookups) {
       const { getCurrentUser } = useAuth()
       try {
-        const response: ILookups = await myfetch<ILookups>("/management/lookups", { method: "POST", body: { ...newLookups, createdBy: getCurrentUser._id }, onResponseError: this.onResponseError }) //mgntAPI.addLookups(id, lookups);
+        const response: ILookups = await this.myfetch!<ILookups>("/management/lookups", { method: "POST", body: { ...newLookups, createdBy: getCurrentUser._id }, }) //mgntAPI.addLookups(id, lookups);
         if (!response) {
           // const index = this.lookups.findIndex((lk) => lk._id == response._id)
           this.lookups!.unshift(response)
           return true
         }
         return false
-      } catch (er) {
-        console.log(er)
+      } catch (er:any) {
+        console.log("POP:", er)
         return false
       }
     },
     async addClasse(newClasse: IClasse) {
       const { getCurrentUser } = useAuth()
       try {
-        const response: IClasse = await myfetch<IClasse>("/management/classes", { method: "POST", body: { ...newClasse, createdBy: getCurrentUser._id } }) //mgntAPI.addLookups(id, lookups);
+        const response: IClasse = await this.myfetch!<IClasse>("/management/classes", { method: "POST", body: { ...newClasse, createdBy: getCurrentUser._id } }) //mgntAPI.addLookups(id, lookups);
         console.log({ response })
 
         if (response) {

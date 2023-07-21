@@ -11,7 +11,7 @@
 							{{ item.text }}
 						</summary>
 						<template v-for="(sub, index2) in item.children">
-							<div id="contentList" class="col place-items-start w-full mt-1 relative pl-[50px]">
+							<div id="contentList" class="col place-items-start w-full  relative pl-[10px]">
 								<router-link :to="`${item.to}${sub.to}`" class="router-link-sub relative z-1" :class="{ 'router-link-active': item.active }">
 									{{ sub.text }}
 								</router-link>

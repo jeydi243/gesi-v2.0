@@ -2165,6 +2165,10 @@ video {
   padding-top: 0.5rem;
 }
 
+.pl-\[10px\]{
+  padding-left: 10px;
+}
+
 .text-left{
   text-align: left;
 }
