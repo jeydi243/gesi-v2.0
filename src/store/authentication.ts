@@ -1,4 +1,5 @@
-import { axios, myfetch } from "@/api/myaxios"
+import { axios } from "@/api/myaxios"
+import { myfetch } from "@/api/myfetch"
 import usersAPI from "@/api/users"
 import { defineStore } from "pinia"
 
@@ -36,13 +37,10 @@ export const useAuth = defineStore("authentication", {
       }
     },
     setAxiosInterceptor() {
-      axios.interceptors.request.use(
-        function (config) {
-          config.headers!.Authorization = `Bearer ${this.user.token}`
-          return config
-        }
-
-      )
+      axios.interceptors.request.use( (config) => {
+        config.headers!.Authorization = `Bearer ${this.user.token}`
+        return config
+      })
       axios.interceptors.response.use(
         function (response) {
           //   console.info(`%c[Axios ${response.status}] `, "color: #0080ff; font-weight: bold;")

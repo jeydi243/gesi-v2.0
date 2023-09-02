@@ -6,13 +6,13 @@
           <input type="text" class="input" placeholder="Type something..." v-model="_searchClasse">
         </div>
         <div class="row-reverse h-10 w-full  align-middle items-center">
-          <button type="button" @click="setIsOpenDialog(true)">
+          <button type="button" @click="setisOpenAddDialog(true)">
             <PlusIcon class="h-5 w-5 text-teal-500" />
           </button>
         </div>
         <!-- Classes: {{ classesALL }} -->
         <!-- Classes2: {{ classesALL2.filter(d => d.code == _searchClasse) }} -->
-        <div @click="changeClasse(classe)" v-for="(classe, key) in classesALL" :key="key" class="hover:bg-blue-400 pt-2 pl-2 pb-2 hover:bg-opacity- h-[55px] w-full cursor-default rounded-lg hover:outline-1 hover transition-all duration-1000">
+        <div @click="changeClasse(classe)" v-for="(classe, key) in classesALL" :key="key" class="hover:bg-teal-100 pt-2 pl-2 pb-2 hover:bg-opacity- h-[55px] w-full cursor-default rounded-lg hover:outline-1 hover transition-all duration-1000">
           <p>
             <strong>{{ classe.name }}</strong>
           </p>
@@ -39,13 +39,15 @@
                       <tr>
                         <th scope="col" class="py-3 pl-4">
                           <div class="flex items-center h-5">
-                            <input id="hs-table-checkbox-all" type="checkbox" class="border-gray-200 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-200 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" />
+                            <input id="hs-table-checkbox-all" type="checkbox" class="border-gray-200 rounded text-blue-600 focus:ring-blue-500  dark:focus:ring-offset-gray-800" />
                             <label for="hs-table-checkbox-all" class="sr-only">Checkbox</label>
                           </div>
                         </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Age</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Address</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
+                        <!-- <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Updated</th> -->
                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>
                       </tr>
                     </thead>
@@ -57,11 +59,13 @@
                             <label for="hs-table-checkbox-1" class="sr-only">Checkbox</label>
                           </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ lookups.name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">45</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">{{ lookups.description }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{{ lookups.code }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ lookups.name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ lookups.description }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ lookups.createdAt }}</td>
+                        <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ lookups.updatedAt }}</td> -->
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <a class="text-blue-500 hover:text-blue-700 cursor-pointer" @click="openDeleteDialog(true)">Delete</a>
+                          <a class="text-blue-500 hover:text-blue-700 cursor-pointer" @click="openDeleteDialog(true, lookups)">Delete</a>
                         </td>
                       </tr>
                     </tbody>
@@ -76,7 +80,7 @@
       <div id="drawerOP" class="hs-overlay hs-overlay-open:translate-x-0 hidden -translate-x-full fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700" tabindex="-1">
         <div class="flex justify-between items-center py-2 px-2 border-b dark:border-gray-400">
 
-          <div class="row w-full text-2xl font-bold">Add Lookups <img src="@/assets/icons/duotone/PNG/36px/alarm.png" alt="" srcset=""> </div>
+          <div class="row w-full text-2xl font-bold">Add Lookups </div>
           <button type="button" class="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white text-sm dark:text-gray-500 dark:hover:text-gray-400 dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800" data-hs-overlay="#drawerOP">
             <span class="sr-only">Close modal</span>
             <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -152,7 +156,7 @@
               </div>
             </Combobox>
             {{ values }}
-            <div class="flex flex-row h-1/2 w-full items-center mt-auto justify- justify-items-end">
+            <div class="row h-1/2 w-full justify-between ">
               <button class="btn-unstate" @click.prevent.stop="closeDrawer()">Cancel</button>
               <button type="submit" class="btn-primary">
                 <box-icon type="solid" name="file-plus" color="white"></box-icon>
@@ -164,9 +168,9 @@
         </div>
       </div>
     </div>
-    <TransitionRoot :show="isOpenDialog" as="template" enter="duration-500 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100"
+    <TransitionRoot :show="isOpenAddDialog" as="template" enter="duration-500 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100"
                     leave-to="opacity-0">
-      <Dialog @close="setIsOpenDialog" class="relative z-50">
+      <Dialog @close="setisOpenAddDialog" class="relative z-50">
         <TransitionChild enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
           <div class="fixed inset-0 bg-black/30" aria-hidden="true" />
         </TransitionChild>
@@ -204,9 +208,30 @@
                     <CirclesToRhombusesSpinner :size="5" color="#FFF" class="text-white" />
                   </div>
                 </button>
-                <button class="btn-danger" @click.prevent="resetForm(); setIsOpenDialog(false)" :disabled="isSubmitting">Cancel</button>
+                <button class="btn-danger" @click.prevent="resetForm(); setisOpenAddDialog(false)" :disabled="isSubmitting">Cancel</button>
               </div>
             </Form>
+            </p>
+          </DialogPanel>
+        </div>
+      </Dialog>
+    </TransitionRoot>
+    <TransitionRoot :show="isOpenDeleteDialog" as="template" enter="duration-500 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+      <Dialog @close="setisOpenAddDialog" class="relative z-50">
+        <TransitionChild enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+          <div class="fixed inset-0 bg-black/30" aria-hidden="true" />
+        </TransitionChild>
+
+
+        <div class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm">
+          <DialogPanel class="w-full max-w-md rounded bg-white min-w-min [250px] p-4">
+            <DialogTitle class="row justify-center font-bold text-3xl">Actions</DialogTitle>
+            <DialogDescription class="row mt-7 mb-7">Do you want to delete this lookups ?</DialogDescription>
+            <p>
+            <div class="row-reverse">
+              <button type="button" class="btn-danger" @click="deleteLookups">Delete lookups</button>
+              <button type="button" class="btn-primary mr-4" @click="isOpenDeleteDialog = false">Cancel</button>
+            </div>
             </p>
           </DialogPanel>
         </div>
@@ -219,30 +244,36 @@
 import * as yup from "yup"
 import { gsap } from "gsap"
 import { chance } from "@/utils/index"
-import { IClasse, ILookups } from '@/store/management'
+import { myfetch } from "@/api/myfetch";
+import { useAuth } from "@/store/authentication";
+import { IClasse } from '@/store/management'
 import { useToast } from 'vue-toastification';
 import { isLength } from "validator"
-import { useFetch } from '@vueuse/core'
-import { useManagement } from '@/store/management';
-import { ref, computed, watch } from "vue"
-import { InvalidSubmissionContext } from 'vee-validate';
-import { CirclesToRhombusesSpinner } from "epic-spinners"
-import { PlusIcon, CheckIcon, ChevronDoubleDownIcon } from "@heroicons/vue/solid";
-import { Field, Form, ErrorMessage } from "vee-validate"
-import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild, Combobox, ComboboxOptions, ComboboxButton, ComboboxOption } from '@headlessui/vue'
-import c from "@/api/management"
 import { useConfig } from "@/store/config";
-import { myfetch } from "@/api/myfetch";
+import { useManagement, ILookups } from '@/store/management';
+import { ref, computed, watch } from "vue"
+import { InvalidSubmissionContext, SubmissionContext } from 'vee-validate';
+import { CirclesToRhombusesSpinner } from "epic-spinners"
+import { Field, Form, ErrorMessage } from "vee-validate"
+import { PlusIcon, CheckIcon, ChevronDoubleDownIcon } from "@heroicons/vue/solid";
+import { Dialog, DialogPanel, DialogTitle, DialogDescription, TransitionRoot, TransitionChild, Combobox, ComboboxOptions, ComboboxButton, ComboboxOption } from '@headlessui/vue'
+import api from "@/api/management"
+import { instance } from "@/api/myaxios";
+import { useAxios } from '@vueuse/integrations/useAxios'
+
 
 let _searchLookups = ref<string>('')
 let _searchClasse = ref<string>('')
+let isFetching = ref(false)
 const query = ref('')
 const toast = useToast()
 const store = useManagement()
+const auth = useAuth()
 const config = useConfig()
-
+const user = computed(() => auth.getCurrentUser)
 const isOpenDrawer = ref(false)
-const isOpenDialog = ref(false)
+const isOpenAddDialog = ref(false)
+const toDeleteLookup = ref<ILookups | null>(null)
 const isOpenDeleteDialog = ref(false)
 const currentClasse = ref<IClasse>()
 const initialLookupsValue = {
@@ -311,8 +342,8 @@ watch(currentClasse, (newval, oldval) => {
     )
 })
 
-function setIsOpenDialog(value: boolean = false) {
-  isOpenDialog.value = value
+function setisOpenAddDialog(value: boolean = false) {
+  isOpenAddDialog.value = value
 }
 function changeClasse(classe: IClasse) {
   currentClasse.value = classe
@@ -330,28 +361,56 @@ function openDrawer() {
   window.HSOverlay.open(drawerOP)
   isOpenDrawer.value = true
 }
-function openDeleteDialog(should: boolean = true) {
+function openDeleteDialog(should: boolean = true, payload: null | ILookups) {
   isOpenDeleteDialog.value = should
+  toDeleteLookup.value = payload
 }
-async function submitLookups(values, { resetForm, setFieldError, setErrors }) {
+async function deleteLookups() {
   try {
-console.log(currentClasse.value);
+    const { isFetching: f, error, data, response, statusCode } = await myfetch(api.getLookups).delete(toDeleteLookup).json()
+    isFetching = f
+    console.log({ data: data.value });
+    console.log({ statusCode: statusCode.value });
+    console.log({ error: error.value });
+    console.log({ response: response.value });
+    console.log({ isFetching });
 
-    const { isFetching, error, data } = myfetch<ILookups>(c.getLookups,).post({ ...values, classe_id: currentClasse.value!._id })
-    // var result: boolean | Record<string, any> = await addLookups({ ...values, classe_id: currentClasse.value!._id })
-    console.log(data);
+    if ([200, 201].includes(statusCode.value!)) {
+      toast.info(data.value)
+      isOpenDeleteDialog.value = false
+    } else {
+      toast.error(data.value.message)
+
+    }
+  } catch (error) {
     console.log(error);
 
-    if (data) {
+  }
+}
+async function submitLookups(values, { resetForm, setFieldError, setErrors }: SubmissionContext) {
+  try {
+    console.log(currentClasse.value?._id);
+    const payload = {
+      ...values, classe_id: currentClasse.value?._id, createdBy: user.value._id
+    }
+    const { isFetching, error, data, response, statusCode } = await myfetch(api.getLookups).post(payload).json()
+    // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)
+
+    console.log({ data: data.value });
+    console.log({ statusCode: statusCode.value });
+    console.log({ error: error.value });
+    console.log({ response: response.value });
+
+    // if (Object.keys(data).includes('validationerror')) {
+    if ('validationerror' in data.value) {
+      toast.error(`Can't add new lookups! Correct all error field before submit`)
+      setFieldError(data.value.field, `${data.value.message}`)
+      // setErrors({ data.value.field: "Error code", "description": 'test error' })
+    } else {
       closeDrawer()
       resetForm()
       toast.success("Lookups added successfully !")
-    } else {
-      toast.error(`Can't add new lookups !${error}`)
-
-      // setFieldError('description', 'qsfdgqsfgqsdfqsdf')
-      setErrors({ 'code': "Error code", "description": 'test error' })
-      return false;
+      return await addLookups(data.value)
     }
   } catch (error: any) {
     console.log(error)
@@ -362,7 +421,7 @@ async function submitClasse(values) {
   try {
     var result = await store.addClasse(values)
     if (result) {
-      setIsOpenDialog()
+      setisOpenAddDialog()
       toast.success("Classe added successfully !")
     } else {
       toast.error(`Can't add new Classe`)

@@ -281,7 +281,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { toast } from "@/utils/index"
 import { useStudents } from "@/store/students"
 import { SaveIcon, UserIcon } from "@heroicons/vue/solid"
@@ -357,18 +357,18 @@ const studentValues = [basicInfoValues, addressValues, profileValues, contactVal
 const currentValues = computed(() => studentValues[step.value])
 
 function pickPicture() {
-  document.getElementById("bind-profile").click()
+  document.getElementById("bind-profile")!.click()
   const fi = document.getElementById("bind-profile")
   console.log(fi)
-  fi.addEventListener("change", onFileChange)
+  fi!.addEventListener("change", onFileChange)
 }
 function onFileChange(event) {
   console.log("Profile picture change and is ", event.target.files[0])
   if (event.target.files && event.target.files[0]) {
-    this.previewSRC = window.URL.createObjectURL(event.target.files[0])
+    // previewSRC = window.URL.createObjectURL(event.target.files[0])
     window.URL.revokeObjectURL(event.target.files[0]) // free memory
   } else {
-    this.previewSRC = null
+    // previewSRC = null
   }
 }
 function goNext(values) {

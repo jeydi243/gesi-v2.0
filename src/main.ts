@@ -1,27 +1,27 @@
-import { createApp } from "vue"
 import "./assets/css/style.css"
 import "./assets/css/style2.css"
-import App from "./App.vue"
-import router from "./router/index"
-import { createPinia } from "pinia"
-import { configure } from "vee-validate"
 import "vue-toastification/dist/index.css"
+import App from "./App.vue"
 import Toast from "vue-toastification"
-import { createFetch } from "@vueuse/core"
-const pinia = createPinia()
+import router from "./router/index"
 import("preline")
 import("@headlessui/vue")
-let app = createApp(App).use(pinia).use(router)
+import { createApp } from "vue"
+import { configure } from "vee-validate"
+import { createPinia } from "pinia"
+
+const pinia = createPinia()
+let app = createApp(App)
 const useImage = (url) => {
   return new URL(`/src/${url}`, import.meta.url).href
 }
 
-configure({
-  validateOnBlur: true, // controls if `blur` events should trigger validation with `handleChange` handler
-  validateOnChange: true, // controls if `change` events should trigger validation with `handleChange` handler
-  validateOnInput: false, // controls if `input` events should trigger validation with `handleChange` handler
-  validateOnModelUpdate: true, // controls if `update:modelValue` events should trigger validation with `handleChange` handler
-})
+// configure({
+//   validateOnBlur: true, // controls if `blur` events should trigger validation with `handleChange` handler
+//   validateOnChange: true, // controls if `change` events should trigger validation with `handleChange` handler
+//   validateOnInput: false, // controls if `input` events should trigger validation with `handleChange` handler
+//   validateOnModelUpdate: true, // controls if `update:modelValue` events should trigger validation with `handleChange` handler
+// })
 app.config.globalProperties.image = useImage
 app.config.globalProperties.filters = {
   firstUpper(value) {
@@ -39,4 +39,6 @@ app.config.warnHandler = (msg, instance, trace) => {
   console.log(msg)
 }
 app.use(Toast)
+app.use(pinia)
+app.use(router)
 app.mount("#app")

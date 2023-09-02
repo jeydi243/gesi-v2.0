@@ -11,7 +11,7 @@
 							{{ item.text }}
 						</summary>
 						<template v-for="(sub, index2) in item.children">
-							<div id="contentList" class="col place-items-start w-full  relative pl-[10px]">
+							<div id="contentList" class="col place-items-start w-full  relative pl-[10px] bg-opacity-5">
 								<router-link :to="`${item.to}${sub.to}`" class="router-link-sub relative z-1" :class="{ 'router-link-active': item.active }">
 									{{ sub.text }}
 								</router-link>
@@ -45,7 +45,7 @@ const results = ref(null)
 watch(sideActive, function (newval, oldval) {
 	// const jog = document.getElementById("jog")
 	if (newval != oldval) {
-		const el = document.getElementById(newval.text)
+		const el = document.getElementById(newval!.text)
 		const { left, top } = useElementBounding(el)
 		// console.log(left.value, top.value)
 		// jog.style.top = `${top.value}px`

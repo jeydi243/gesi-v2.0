@@ -11,6 +11,8 @@ export interface ILookups {
   code: string
   parent_lookups_id: string
   name: string
+  createdAt: Date
+  updatedAt: Date
   description: string
 }
 export interface IClasse {

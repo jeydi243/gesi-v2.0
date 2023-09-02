@@ -1,4 +1,5 @@
 import { createFetch } from "@vueuse/core"
+import { log } from "console"
 
 const myfetch = createFetch({
   baseUrl: "http://localhost:9000",
@@ -7,6 +8,9 @@ const myfetch = createFetch({
       const myToken = ""
       options["headers"]!["Authorization"] = `Bearer ${myToken}`
       return { options }
+    },
+    async onFetchError(ctx) {
+      console.log({ ctx })
     },
   },
   fetchOptions: {

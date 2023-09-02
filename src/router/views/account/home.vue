@@ -4,14 +4,16 @@
 		<div class="flex flex-col select-none">
 			<div class="grid grid-cols-4 auto-cols-max mb-3 mt-5 gap-2">
 				<TransitionGroup :css="false" @before-enter="beforeEnterList" @enter="enterList" @leave="leaveList" appear>
-					<div v-for="(stat, index) in stats" :key="index" :data-index="index" class="card h-1/5 flex flex-col bg-gradient-to-tr">
+					<div v-for="(stat, index) in stats" :key="index" :data-index="index" class="rounded flex flex-col p-3 h-full shadow-lg shadow-gray-100 h-1/5" :class="{ 'bg-red-700 text-white': index == 0, 'bg-teal-600 text-white': index == 1,'bg-[#F0DE36]': index == 2 }">
 						<h1 class="font-bold text-2xl text-green-200">{{ stat.value }}</h1>
 						<span class="text-2xl font-bold text-green-800">{{ stat.name }}</span>
 					</div>
 				</TransitionGroup>
 			</div>
 			<div class="row space-x-2">
-				<div class="card w-1/2"><apexchart class="w-full" height="450" :options="chartOptions" :series="series"></apexchart></div>
+				<div class="card w-1/2">
+					<apexchart class="w-full" height="450" :options="chartOptions" :series="series"></apexchart>
+				</div>
 
 				<div class="card w-1/2 col h-full">
 					<div class="row justify-between">
@@ -39,57 +41,57 @@
 </template>
 
 <script setup>
-	import { chance } from "@/utils/index"
-	import { ref } from "vue"
-	import { beforeEnterList, enterList, leaveList } from "@/utils/index"
-	const chartOptions = ref({
-		title: {
-			text: "List of students by year",
-			align: "left",
-			margin: 10,
-			offsetX: 0,
-			offsetY: 0,
-			floating: false,
-			style: {
-				fontSize: "24px",
-				fontWeight: "bold",
-				fontFamily: "k2d",
-				color: "#263238",
-			},
+import { chance } from "@/utils/index"
+import { ref } from "vue"
+import { beforeEnterList, enterList, leaveList } from "@/utils/index"
+const chartOptions = ref({
+	title: {
+		text: "List of students by year",
+		align: "left",
+		margin: 10,
+		offsetX: 0,
+		offsetY: 0,
+		floating: false,
+		style: {
+			fontSize: "24px",
+			fontWeight: "bold",
+			fontFamily: "k2d",
+			color: "#263238",
 		},
-		colors: ["#6af699", "#f7b731", "#231ac9"],
-		chart: {
-			id: "vuechart-example",
-			type: "bar",
+	},
+	colors: ["#6af699", "#f7b731", "#231ac9"],
+	chart: {
+		id: "vuechart-example",
+		type: "bar",
+	},
+	stroke: {
+		curve: "smooth",
+	},
+	dataLabels: {
+		enabled: false,
+	},
+	plotOptions: {
+		bar: {
+			distributed: true,
+			horizontal: false,
+			borderRadius: 5,
 		},
-		stroke: {
-			curve: "smooth",
-		},
-		dataLabels: {
-			enabled: false,
-		},
-		plotOptions: {
-			bar: {
-				distributed: true,
-				horizontal: false,
-				borderRadius: 5,
-			},
-		},
-		xaxis: {
-			categories: [2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],
-		},
-	})
-	const series = ref([
-		{
-			name: "Nombre d'étudiants",
-			data: [3000, 3500, 4000, 4200, 4500, 4700, 4000, 3000],
-		},
-	])
-	const stats = ref([
-		{ name: "Students", value: "5000" },
-		{ name: "Teachers", value: "70" },
-		{ name: "Rooms", value: "70" },
-		{ name: "Alumni", value: "700" },
-	])
+	},
+	xaxis: {
+		categories: [2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],
+	},
+})
+const series = ref([
+	{
+		name: "Nombre d'étudiants",
+		data: [3000, 3500, 4000, 4200, 4500, 4700, 4000, 3000],
+	},
+])
+const stats = ref([
+	{ name: "Students", value: "5000" },
+	{ name: "Teachers", value: "70" },
+	{ name: "Rooms", value: "70" },
+	{ name: "Alumni", value: "700" },
+])
 </script>
 <style lang="css"></style>
