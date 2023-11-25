@@ -32,7 +32,7 @@ export const useContents = defineStore("contents", {
       try {
         const { data, status } = await contentsAPI.getAll()
         if (status || 200 || status == 201) {
-          console.log(`%cFetch successfully ${data.length} Contents !`, "color: #ffff00; font-weight: bold;")
+          console.log(`%cFetch successfully ${data.length} Contents !`, "color: #02f0fd; font-weight: bold;")
           for (let index = 0; index < data.length; index++) {
             const content = data[index]
             this.contents.push(content)

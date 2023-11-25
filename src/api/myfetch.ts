@@ -9,9 +9,9 @@ const myfetch = createFetch({
       options["headers"]!["Authorization"] = `Bearer ${myToken}`
       return { options }
     },
-    async onFetchError(ctx) {
-      console.log({ ctx })
-    },
+    // async onFetchError(ctx) {
+    //   // console.log({ ctx })
+    // },
   },
   fetchOptions: {
     mode: "cors",

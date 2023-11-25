@@ -42,7 +42,7 @@
 
 <script>
   import { mapState } from "pinia"
-  import { useTeachers } from "@/store/teachers"
+  import { useManagement } from "@/store/management"
   export default {
     name: "list-teachers",
     data() {
@@ -51,7 +51,7 @@
       }
     },
     computed: {
-      ...mapState(useTeachers, { teachers: "myteachers" }),
+      ...mapState(useManagement, { teachers: "getTeachers" }),
     },
     methods: {
       async goto(index) {

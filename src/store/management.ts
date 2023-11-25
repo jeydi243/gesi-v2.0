@@ -21,6 +21,7 @@ export interface IClasse {
   parent_classe_id?: string
   name: string
   description: string
+  current:boolean
 }
 export interface IStoreManagement {
   laptops: []
@@ -124,7 +125,9 @@ export const useManagement = defineStore("management", {
     async getAllLookups() {
       this.lookups = []
       try {
-        const lookupsALL = await this.myfetch!<Array<ILookups>>(mgntAPI.getLookups, { method: "GET" }) // await mgntAPI.getClasses()
+        const lookupsALL = await this.myfetch!<Array<ILookups>>('/lookups', { method: "GET" }) // await mgntAPI.getClasses()
+        console.log({lookupsALL});
+        
         console.log(`%cFetch successfully ${lookupsALL.length} lookups !`, "color: #ff8040; font-weight: bold;")
 
         if (lookupsALL.length > 0) {
@@ -209,14 +212,8 @@ export const useManagement = defineStore("management", {
     async addLookups(newLookups: ILookups) {
       const { getCurrentUser } = useAuth()
       try {
-        const response: ILookups = await this.myfetch!<ILookups>("/management/lookups", { method: "POST", body: { ...newLookups, createdBy: getCurrentUser._id }, }) //mgntAPI.addLookups(id, lookups);
-        if (!response) {
-          // const index = this.lookups.findIndex((lk) => lk._id == response._id)
-          this.lookups!.unshift(response)
-          return true
-        }
-        return false
-      } catch (er:any) {
+        this.lookups!.unshift(newLookups)
+      } catch (er) {
         console.log("POP:", er)
         return false
       }
@@ -224,7 +221,7 @@ export const useManagement = defineStore("management", {
     async addClasse(newClasse: IClasse) {
       const { getCurrentUser } = useAuth()
       try {
-        const response: IClasse = await this.myfetch!<IClasse>("/management/classes", { method: "POST", body: { ...newClasse, createdBy: getCurrentUser._id } }) //mgntAPI.addLookups(id, lookups);
+        const response: IClasse = await this.myfetch!<IClasse>("/classes", { method: "POST", body: { ...newClasse, createdBy: getCurrentUser._id } }) //mgntAPI.addLookups(id, lookups);
         console.log({ response })
 
         if (response) {
@@ -554,6 +551,8 @@ export const useManagement = defineStore("management", {
     getRouteurs: (state) => state.routeurs,
     getdocuments: (state) => state.documents,
     getEmployees: (state) => state.employees,
+    getTeachers: (state) => (filter) => state.employees,
+    currentClasse:(state)=> state.classes.find(e=> e.current ===true)
     getClasses:
       (state) =>
       (search = "") =>

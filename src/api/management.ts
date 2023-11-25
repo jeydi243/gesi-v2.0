@@ -1,11 +1,11 @@
-import { axios, myfetch } from "./myaxios"
+import { axios } from "./myaxios"
 
 export default {
   routeDocuments: "/management/documents",
   routeFilieres: "/management/filieres",
   routeEmployees: "/employees", // /employees
-  getClasses: "/management/classes", // /employees
-  getLookups: "/management/lookups", // /employees
+  getClasses: "/classes", // /employees
+  getLookups: "/lookups",
   getEmployees: "/employees",
   getDocuments: async function () {
     return axios.get(`${this.routeDocuments}`)

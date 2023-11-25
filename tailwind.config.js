@@ -1,7 +1,7 @@
 const colors = require("tailwindcss/colors")
 
 module.exports = {
-  content: ["./src/**/*.{html,js,vue}", "node_modules/preline/dist/*.js"],
+  content: ["./src/**/*.{html,js,vue}", "node_modules/preline/dist/*.js","./node_modules/flowbite/**/*.js"],
   theme: {
     screens: {
       sm: "640px",
@@ -835,5 +835,6 @@ module.exports = {
       strategy: "class",
     }),
     require("@tailwindcss/aspect-ratio"),
+    require('flowbite/plugin')
   ],
 }

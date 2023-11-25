@@ -33,13 +33,34 @@ import MyHeader from "@/components/myheader.vue"
 import BreadCrumbs from "@/components/breadcrumbs.vue"
 import { useConfig } from "@/store/config"
 import { ref, onMounted, computed } from "vue"
-
+import { 
+    initAccordions, 
+    initCarousels, 
+    initCollapses, 
+    initDials, 
+    initDismisses, 
+    initDrawers, 
+    initDropdowns, 
+    initModals, 
+    initPopovers, 
+    initTabs, 
+    initTooltips } from 'flowbite'
 const store = useConfig()
 const isMain = computed(() => store.layout != "auth")
 const showBreadCrumbs = ref(false)
 const isOpen = ref(false)
 
-onMounted(() => {
+onMounted(() => {initAccordions();
+    initCarousels();
+    initCollapses();
+    initDials();
+    initDismisses();
+    initDrawers();
+    initDropdowns();
+    initModals();
+    initPopovers();
+    initTabs();
+    initTooltips();
   emitter.on('changeDrawerState',()=> {
     isOpen.value = !isOpen.value
     })
