@@ -24,9 +24,9 @@
       <div class="col-span-3 bg-white p-2 h-full rounded-md ml-3">
         <div id="rowd">
           <div class="flex flex-row-reverse justify-between mb-2">
-            <button @click="openDrawer" :v-if="currentClasse?._id" class="btn-primary" data-hs-overlay="#drawerOP">
+            <button :v-if="currentClasse?._id" class="btn-primary" data-hs-overlay="#drawerOP">
               <PlusIcon class="h-5 w-5 text-white" />
-              <span class="self-center ml-2"> Add Lookup </span>
+              <span class="self-center ml-2"> Add lookup </span>
             </button>
             <div class="search w-[300px]">
               <input type="text" class="fl-input-small w-[300px]" placeholder="Type name of lookup..."
@@ -71,7 +71,6 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ lookups.name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ lookups.description }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ lookups.createdAt }}</td>
-                        <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ lookups.updatedAt }}</td> -->
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <a class="text-blue-500 hover:text-blue-700 cursor-pointer"
                             @click="openDeleteDialog(true, lookups)">Delete</a>
@@ -86,13 +85,13 @@
         </div>
       </div>
 
-      <DrawerAddLookup />
-      <DialogAddClasse />
-      <DialogDeleteLookup />
+      <DrawerAddLookup ref="drawerLookup" :classeID="currentClasse?._id" />
+      <DialogAddClasse ref="dialogClasse" />
+      <DialogDeleteLookup ref="dialogDeleteLookup" :lookupID="toDeleteLookup?._id" />
 
     </div>
-    
-    
+
+
   </div>
 </template>
 
@@ -100,36 +99,26 @@
 import DialogDeleteLookup from './lookups/DialogDeleteLookup.vue'
 import DialogAddClasse from './lookups/DialogAddClasse.vue'
 import DrawerAddLookup from './lookups/DrawerAddLookup.vue'
-import * as yup from "yup"
 import { gsap } from "gsap"
-import { chance } from "@/utils/index"
 import { myfetch } from "@/api/myfetch";
-import { useAuth } from "@/store/authentication";
 import { IClasse } from '@/store/management'
-import { useToast } from 'vue-toastification';
-import { isLength } from "validator"
-import { instance } from "@/api/myaxios";
-import { useAxios } from '@vueuse/integrations/useAxios'
-import { useConfig } from "@/store/config";
 import { ref, computed, watch } from "vue"
 import { useManagement, ILookups } from '@/store/management';
-import { InvalidSubmissionContext, SubmissionContext } from 'vee-validate';
-import { PlusIcon, CheckIcon, ChevronDoubleDownIcon } from "@heroicons/vue/solid";
+import { PlusIcon, } from "@heroicons/vue/solid";
 
 
 let _searchLookups = ref<string>('')
 let _searchClasse = ref<string>('')
-const query = ref('')
-const toast = useToast()
 const store = useManagement()
-const auth = useAuth()
-const user = computed(() => auth.getCurrentUser)
 const isOpenAddDialog = ref(false)
 const toDeleteLookup = ref<ILookups | null>(null)
 const currentClasse = ref<IClasse>()
-const { addLookups, getAllLookups } = store
 const classesALL = computed(() => store.getClasses(_searchClasse.value))
 const lookupsALL = computed(() => store.getLookups(currentClasse.value?._id))
+
+const drawerLookup = ref<InstanceType<typeof DrawerAddLookup> | null>(null)
+const dialogClasse = ref<InstanceType<typeof DialogAddClasse> | null>(null)
+const dialogDeleteLookup = ref<InstanceType<typeof DialogDeleteLookup> | null>(null)
 
 
 watch(currentClasse, (newval, oldval) => {
@@ -150,19 +139,17 @@ watch(currentClasse, (newval, oldval) => {
 })
 function setisOpenAddDialog(value: boolean = false) {
   isOpenAddDialog.value = value
+  console.log('Before');
+  dialogClasse.value?.openDialog()
+  console.log('After');
 }
 function changeClasse(classe: IClasse) {
   currentClasse.value = classe
 }
 
-
-
 function openDeleteDialog(should: boolean = true, payload: null | ILookups) {
-  isOpenDeleteDialog.value = should
-  toDeleteLookup.value = payload
+  dialogDeleteLookup.value?.openDialog()
 }
-
-
 
 </script>
 

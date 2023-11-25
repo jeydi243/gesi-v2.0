@@ -1,7 +1,7 @@
 <template>
   <TransitionRoot :show="isOpenDeleteDialog" as="template" enter="duration-500 ease-out" enter-from="opacity-0"
     enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
-    <Dialog @close="setisOpenAddDialog" class="relative z-50">
+    <Dialog @close="closeDialog" class="relative z-50">
       <TransitionChild enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
         leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
         <div class="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -37,17 +37,17 @@ const toast = useToast()
 const store = useManagement()
 const isOpenDeleteDialog = ref(false)
 const { getAllLookups } = store
-const { toDeleteLookup } = defineProps(['toDeleteLookup'])
+const { lookupID } = defineProps(['lookupID'])
 async function deleteLookups() {
   try {
-    const { isFetching: f, error, data, response, statusCode } = await myfetch(api.getLookups + '/' + toDeleteLookup.value?._id).delete().json()
+    const { isFetching: f, error, data, response, statusCode } = await myfetch(api.getLookups + '/' + lookupID).delete().json()
     console.log({ data: data.value });
     console.log({ statusCode: statusCode.value });
     console.log({ error: error.value });
     console.log({ response: response.value });
 
     if (response.value?.ok) {
-      toast.success(`Lookups with ID ${toDeleteLookup.value?._id} deleted successfully !`)
+      toast.success(`Lookups with ID ${lookupID} deleted successfully !`)
       isOpenDeleteDialog.value = false
       await getAllLookups()
     } else {
@@ -58,6 +58,17 @@ async function deleteLookups() {
 
   }
 }
+function closeDialog() {
+  isOpenDeleteDialog.value = false;
+}
+function openDialog() {
+  console.log('Why...DELETE');
+  isOpenDeleteDialog.value = true;
+}
+
+defineExpose({
+  closeDialog, openDialog
+})
 </script>
 
 <style scoped></style>

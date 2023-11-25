@@ -79,7 +79,6 @@ import { myfetch } from "@/api/myfetch";
 import * as yup from "yup"
 import { useToast } from 'vue-toastification';
 import { PlusIcon, CheckIcon, ChevronDoubleDownIcon } from "@heroicons/vue/solid";
-import { TransitionRoot, TransitionChild } from '@headlessui/vue'
 import { CirclesToRhombusesSpinner } from "epic-spinners"
 import { Field, Form, ErrorMessage, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
 import { ref, computed } from 'vue'
@@ -112,14 +111,11 @@ function closeDrawer(val: boolean = false) {
     isOpenDrawer.value = val
     const drawerOP = document.getElementById('drawerOP');
     window.HSOverlay.close(drawerOP)
-} function openDrawer() {
-    const drawerOP = document.getElementById('drawerOP');
-    window.HSOverlay.open(drawerOP)
-    isOpenDrawer.value = true
-} function onInvalidLookups(ctx: InvalidSubmissionContext) {
+}
+function onInvalidLookups(ctx: InvalidSubmissionContext) {
     console.log(ctx.errors);
 }
-async function submitLookups(values, { resetForm, setFieldError, setErrors }: SubmissionContext) {
+async function submitLookups(values, { resetForm, setFieldError }: SubmissionContext) {
     try {
         // console.log("submitLookups....");
         const payload = {
@@ -129,7 +125,7 @@ async function submitLookups(values, { resetForm, setFieldError, setErrors }: Su
         // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)
         if (response.value?.ok) {
             toast.success("Lookups added successfully! ")
-            setisOpenAddDialog()
+            closeDrawer
             resetForm()
             await addLookups(data.value)
         } else {
@@ -147,7 +143,9 @@ async function submitLookups(values, { resetForm, setFieldError, setErrors }: Su
         return false
     }
 }
-
+defineExpose({
+    closeDrawer
+})
 </script>
 
 <style scoped></style>

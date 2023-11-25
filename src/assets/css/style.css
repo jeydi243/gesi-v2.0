@@ -2285,16 +2285,16 @@ input:checked + .toggle-bg{
   border-left-width: 4px;
 }
 
-.border-r{
-  border-right-width: 1px;
-}
-
 .border-t-0{
   border-top-width: 0px;
 }
 
 .border-t-2{
   border-top-width: 2px;
+}
+
+.border-r{
+  border-right-width: 1px;
 }
 
 .border-solid{
@@ -4555,6 +4555,8 @@ input:valid + span:after {
   outline: 2px solid transparent;
   outline-offset: 2px;
 }
+
+/* Drawer */
 
 /* Calendar */
 

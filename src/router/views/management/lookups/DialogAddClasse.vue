@@ -1,7 +1,7 @@
 <template>
     <TransitionRoot :show="openAddClasseDialog" as="template" enter="duration-500 ease-out" enter-from="opacity-0"
         enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
-        <Dialog @close="setisOpenAddDialog" class="relative z-50">
+        <Dialog @close="closeDialog" class="relative z-50">
             <TransitionChild enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
                 leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -44,7 +44,7 @@
                                     <CirclesToRhombusesSpinner :size="5" color="#FFF" class="text-white" />
                                 </div>
                             </button>
-                            <button class="btn-danger" @click.prevent="resetForm(); setisOpenAddDialog(false)"
+                            <button class="btn-danger" @click.prevent="resetForm(); closeDialog();"
                                 :disabled="isSubmitting">Cancel</button>
                         </div>
                     </Form>
@@ -65,7 +65,10 @@ import { PlusIcon, CheckIcon, ChevronDoubleDownIcon } from "@heroicons/vue/solid
 import { Dialog, DialogPanel, DialogTitle, DialogDescription, TransitionRoot, TransitionChild, Combobox, ComboboxOptions, ComboboxButton, ComboboxOption } from '@headlessui/vue'
 import { CirclesToRhombusesSpinner } from "epic-spinners"
 import { Field, Form, ErrorMessage, InvalidSubmissionContext } from "vee-validate"
+import { chance } from '@/utils';
+import { useManagement } from "@/store/management";
 
+const store = useManagement()
 const openAddClasseDialog = ref(false)
 const toast = useToast()
 const classeSchema = {
@@ -89,7 +92,7 @@ async function submitClasse(values) {
     try {
         var result = await store.addClasse(values)
         if (result) {
-            setisOpenAddDialog()
+            closeDialog()
             toast.success("Classe added successfully !")
         } else {
             toast.error(`Can't add new Classe`)
@@ -98,11 +101,22 @@ async function submitClasse(values) {
         console.log(error)
     }
 }
-
 async function onInvalidClasse(ctx: InvalidSubmissionContext) {
     const { errors } = ctx
     console.log(errors);
 }
+async function closeDialog() {
+    openAddClasseDialog.value = false
+}
+function openDialog() {
+    console.log('Why...ADD');
+
+    openAddClasseDialog.value = true
+}
+
+defineExpose({
+    closeDialog, openDialog
+})
 </script>
 
 <style scoped></style>
