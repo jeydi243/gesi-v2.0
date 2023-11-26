@@ -68,6 +68,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@iconify/vue": "^4.1.1",
     "@tauri-apps/cli": "^1.5.6",
     "@types/node": "^18.7.10",
     "@vitejs/plugin-vue": "^4.0.0",

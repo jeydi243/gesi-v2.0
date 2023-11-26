@@ -2,13 +2,27 @@
 	<div>
 		<UseOnline v-slot="{ isOnline }">
 			<transition @leave="onLeaveTop" @before-enter="onBeforeEnter" @enter="onEnter">
-				<div v-if="!isOnline" class="bg-red-500 text-white row text-center items-center" :class="{ 'bg-blue-600': isOnline }">
-					<span class="ml-3 row items-center"> <box-icon type="regular" name="no-signal" color="white" size="sm" class="text-white"></box-icon> It's seems like your are offline. Try later </span>
+				<div v-if="!isOnline" class="bg-red-500 text-white row text-center items-center"
+					:class="{ 'bg-blue-600': isOnline }">
+					<span class="ml-3 row items-center"> <box-icon type="regular" name="no-signal" color="white" size="sm"
+							class="text-white"></box-icon> It's seems like your are offline. Try later </span>
 				</div>
 			</transition>
 			<router-view v-slot="{ Component, route }">
 				<Transition name="fadeSlideX" mode="out-in">
 					<div :key="route.name">
+						<div class="row">
+							<template v-for="(tab, indexTab) in tabsEmp" :key="indexTab">
+								<a class="btn-tab2 align-middle items-center row"
+									:class="{ 'btn-tab-active2': tab.current }" @click="changeTab(indexTab)">
+									{{ filters.firstUpper(tab.name) }}
+									<box-icon v-if="indexTab != 0" name="lock-alt" type="regular"
+										:color="!tab.current ? 'gray' : 'blue'" size="sm"
+										class="self-center text-center"></box-icon>
+								</a>
+							</template>
+						</div>
+
 						<component :is="Component" />
 					</div>
 				</Transition>
@@ -18,17 +32,27 @@
 </template>
 
 <script setup>
-	import { computed } from "vue"
-	import { useManagement } from "@/store/management"
-	import { UseOnline } from "@vueuse/components"
-	import { onLeaveTop, onEnter, onBeforeEnter, chance } from "@/utils/index"
+import { computed, ref } from "vue"
+import { useManagement } from "@/store/management"
+import { UseOnline } from "@vueuse/components"
+import { onLeaveTop, onEnter, onBeforeEnter, chance } from "@/utils/index"
 
-	const employees = computed(() => store.getEmployees)
-	const store = useManagement()
-
-	async function refresh() {
-		await store.getAllEmployees()
-	}
+const employees = computed(() => store.getEmployees)
+const store = useManagement()
+const currentTab = computed(() => tabsEmp.value.find((tab) => tab.current).name.toLowerCase())
+const tabsEmp = ref([
+	{ name: "Annuaire", current: true },
+	{ name: "Fonctions", current: false },
+	{ name: "Affectation d'employé", current: false },
+])
+function changeTab(index) {
+	const currentTrue = tabsEmp.value.findIndex((tab) => tab.current == true)
+	tabsEmp.value[currentTrue].current = false
+	tabsEmp.value[index].current = true
+}
+async function refresh() {
+	await store.getAllEmployees()
+}
 </script>
 
 <style scoped></style>
