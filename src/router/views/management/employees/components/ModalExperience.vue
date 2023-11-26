@@ -6,7 +6,7 @@
             </template>
             <Form class="flex flex-col justify-between" @submit="addExperience" v-slot="{ isSubmitting }"
                 :validation-schema="experienceSchema" :initial-values="experienceValue"
-                @invalid-submit="onInvalidEducation">
+                @invalid-submit="onInvalidExperience">
                 <div class="flex sm:flex-col md:flex-row md:justify-between">
                     <div class="w-full">
                         <Field name="position" placeholder="Position at company" class="form-input mb-2 w-full"></Field>
@@ -38,7 +38,7 @@
                 <ErrorMessage name="description" v-slot="{ message }">
                     <p class="input-error">{{ message }}</p>
                 </ErrorMessage>
-                <span class="text-red-700 text-base">{{ error }}</span>
+                <!-- <span class="text-red-700 text-base">{{ error }}</span> -->
 
                 <div class="flex flex-row h-1/2 w-full items-center justify-between">
                     <button class="btn-unstate" @click.prevent.stop="toogle">Cancel</button>
@@ -73,6 +73,13 @@ const experienceSchema = ref({
     description(value) {
         return isLength(value, { min: 3, max: 200 }) ? true : "Le minimum de caracteres est 2 et le maximum 200"
     },
+})
+const experienceValue = ref({
+    company: "Google",
+    position: "Frontend developer",
+    start: "2018-05-05",
+    end: "2020-02-02",
+    description: "La description de ton experience",
 })
 function onInvalidExperience({ values, result, errors }) {
     console.log("Invalid experience", errors)

@@ -329,7 +329,7 @@
 
 			<input type="sumbit" value="Sign in" class="mt-20 px-4 py-2 rounded bg-rose-500 hover:bg-rose-400 text-white font-semibold text-center block w-full focus:outline-none focus:ring focus:ring-offset-2 focus:ring-rose-500 focus:ring-opacity-80 cursor-pointer" />
 		</form> -->
-    <ModalUpdateDoc :employeeID="route.params.id" />
+    <ModalDocument :employeeID="route.params.id" action="update" />
     <MyModal v-show="showModalAddEducation" @close="showModalAddEducation = false">
       <template #header>
         <h1 class="text-4xl">Add Education</h1>
@@ -379,46 +379,7 @@
         </div>
       </Form>
     </MyModal>
-    <MyModal v-show="showModalAddContact" @close="showModalAddContact = false">
-      <template #header>
-        <h1 class="text-4xl">Add Contact</h1>
-      </template>
-      <Form class="flex flex-col justify-between" @submit="addContact" v-slot="{ isSubmitting }"
-        :validation-schema="contactSchema" :initial-values="contactValue" @invalid-submit="onInvalidContact">
-        <div class="flex sm:flex-col md:flex-row md:justify-between">
-          <div class="w-full">
-            <Field name="name" placeholder="Name of contact" class="form-input mb-2 w-full"></Field>
-            <ErrorMessage name="name" v-slot="{ message }">
-              <p class="input-error">{{ message }}</p>
-            </ErrorMessage>
-          </div>
-        </div>
-        <div class="">
-          <Field name="email" placeholder="School from" class="form-input mb-2 w-full"></Field>
-          <ErrorMessage name="email" v-slot="{ message }">
-            <p class="input-error">{{ message }}</p>
-          </ErrorMessage>
-        </div>
-        <Field placeholder="Phone number comma separated" id="telephone" name="telephone" class="w-full form-input" />
-        <ErrorMessage name="telephone" v-slot="{ message }">
-          <p class="input-error">{{ message }}</p>
-        </ErrorMessage>
-        <Field name="relationship" placeholder="Describe your experience in this field of education"
-          class="form-textarea mb-4"></Field>
-        <ErrorMessage name="relationship" v-slot="{ message }">
-          <p class="input-error">{{ message }}</p>
-        </ErrorMessage>
-        <!-- <span class="text-red-700 text-base">{{ error }}</span> -->
 
-        <div class="flex flex-row h-1/2 w-full items-center justify-between mt-5">
-          <button class="btn-unstate" @click.prevent.stop="closeModal">Cancel</button>
-          <button type="submit" class="btn-primary">
-            <span class="font-bold text-white" v-if="!isSubmitting">Add</span>
-            <CirclesToRhombusesSpinner :size="25" class="text-white" v-if="isSubmitting" />
-          </button>
-        </div>
-      </Form>
-    </MyModal>
     <ModalExperience :employeeID="route.params.id" action="update" />
     <MyModal v-show="showModalUpdateExper" @close="showModalUpdateExper = false">
       <template #header>
@@ -490,12 +451,14 @@ import ModalDocument from './components/ModalDocument.vue'
 import ModalDeleteEmployee from './components/ModalDeleteEmployee.vue'
 import ModalExperience from './components/ModalExperience.vue'
 import ModalEducation from './components/ModalEducation.vue'
+import ModalContact from './components/ModalContact.vue'
 
 
 const modalDocument = ref<InstanceType<typeof ModalDocument> | null>(null)
 const modalDeleteEmployee = ref<InstanceType<typeof ModalDeleteEmployee> | null>(null)
 const modalExperience = ref<InstanceType<typeof ModalExperience> | null>(null)
 const modalEducation = ref<InstanceType<typeof ModalEducation> | null>(null)
+const modalContact = ref<InstanceType<typeof ModalContact> | null>(null)
 
 const error = computed(() => store.error)
 const store = useManagement()
@@ -566,26 +529,6 @@ const passwordSchema = ref({
   },
 })
 
-const contactSchema = ref({
-  name(value) {
-    return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 20"
-  },
-  telephone(value) {
-    return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 20"
-  },
-  email(value) {
-    return isEmail(value) ? true : "Un email valide est attendu"
-  },
-  relationship(value) {
-    return isLength(value, { min: 3, max: 20 }) ? true : "Le minimum de caracteres est 3 et le maximum 20"
-  },
-})
-const contactValue = ref({
-  name: chance.last(),
-  telephone: chance.phone({ country: "fr", mobile: true }),
-  email: chance.email(),
-  relationship: "Father",
-})
 const educationValue = ref({
   from_school: "Catalyst",
   name: "Master of science",
@@ -596,13 +539,6 @@ const educationValue = ref({
 const passwordValue = ref({
   password: "123456",
   password_verif: "123456",
-})
-const experienceValue = ref({
-  company: "Google",
-  position: "Frontend developer",
-  start: "2018-05-05",
-  end: "2020-02-02",
-  description: "La description de ton experience",
 })
 const educationSchema = ref({
   end(value) {
