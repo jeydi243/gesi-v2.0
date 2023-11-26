@@ -16,9 +16,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useManagement } from "@/store/management"
-const { employeeID, action } = defineProps(['employeeID', 'action'])
 import { toast, goto, chance } from "@/utils/index"
+import MyModal from "@/components/mymodal.vue"
+
+
 const showModal = ref(false)
+const { employeeID, action } = defineProps(['employeeID', 'action'])
 const store = useManagement()
 function toogle() {
     showModal.value = !showModal.value

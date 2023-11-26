@@ -46,6 +46,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { parseISO } from "date-fns"
+import { isLength } from 'validator'
+import MyModal from "@/components/mymodal.vue"
 
 const { employeeID, action } = defineProps(['employeeID', 'action'])
 const showModal = ref<boolean>(false)
@@ -69,6 +72,9 @@ const contactValue = ref({
     email: chance.email(),
     relationship: "Father",
 })
+function onInvalidContact({ values, results, errors }) {
+  console.log("Invalid experience ", errors)
+}
 function toogle() {
     showModal.value = !showModal.value
 }

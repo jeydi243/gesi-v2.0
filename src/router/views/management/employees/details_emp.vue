@@ -49,7 +49,7 @@
                   class="backdrop-blur-sm bg-red-white/30 absolute left-[25%] top-[35%] z-10 w-20 h-7 rounded-md text-white text-center cursor-pointer"
                   v-if="edit_mode"><button type="button" @click="changepicture">Edit</button></div>
                 <!-- <img src="http://localhost:3000/resources/file/63bf2dda6afe67abeb28c994" class="rounded-lg h-[150px] w-[150px] select-none relative top-0 left-0 z-0" :class="{ 'border-2 border-dashed p-2': edit_mode }" /> -->
-                <img :src="api_resources.getById(userData?.profile_image)"
+                <img :src="api_resources.getById(userData?.images)"
                   class="rounded-lg h-[150px] w-[150px] select-none relative top-0 left-0 z-0"
                   :class="{ 'border-2 border-dashed p-2': edit_mode }" />
               </div>
@@ -137,7 +137,7 @@
                 </div>
               </div>
               <div class="row">
-                <a v-if="edit_mode" @click="showModalUpdateDoc = !showModalUpdateDoc"
+                <a v-if="edit_mode" @click="modalDocument.value?.toggle()"
                   class="text-xs italic text-blue-700 cursor-pointer font-bold">Modifier</a>
               </div>
             </div>
@@ -147,10 +147,10 @@
           <div class="card min-h-[200px] w-1/2 col justify-between">
             <div v-if="!edit_mode" class="col">
               <span class="font-bold text-xl">Biography</span>
-              <span> {{ userData.biography }} </span>
+              <span> {{ userData?.biography }} </span>
             </div>
             <Form v-else class="col justify-between h-full" @submit="updateBiography" v-slot="{ isSubmitting }"
-              :initial-values="{ biography: userData.biography }" @invalid-submit="invalidBio">
+              :initial-values="{ biography: userData?.biography }" @invalid-submit="invalidBio">
               <div>
                 <Field name="biography" as="textarea" placeholder="Biography" class="form-input mb-2 w-full"></Field>
                 <ErrorMessage name="biography" v-slot="{ message }">
@@ -168,7 +168,7 @@
           </div>
           <div class="card min-h-[200px] w-1/2 col justify-between">
             <span class="font-bold text-xl">Emergency Contact</span>
-            <span v-for="(contact, index) in userData.emergencyContacts" :key="index"
+            <span v-for="(contact, index) in userData?.contacts" :key="index"
               class="mt-2 relative transition-all ease-in duration-700"
               :class="{ 'rounded-lg border-2 px-7': edit_mode }">
               <div class="row justify-between">
@@ -200,20 +200,20 @@
           </div>
           <ol
             class="border-l md:border-l-0 md:border-t border-gray-300 md:flex md:justify-start row md:gap-6 mt-2 transition-all ease-in duration-700"
-            :class="{ 'border-none': edit_mode, 'md:justify-start': userData.educations.length == 1 }">
-            <li v-for="({ name, start, description, end, from_school, id }, index) in userData.educations" :key="index"
+            :class="{ 'border-none': edit_mode, 'md:justify-start': userData?.educations.length == 1 }">
+            <li v-for="(education, index) in userData?.educations" :key="index"
               class="transition-all ease-in duration-700 relative"
               :class="{ 'border-2 border-dashed rounded-lg pl-5': edit_mode }">
               <div class="flex md:block flex-start items-center pt-2 md:pt-0">
                 <div class="bg-green-300 w-2 h-2 rounded-full -ml-1 md:ml-0 mr-3 md:mr-0 md:-mt-1"></div>
-                <p class="text-green-500 text-sm mt-2">{{ filters.toiso(start) }} - {{ filters.toiso(end) }}</p>
+                <p class="text-green-500 text-sm mt-2">{{ filters.toiso(education.start) }} - {{ filters.toiso(education.end) }}</p>
               </div>
               <div class="mt-0.5 ml-4 md:ml-0 pb-5">
-                <h4 class="text-green-800 font-semibold text-xl mb-1.5">{{ name }}</h4>
-                {{ from_school }}
-                <p class="text-gray-500 mb-3">{{ description }}</p>
+                <h4 class="text-green-800 font-semibold text-xl mb-1.5">{{ education.name }}</h4>
+                {{ education.from_school }}
+                <p class="text-gray-500 mb-3">{{ education.description }}</p>
                 <button v-if="edit_mode" data-mdb-ripple="true" data-mdb-ripple-color="success" type="button"
-                  class="btn-unstate-min w-[80px]" @click="launchUpdateEducation(id)">Update</button>
+                  class="btn-unstate-min w-[80px]" @click="modalEducation?.toggle(education)">Update</button>
               </div>
               <button v-if="edit_mode" @click="deleteEducation(id)"
                 class="absolute inline-block bottom-0 right-0 text-center items-center row bg-red-100 rounded-tl-md rounded-br-sm"
@@ -317,119 +317,12 @@
         </div>
       </div>
     </transition>
-    <!-- <form class="mt-12" action="" method="POST">
-			<div class="relative">
-				<input id="email" name="email" type="text" class="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600" placeholder="john@doe.com" />
-				<label for="email" class="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email address</label>
-			</div>
-			<div class="mt-10 relative">
-				<input id="password" type="password" name="password" class="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600" placeholder="Password" />
-				<label for="password" class="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
-			</div>
 
-			<input type="sumbit" value="Sign in" class="mt-20 px-4 py-2 rounded bg-rose-500 hover:bg-rose-400 text-white font-semibold text-center block w-full focus:outline-none focus:ring focus:ring-offset-2 focus:ring-rose-500 focus:ring-opacity-80 cursor-pointer" />
-		</form> -->
-    <ModalDocument :employeeID="route.params.id" action="update" />
-    <MyModal v-show="showModalAddEducation" @close="showModalAddEducation = false">
-      <template #header>
-        <h1 class="text-4xl">Add Education</h1>
-      </template>
-      <Form class="flex flex-col justify-between" @submit="addEducation" v-slot="{ isSubmitting }"
-        :validation-schema="educationSchema" :initial-values="educationValue" @invalid-submit="onInvalidEducation">
-        <div class="flex sm:flex-col md:flex-row md:justify-between">
-          <div class="w-full">
-            <Field name="name" placeholder="Name of education" class="form-input mb-2 w-full"></Field>
-            <ErrorMessage name="name" v-slot="{ message }">
-              <p class="input-error">{{ message }}</p>
-            </ErrorMessage>
-          </div>
-        </div>
-        <div class="">
-          <Field name="from_school" placeholder="School from" class="form-input mb-2 w-full"></Field>
-          <ErrorMessage name="from_school" v-slot="{ message }">
-            <p class="input-error">{{ message }}</p>
-          </ErrorMessage>
-        </div>
-        <div class="">
-          <Field name="start" type="date" placeholder="Start date" class="form-input mb-2 w-full"></Field>
-          <ErrorMessage name="start" v-slot="{ message }">
-            <p class="input-error">{{ message }}</p>
-          </ErrorMessage>
-        </div>
-        <div class="">
-          <Field name="end" type="date" placeholder="End date" class="form-input mb-2 w-full"></Field>
-          <ErrorMessage name="end" v-slot="{ message }">
-            <p class="input-error">{{ message }}</p>
-          </ErrorMessage>
-        </div>
-        <Field name="description" as="textarea" placeholder="Describe your experience in this field of education"
-          class="form-textarea mb-4"></Field>
-        <ErrorMessage name="description" v-slot="{ message }">
-          <p class="input-error">{{ message }}</p>
-        </ErrorMessage>
-        <span class="text-red-700 text-base">{{ error }}</span>
-
-        <div class="flex flex-row h-1/2 w-full items-center justify-between">
-          <button class="btn-unstate" @click.prevent.stop="closeModal">Cancel</button>
-          <button type="submit" class="btn-primary">
-            <span class="font-bold text-white row" v-if="!isSubmitting"><box-icon type="regular" name="plus" color="white"
-                size="sm"></box-icon>Add</span>
-            <CirclesToRhombusesSpinner :size="25" class="text-white" v-if="isSubmitting" />
-          </button>
-        </div>
-      </Form>
-    </MyModal>
-
-    <ModalExperience :employeeID="route.params.id" action="update" />
-    <MyModal v-show="showModalUpdateExper" @close="showModalUpdateExper = false">
-      <template #header>
-        <h1 class="text-4xl">Update Experience</h1>
-      </template>
-      <Form class="flex flex-col justify-between" @submit="updateExperience" v-slot="{ isSubmitting }"
-        :validation-schema="experienceSchema" :initial-values="experienceValue" @invalid-submit="onInvalidExperience">
-        <div class="flex sm:flex-col md:flex-row md:justify-between">
-          <div class="w-full">
-            <Field name="position" placeholder="Position at company" class="form-input mb-2 w-full"></Field>
-            <ErrorMessage name="position" v-slot="{ message }">
-              <p class="input-error">{{ message }}</p>
-            </ErrorMessage>
-          </div>
-        </div>
-        <div class="">
-          <Field name="company" placeholder="Name of company" class="form-input mb-2 w-full"></Field>
-          <ErrorMessage name="company" v-slot="{ message }">
-            <p class="input-error">{{ message }}</p>
-          </ErrorMessage>
-        </div>
-        <div class="">
-          <Field name="start" type="date" placeholder="Start date" class="form-input mb-2 w-full"></Field>
-          <ErrorMessage name="start" v-slot="{ message }">
-            <p class="input-error">{{ message }}</p>
-          </ErrorMessage>
-        </div>
-        <div class="">
-          <Field name="end" type="date" placeholder="End date" class="form-input mb-2 w-full"></Field>
-          <ErrorMessage name="end" v-slot="{ message }">
-            <p class="input-error">{{ message }}</p>
-          </ErrorMessage>
-        </div>
-        <Field name="description" as="textarea" placeholder="Describe your experience in this field of education"
-          class="form-textarea mb-4"></Field>
-        <ErrorMessage name="description" v-slot="{ message }">
-          <p class="input-error">{{ message }}</p>
-        </ErrorMessage>
-        <span class="text-red-700 text-base">{{ error }}</span>
-
-        <div class="flex flex-row h-1/2 w-full items-center justify-between">
-          <button class="btn-unstate" @click.prevent.stop="closeModal">Cancel</button>
-          <button type="submit" class="btn-primary">
-            <span class="font-bold text-white" v-if="!isSubmitting">Update</span>
-            <CirclesToRhombusesSpinner :size="25" class="text-white" v-if="isSubmitting" />
-          </button>
-        </div>
-      </Form>
-    </MyModal>
-    <ModalEducation :employeeID="route.params.id" action="update" />
+    <ModalDocument ref="modalDocument" :employeeID="route.params.id" action="update" />
+    <ModalContact ref="modalContact" :employeeID="route.params.id" action="update" />
+    <ModalExperience ref="modalExperience" :employeeID="route.params.id" action="update" />
+    <ModalEducation ref="modalEducation" :employeeID="route.params.id" action="update" />
+    <ModalDeleteEmployee ref="modalDeleteEmployee" :employeeID="route.params.id" />
 
   </div>
 </template>
@@ -437,17 +330,15 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 import { useRoute } from "vue-router"
-import { parseISO } from "date-fns"
 import { useManagement } from "@/store/management"
 import { toast, goto, chance } from "@/utils/index"
 import { onBeforeRouteUpdate } from "vue-router"
-import { isLength, isDate, isEmail } from "validator"
 import { CirclesToRhombusesSpinner } from "epic-spinners"
-import { Form, Field, ErrorMessage } from "vee-validate"
+import { Form, Field, ErrorMessage, InvalidSubmissionContext } from "vee-validate"
 import { ref, computed, onBeforeMount } from "vue"
-import MyModal from "@/components/mymodal.vue"
+import { isLength,isEmail } from 'validator'
 import api_resources from "@/api/resources.js"
-import ModalDocument from './components/ModalDocument.vue'
+import ModalDocument from './components/modalDocument.vue'
 import ModalDeleteEmployee from './components/ModalDeleteEmployee.vue'
 import ModalExperience from './components/ModalExperience.vue'
 import ModalEducation from './components/ModalEducation.vue'
@@ -486,7 +377,7 @@ const tabsEmp = ref([
   { name: "Employement status", current: false },
 ])
 
-const currentTab = computed(() => tabsEmp.value.find((tab) => tab.current).name.toLowerCase())
+const currentTab = computed(() => tabsEmp.value.find((tab) => tab.current)?.name.toLowerCase())
 const basicInfoSchema = {
   position(value) {
     return isLength(value, { min: 2, max: 50 }) ? true : "Position must be between 2 and 50 characters"
@@ -510,13 +401,13 @@ onBeforeMount(() => {
   console.log(api_resources.getById(userData.value?.profile_image))
 })
 onBeforeRouteUpdate(async (to, from) => {
-  console.log(api_resources.getById(userData.value?.profile_image))
+  console.log(api_resources.getById(userData.value?.images))
   if (to.params.id !== from.params.id) {
-    const result = await store.employeeBy(to.params.id)
+    const result = await store.employeeById(to.params.id)
     if (result) {
-      toast("Route id changed to %s...", to.params.id)
+      toast(`Route id changed to ${to.params.id}`)
     } else {
-      toast.danger("Something went wrong on refreshing. Try later")
+      toast.warning("Something went wrong on refreshing. Try later")
     }
   }
 })
@@ -528,36 +419,10 @@ const passwordSchema = ref({
     return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 20"
   },
 })
-
-const educationValue = ref({
-  from_school: "Catalyst",
-  name: "Master of science",
-  start: "2018-05-05",
-  end: "2020-02-02",
-  description: "La description des cours",
-})
 const passwordValue = ref({
   password: "123456",
   password_verif: "123456",
 })
-const educationSchema = ref({
-  end(value) {
-    return isDate(parseISO(value)) ? true : "End date must be provided"
-  },
-  name(value) {
-    return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
-  },
-  start(value) {
-    return isDate(parseISO(value)) ? true : "Start date must be provided"
-  },
-  from_school(value) {
-    return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
-  },
-  description(value) {
-    return isLength(value, { min: 3, max: 200 }) ? true : "Le minimum de caracteres est 2 et le maximum 200"
-  },
-})
-
 const docs = ref([
   {
     name: "resume",
@@ -593,49 +458,13 @@ async function deleteExperience(experienceID) {
     toast.error("Can't delete experience for this employee")
   }
 }
-async function launchUpdateExperience(experienceID) {
-  const ud = userData.value["experiences"].find((exp) => exp.id == experienceID)
-  experienceValue.value = ud
-  showModalUpdateExper.value = true
-}
-async function launchUpdateEducation(educationID = 4) {
-  const ud = userData.value["educations"].find((edu) => edu.id == educationID)
-  console.log({ ...ud })
-  educationValue.value = { ...ud }
-  showModalUpdateEducation.value = true
-}
-async function updateExperience(updatedExperience) {
-  try {
-    const result = await store.updateExperience(route.params.id, experienceValue.value.id, updatedExperience)
-    if (result) {
-      closeModal()
-      toast.success(`Update Experience with id ${experienceValue.value.id}`)
-    } else {
-      toast.error("Can't update experience for this employee")
-    }
-  } catch (error: any) {
-    console.log(error)
-  }
-}
-async function updateEducation(updatedEducation) {
-  try {
-    const result = await store.updateEducation(route.params.id, educationValue.value.id, updatedEducation)
-    if (result) {
-      closeModal()
-      toast.success(`Update education with id ${educationValue.value.id}`)
-    } else {
-      toast.error("Can't update education for this employee")
-    }
-  } catch (error: any) {
-    console.log(error)
-  }
-}
+
 async function updateBiography(biography) {
   try {
     const result = await store.updateBiography(route.params.id, biography)
     if (result) {
       closeModal()
-      toast.success(`Update biography with id ${educationValue.value.id}`)
+      toast.success(`Update biography with id ${route.params.id}`)
     } else {
       toast.error("Can't update biography for this employee")
     }
@@ -643,17 +472,6 @@ async function updateBiography(biography) {
     console.log(error)
   }
 }
-
-async function addEducation(values) {
-  const result = await store.addEducation(route.params.id, values)
-  if (result) {
-    closeModal()
-    toast(`Added ${values.name} to education`)
-  } else {
-    toast.error("Impossible d'ajouter une education a cette employee")
-  }
-}
-
 async function addContact(values) {
   const result = await store.addEmergencyContact(route.params.id, values)
   if (result) {
@@ -690,21 +508,15 @@ function closeModal() {
   showModalDeleteEmployee.value = false
   showModalUpdateEducation.value = false
 }
-function onInvalidEducation({ values, result, errors }) {
-  console.log("Invalid education", errors)
-}
 
-function onInvalidContact({ values, result, errors }) {
-  console.log("Invalid experience ", errors)
-}
-function onInvalidPassword({ values, result, errors }) {
+
+function onInvalidPassword({ values, results, errors }: InvalidSubmissionContext) {
   console.log("Invalid password ", errors)
 }
-function invalidBio({ values, result, errors }) {
+function invalidBio({ values, errors, results }: InvalidSubmissionContext) {
   console.log("Invalid biography ", errors)
 }
-
-function onInvalidBasicInfo({ values, result, errors }) {
+function onInvalidBasicInfo({ values, results, errors }: InvalidSubmissionContext) {
   console.log("Invalid basic info ", errors)
 }
 async function updateOnboarding(values) {

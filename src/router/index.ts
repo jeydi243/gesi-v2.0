@@ -1,32 +1,47 @@
-import { createRouter, createWebHistory, isNavigationFailure, NavigationFailureType } from "vue-router"
-import { useConfig } from "../store/config"
+import {
+  createRouter,
+  createWebHistory,
+  isNavigationFailure,
+  NavigationFailureType,
+} from "vue-router";
+import { useConfig } from "../store/config";
 
 const studentsRoutes = [
   {
     path: "/students",
     meta: { layout: "main" },
     name: "index-students",
-    component: () => import(/* webpackChunkName: "index-students" */ "./views/students/index.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "index-students" */ "./views/students/index.vue"
+      ),
   },
   {
     path: "/students/add",
     meta: { layout: "main" },
     name: "students-add",
-    component: () => import(/* webpackChunkName: "add-students" */ "./views/students/add.vue"),
+    component: () =>
+      import(/* webpackChunkName: "add-students" */ "./views/students/add.vue"),
   },
   {
     path: "/students/:id",
     meta: { layout: "main" },
     name: "students-details",
-    component: () => import(/* webpackChunkName: "details-student" */ "./views/students/details.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "details-student" */ "./views/students/details.vue"
+      ),
   },
-]
+];
 const teachersRoutes = [
   {
     path: "/teachers",
     meta: { layout: "main" },
     name: "index-teachers",
-    component: () => import(/* webpackChunkName: "index-teacher" */ "./views/teachers/index.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "index-teacher" */ "./views/teachers/index.vue"
+      ),
   },
   //   {
   //     path: "/teachers/add",
@@ -38,61 +53,100 @@ const teachersRoutes = [
     path: "/teachers/:id",
     meta: { layout: "main" },
     name: "teachers-details",
-    component: () => import(/* webpackChunkName: "details-teacher" */ "./views/teachers/details.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "details-teacher" */ "./views/teachers/details.vue"
+      ),
   },
-]
+];
 const calendarRoutes = [
   {
     path: "/calendar",
     meta: { layout: "main" },
     name: "index-calendar",
-    component: () => import(/* webpackChunkName: "index-calendar" */ "./views/calendar/index.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "index-calendar" */ "./views/calendar/index.vue"
+      ),
   },
-]
+];
 const libraryRoutes = [
   {
     path: "/library",
     meta: { layout: "main" },
     name: "index-library",
-    component: () => import(/* webpackChunkName: "about" */ "./views/library/index.vue"),
+    component: () =>
+      import(/* webpackChunkName: "about" */ "./views/library/index.vue"),
   },
-]
+];
 const settingsRoutes = [
   {
     path: "/settings",
     meta: { layout: "main" },
     name: "index-settings",
-    component: () => import(/* webpackChunkName: "about" */ "./views/settings/index.vue"),
+    component: () =>
+      import(/* webpackChunkName: "about" */ "./views/settings/index.vue"),
   },
-]
+];
 const employeesRoutes = {
   path: "employees",
   meta: { layout: "main" },
-  component: () => import(/* webpackChunkName: "employees" */ "./views/management/employees/index.vue"),
+  component: () =>
+    import(
+      /* webpackChunkName: "employees" */ "./views/management/employees/index.vue"
+    ),
   children: [
     {
       path: "",
       name: "employees-index",
       default: true,
-      component: () => import(/* webpackChunkName: "employees" */ "./views/management/employees/list.vue"),
+      component: () =>
+        import(
+          /* webpackChunkName: "employees" */ "./views/management/employees/list.vue"
+        ),
     },
     {
       path: "add",
       name: "employees-add",
-      component: () => import(/* webpackChunkName: "employees" */ "./views/management/employees/add.vue"),
+      component: () =>
+        import(
+          /* webpackChunkName: "employees" */ "./views/management/employees/add.vue"
+        ),
+    },
+    {
+      path: "affectations",
+      name: "affectations-employees",
+      component: () =>
+        import(
+          /* webpackChunkName: "employees" */ "./views/management/employees/affectations.vue"
+        ),
+    },
+    {
+      path: "fonctions",
+      name: "fonctions-employees",
+      component: () =>
+        import(
+          /* webpackChunkName: "employees" */ "./views/management/employees/fonctions.vue"
+        ),
     },
     {
       path: ":id",
       name: "employees-details",
-      component: () => import(/* webpackChunkName: "employees" */ "./views/management/employees/details_emp.vue"),
+      component: () =>
+        import(
+          /* webpackChunkName: "employees" */ "./views/management/employees/details_emp.vue"
+        ),
     },
     {
       path: "update/:id",
       name: "employees-update",
-      component: () => import(/* webpackChunkName: "employees" */ "./views/management/employees/update.vue"),
+      component: () =>
+        import(
+          /* webpackChunkName: "employees" */ "./views/management/employees/update.vue"
+        ),
     },
   ],
-}
+};
 const contentsRoutes = {
   path: "contents",
   meta: { layout: "main" },
@@ -100,27 +154,39 @@ const contentsRoutes = {
     {
       path: "add",
       name: "contents-add",
-      component: () => import(/* webpackChunkName: "contents" */ "./views/management/contents/add.vue"),
+      component: () =>
+        import(
+          /* webpackChunkName: "contents" */ "./views/management/contents/add.vue"
+        ),
     },
     {
       path: "details/:id",
       name: "contents-details",
-      component: () => import(/* webpackChunkName: "contents" */ "./views/management/contents/details.vue"),
+      component: () =>
+        import(
+          /* webpackChunkName: "contents" */ "./views/management/contents/details.vue"
+        ),
     },
     {
       path: "",
       default: true,
       name: "contents-index",
-      component: () => import(/* webpackChunkName: "employees" */ "./views/management/contents/list.vue"),
+      component: () =>
+        import(
+          /* webpackChunkName: "employees" */ "./views/management/contents/list.vue"
+        ),
     },
   ],
-}
+};
 const managementRoutes = [
   {
     path: "/management",
     meta: { layout: "main" },
     name: "index-management",
-    component: () => import(/* webpackChunkName: "management" */ "./views/management/index.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "management" */ "./views/management/index.vue"
+      ),
     children: [
       employeesRoutes,
       contentsRoutes,
@@ -128,49 +194,70 @@ const managementRoutes = [
         path: "academique",
         meta: { layout: "main" },
         name: "academique-index",
-        component: () => import(/* webpackChunkName: "management" */ "./views/management/academique.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "management" */ "./views/management/academique.vue"
+          ),
       },
       {
         path: "filieres",
         meta: { layout: "main" },
         name: "filieres-index",
-        component: () => import(/* webpackChunkName: "management" */ "./views/management/filieres.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "management" */ "./views/management/filieres.vue"
+          ),
       },
       {
         path: "documents",
         meta: { layout: "main" },
         name: "documents-index",
-        component: () => import(/* webpackChunkName: "management" */ "./views/management/documents.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "management" */ "./views/management/documents.vue"
+          ),
       },
       {
         path: "classes",
         meta: { layout: "main" },
         name: "classes",
-        component: () => import(/* webpackChunkName: "management" */ "./views/management/classes.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "management" */ "./views/management/classes.vue"
+          ),
       },
       {
         path: "lookups",
         meta: { layout: "main" },
         name: "lookups",
-        component: () => import(/* webpackChunkName: "management" */ "./views/management/lookups.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "management" */ "./views/management/lookups.vue"
+          ),
       },
     ],
   },
-]
+];
 const onboarding = [
   {
     name: "org",
     path: "/org",
     meta: { layout: "auth" },
-    component: () => import(/* webpackChunkName: "login" */ "./views/settings/onboarding/org.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "login" */ "./views/settings/onboarding/org.vue"
+      ),
   },
   {
     name: "org-root",
     path: "/org-root",
     meta: { layout: "auth" },
-    component: () => import(/* webpackChunkName: "login" */ "./views/settings/onboarding/root_user.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "login" */ "./views/settings/onboarding/root_user.vue"
+      ),
   },
-]
+];
 
 const routes = [
   {
@@ -179,25 +266,29 @@ const routes = [
     name: "home",
     default: true,
     meta: { layout: "main" },
-    component: () => import(/* webpackChunkName: "about" */ "./views/account/home.vue"),
+    component: () =>
+      import(/* webpackChunkName: "about" */ "./views/account/home.vue"),
   },
   {
     path: "/login",
     name: "login",
     meta: { layout: "auth" },
-    component: () => import(/* webpackChunkName: "login" */ "./views/account/login.vue"),
+    component: () =>
+      import(/* webpackChunkName: "login" */ "./views/account/login.vue"),
   },
   {
     path: "/profile",
     meta: { layout: "main" },
     name: "profile",
-    component: () => import(/* webpackChunkName: "profile" */ "./views/account/profile.vue"),
+    component: () =>
+      import(/* webpackChunkName: "profile" */ "./views/account/profile.vue"),
   },
   {
     path: "/search",
     meta: { layout: "main" },
     name: "search",
-    component: () => import(/* webpackChunkName: "search" */ "./views/account/search.vue"),
+    component: () =>
+      import(/* webpackChunkName: "search" */ "./views/account/search.vue"),
   },
   ...onboarding,
   ...studentsRoutes,
@@ -206,32 +297,37 @@ const routes = [
   ...libraryRoutes,
   ...settingsRoutes,
   ...managementRoutes,
-]
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-})
+});
 
-router.onError((error:any) => {
-  console.error(error)
-})
+router.onError((error: any) => {
+  console.error(error);
+});
 
 router.afterEach((to, from, failure) => {
   if (isNavigationFailure(failure, NavigationFailureType.aborted)) {
-    console.error(`Failed navigation \nVous avez été redirigé vers ${to.path}`, failure.message)
+    console.error(
+      `Failed navigation \nVous avez été redirigé vers ${to.path}`,
+      failure.message
+    );
   } else if (isNavigationFailure(failure, NavigationFailureType.duplicated)) {
-    console.error(`La navigation a été empêchée parce que tu tente d'aller à la meme route ${failure.to.path} .`)
+    console.error(
+      `La navigation a été empêchée parce que tu tente d'aller à la meme route ${failure.to.path} .`
+    );
   } else if (isNavigationFailure(failure, NavigationFailureType.cancelled)) {
-    console.error(`${failure.message}.`)
+    console.error(`${failure.message}.`);
   } else {
     // console.info(`From: ${from.name} to: ${to.name} ${to.params != null ? JSON.stringify(to.params) : ""}`)
   }
-})
+});
 router.beforeEach((to, from, next) => {
-  const config = useConfig()
-  config.changeLayout(to.meta["layout"])
-  next()
-})
+  const config = useConfig();
+  config.changeLayout(to.meta["layout"]);
+  next();
+});
 
-export default router
+export default router;

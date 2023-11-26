@@ -54,9 +54,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-
+import MyModal from "@/components/mymodal.vue"
 const { employeeID, action } = defineProps(['employeeID', 'action'])
 const showModal = ref(false)
+import { parseISO } from "date-fns"
+
 const experienceSchema = ref({
     position(value) {
         return isLength(value, { min: 6, max: 20 }) ? true : "Le minimum de caracteres est 6 et le maximum 12"
@@ -96,7 +98,24 @@ async function addExperience(values) {
         toast.error("Impossible d'ajouter une experience a cette employee", result)
     }
 }
-
+async function launchUpdateExperience(experienceID) {
+  const ud = userData.value["experiences"].find((exp) => exp.id == experienceID)
+  experienceValue.value = ud
+  showModalUpdateExper.value = true
+}
+async function updateExperience(updatedExperience) {
+    try {
+        const result = await store.updateExperience(route.params.id, experienceValue.value.id, updatedExperience)
+        if (result) {
+            closeModal()
+            toast.success(`Update Experience with id ${experienceValue.value.id}`)
+        } else {
+            toast.error("Can't update experience for this employee")
+        }
+    } catch (error: any) {
+        console.log(error)
+    }
+}
 defineExpose({
     toogle
 })

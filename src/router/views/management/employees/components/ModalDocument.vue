@@ -32,6 +32,7 @@
 import { ref } from 'vue'
 import { useManagement } from "@/store/management"
 import { useToast } from 'vue-toastification';
+import MyModal from "@/components/mymodal.vue"
 
 const showModalUpdateDoc = ref(false)
 const store = useManagement()
@@ -66,7 +67,6 @@ const docSchema = ref({
 function toogle() {
     showModalUpdateDoc.value = !showModalUpdateDoc.value
 }
-
 
 defineExpose({
     toogle

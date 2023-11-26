@@ -8,20 +8,20 @@
 							class="text-white"></box-icon> It's seems like your are offline. Try later </span>
 				</div>
 			</transition>
+			<div class="row mb-5">
+				<template v-for="(tab, indexTab) in tabsEmp" :key="indexTab">
+					<a class="btn-tab2 align-middle items-center row" :class="{ 'btn-tab-active2': tab.current }"
+						@click="changeTab(indexTab)">
+						{{ filters.firstUpper(tab.name) }}
+						<box-icon v-if="indexTab != 0" name="lock-alt" type="regular"
+							:color="!tab.current ? 'gray' : 'blue'" size="sm" class="self-center text-center"></box-icon>
+					</a>
+				</template>
+			</div>
 			<router-view v-slot="{ Component, route }">
 				<Transition name="fadeSlideX" mode="out-in">
 					<div :key="route.name">
-						<div class="row">
-							<template v-for="(tab, indexTab) in tabsEmp" :key="indexTab">
-								<a class="btn-tab2 align-middle items-center row"
-									:class="{ 'btn-tab-active2': tab.current }" @click="changeTab(indexTab)">
-									{{ filters.firstUpper(tab.name) }}
-									<box-icon v-if="indexTab != 0" name="lock-alt" type="regular"
-										:color="!tab.current ? 'gray' : 'blue'" size="sm"
-										class="self-center text-center"></box-icon>
-								</a>
-							</template>
-						</div>
+
 
 						<component :is="Component" />
 					</div>
@@ -35,20 +35,21 @@
 import { computed, ref } from "vue"
 import { useManagement } from "@/store/management"
 import { UseOnline } from "@vueuse/components"
-import { onLeaveTop, onEnter, onBeforeEnter, chance } from "@/utils/index"
+import { onLeaveTop, onEnter, onBeforeEnter, chance, goto } from "@/utils/index"
 
 const employees = computed(() => store.getEmployees)
 const store = useManagement()
 const currentTab = computed(() => tabsEmp.value.find((tab) => tab.current).name.toLowerCase())
 const tabsEmp = ref([
-	{ name: "Annuaire", current: true },
-	{ name: "Fonctions", current: false },
-	{ name: "Affectation d'employé", current: false },
+	{ name: "Annuaire", current: true, route: 'employees-index' },
+	{ name: "Fonctions", current: false, route: 'fonctions-employees' },
+	{ name: "Affectation d'employé", current: false, route: 'affectations-employees' },
 ])
 function changeTab(index) {
 	const currentTrue = tabsEmp.value.findIndex((tab) => tab.current == true)
 	tabsEmp.value[currentTrue].current = false
 	tabsEmp.value[index].current = true
+	goto(tabsEmp.value[index].route)
 }
 async function refresh() {
 	await store.getAllEmployees()
