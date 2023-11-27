@@ -3,11 +3,13 @@
     <div class="row h-full w-full relative" v-bind="$attrs">
       <SideBar class="flex w-[15%] h-full bg-gray-900 relative transition-all duration-700 ease-out" v-if="isMain" />
 
-      <main class="col h-full relative bg-gray-100 overflow-auto transition-all duration-700 ease-out" :class="{ 'w-full': !isMain, 'w-[85%]': isMain }">
+      <main class="col h-full relative bg-gray-100 overflow-auto transition-all duration-700 ease-out"
+        :class="{ 'w-full': !isMain, 'w-[85%]': isMain }">
         <MyHeader v-if="isMain" />
         <!-- {{ $route.path }} -->
         <BreadCrumbs v-if="showBreadCrumbs && isMain" class="transition-all duration-700 ease-out delay-500" />
-        <div class="pima w-full h-full bg-gray-100 overflow-auto transition-all duration-700 ease-out delay-200" :class="{ 'px-6 py-6 h-[90%]': isMain }">
+        <div class="pima w-full h-full bg-gray-100 overflow-auto transition-all duration-700 ease-out delay-200"
+          :class="{ 'px-6 py-6 h-[90%]': isMain }">
           <router-view v-slot="{ Component }">
             <Transition name="fadeSlideX" mode="out-in">
               <component :is="Component" />
@@ -33,37 +35,17 @@ import MyHeader from "@/components/myheader.vue"
 import BreadCrumbs from "@/components/breadcrumbs.vue"
 import { useConfig } from "@/store/config"
 import { ref, onMounted, computed } from "vue"
-import { 
-    initAccordions, 
-    initCarousels, 
-    initCollapses, 
-    initDials, 
-    initDismisses, 
-    initDrawers, 
-    initDropdowns, 
-    initModals, 
-    initPopovers, 
-    initTabs, 
-    initTooltips } from 'flowbite'
+import { initFlowbite } from 'flowbite'
 const store = useConfig()
 const isMain = computed(() => store.layout != "auth")
 const showBreadCrumbs = ref(false)
 const isOpen = ref(false)
 
-onMounted(() => {initAccordions();
-    initCarousels();
-    initCollapses();
-    initDials();
-    initDismisses();
-    initDrawers();
-    initDropdowns();
-    initModals();
-    initPopovers();
-    initTabs();
-    initTooltips();
-  emitter.on('changeDrawerState',()=> {
+onMounted(() => {
+  initFlowbite();
+  emitter.on('changeDrawerState', () => {
     isOpen.value = !isOpen.value
-    })
+  })
 
   store
     .init()

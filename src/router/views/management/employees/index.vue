@@ -35,15 +35,14 @@
 import { computed, ref } from "vue"
 import { useManagement } from "@/store/management"
 import { UseOnline } from "@vueuse/components"
-import { onLeaveTop, onEnter, onBeforeEnter, chance, goto } from "@/utils/index"
+import { onLeaveTop, onEnter, onBeforeEnter, goto } from "@/utils/index"
 
-const employees = computed(() => store.getEmployees)
 const store = useManagement()
 const currentTab = computed(() => tabsEmp.value.find((tab) => tab.current).name.toLowerCase())
 const tabsEmp = ref([
 	{ name: "Annuaire", current: true, route: 'employees-index' },
 	{ name: "Fonctions", current: false, route: 'fonctions-employees' },
-	{ name: "Affectation d'employé", current: false, route: 'affectations-employees' },
+	{ name: "Affectation d'employés", current: false, route: 'affectations-employees' },
 ])
 function changeTab(index) {
 	const currentTrue = tabsEmp.value.findIndex((tab) => tab.current == true)

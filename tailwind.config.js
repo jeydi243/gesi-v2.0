@@ -1,7 +1,12 @@
 const colors = require("tailwindcss/colors")
 
 module.exports = {
-  content: ["./src/**/*.{html,js,vue}", "node_modules/preline/dist/*.js","./node_modules/flowbite/**/*.js"],
+  content: [
+      "./src/**/*.{html,js,vue}",
+      "node_modules/preline/dist/*.js",
+      "node_modules/flowbite/**/*.{js,jsx,ts,tsx}",
+      'node_modules/flowbite-vue/**/*.{js,jsx,ts,tsx}'
+  ],
   theme: {
     screens: {
       sm: "640px",

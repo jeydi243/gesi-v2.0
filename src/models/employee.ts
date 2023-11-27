@@ -1,4 +1,6 @@
 export interface IEmployee extends IPerson {
+  _id?: string;
+  id?: string;
   educations: Array<any>;
   contacts: Array<any>;
   images?: Array<string>;

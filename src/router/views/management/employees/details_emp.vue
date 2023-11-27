@@ -206,7 +206,8 @@
               :class="{ 'border-2 border-dashed rounded-lg pl-5': edit_mode }">
               <div class="flex md:block flex-start items-center pt-2 md:pt-0">
                 <div class="bg-green-300 w-2 h-2 rounded-full -ml-1 md:ml-0 mr-3 md:mr-0 md:-mt-1"></div>
-                <p class="text-green-500 text-sm mt-2">{{ filters.toiso(education.start) }} - {{ filters.toiso(education.end) }}</p>
+                <p class="text-green-500 text-sm mt-2">{{ filters.toiso(education.start) }} - {{
+                  filters.toiso(education.end) }}</p>
               </div>
               <div class="mt-0.5 ml-4 md:ml-0 pb-5">
                 <h4 class="text-green-800 font-semibold text-xl mb-1.5">{{ education.name }}</h4>
@@ -331,29 +332,29 @@
 import { Icon } from '@iconify/vue';
 import { useRoute } from "vue-router"
 import { useManagement } from "@/store/management"
-import { toast, goto, chance } from "@/utils/index"
+import { toast } from "@/utils/index"
 import { onBeforeRouteUpdate } from "vue-router"
 import { CirclesToRhombusesSpinner } from "epic-spinners"
 import { Form, Field, ErrorMessage, InvalidSubmissionContext } from "vee-validate"
 import { ref, computed, onBeforeMount } from "vue"
-import { isLength,isEmail } from 'validator'
+import { isLength, isEmail } from 'validator'
 import api_resources from "@/api/resources.js"
-import ModalDocument from './components/modalDocument.vue'
-import ModalDeleteEmployee from './components/ModalDeleteEmployee.vue'
-import ModalExperience from './components/ModalExperience.vue'
-import ModalEducation from './components/ModalEducation.vue'
 import ModalContact from './components/ModalContact.vue'
+import ModalDocument from './components/ModalDocument.vue'
+import ModalEducation from './components/ModalEducation.vue'
+import ModalExperience from './components/ModalExperience.vue'
+import ModalDeleteEmployee from './components/ModalDeleteEmployee.vue'
 
 
-const modalDocument = ref<InstanceType<typeof ModalDocument> | null>(null)
-const modalDeleteEmployee = ref<InstanceType<typeof ModalDeleteEmployee> | null>(null)
-const modalExperience = ref<InstanceType<typeof ModalExperience> | null>(null)
-const modalEducation = ref<InstanceType<typeof ModalEducation> | null>(null)
 const modalContact = ref<InstanceType<typeof ModalContact> | null>(null)
+const modalDocument = ref<InstanceType<typeof ModalDocument> | null>(null)
+const modalEducation = ref<InstanceType<typeof ModalEducation> | null>(null)
+const modalExperience = ref<InstanceType<typeof ModalExperience> | null>(null)
+const modalDeleteEmployee = ref<InstanceType<typeof ModalDeleteEmployee> | null>(null)
 
-const error = computed(() => store.error)
-const store = useManagement()
 const route = useRoute()
+const store = useManagement()
+const error = computed(() => store.error)
 const userData = computed(() => store.employees.find((emp) => emp._id == route.params.id))
 const edit_mode = ref(false)
 const onboardings = computed(() => Object.fromEntries(new Map(userData.value?.onboarding.map((obj) => [obj["field"], obj["state"]]))))
