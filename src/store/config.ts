@@ -8,6 +8,7 @@ import { toast } from "@/utils/index";
 import router from "@/router/index";
 import { TYPE } from "vue-toastification";
 import { createFetch, useFetch } from "@vueuse/core";
+import { useEmployee } from "./employee";
 export interface IMenu {
   text: string;
   to: string;
@@ -185,12 +186,14 @@ export const useConfig = defineStore("config", {
       this.setMyFetch();
       const students = useStudents();
       const contents = useContents();
+      const employee = useEmployee();
       const mngt = useManagement();
 
       try {
         await mngt.init();
         await students.init();
         await contents.init();
+        await employee.init();
       } catch (error: any) {
         console.log(error);
       }

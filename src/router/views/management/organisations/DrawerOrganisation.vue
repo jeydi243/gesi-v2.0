@@ -17,13 +17,15 @@
                 </svg>
             </button>
         </div>
-        <div class="p-4 h-full">
-            <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitOrg" v-slot="{ isSubmitting }"
-                :validation-schema="OrgSchema" :initial-values="initialOrgValue" @invalid-submit="onInvalidOrg">
-                <Field as="select" name="parent_org_id" v-slot="{ field, errorMessage }"
+        <div class="p-4 h-full overflow-y-scroll">
+            <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitOrg"
+                v-slot="{ isSubmitting, values }" :validation-schema="OrgSchema" :initial-values="initialOrgValue"
+                @invalid-submit="onInvalidOrg">
+                {{ values }}
+                <Field as="select" name="organization_parent_id" v-slot="{ field, errorMessage }"
                     class="fl-select-small peer bg-gray-50">
                     <option value="" selected>Choose parent Organisation</option>
-                    <option v-for="{ id, name } in orgs" :key='id' :value="id"> {{ name }}</option>
+                    <option v-for="{ _id: id, name } in orgs" :key='id' :value="id"> {{ name }}</option>
                 </Field>
                 <Field name="name" v-slot="{ field, errorMessage }">
                     <div class="relative">
@@ -43,14 +45,16 @@
                     <textarea v-bind="field" id="message" rows="4" class="fl-textarea"
                         placeholder="Write down a description."></textarea>
                 </Field>
+                <!-- {{ lookupsALL() }} -->
                 <Field as="select" name="lookup_id" v-slot="{ errorMessage }" class="fl-select-small peer bg-gray-50">
-                    <option value="" selected>Choose type of Organisation</option>
-                    <option v-for="lookup in lookupsALL" :value="lookup.id">{{ lookup.name }}</option>
-                    <span>{{ errorMessage }}</span>
+                    <!-- <option value="" selected>Choose type of organization</option> -->
+                    <option v-for="lookup in lookupsALL()" :value="lookup._id">{{ lookup.name }}</option>
+                    <!-- <span>{{ errorMessage }}</span> -->
                 </Field>
                 <!-- {{ values }} -->
                 <div class="footer row h-1/2 w-full justify-between ">
-                    <button class="btn-unstate" @click.prevent.stop="closeDrawer()">Cancel</button>
+                    <button class="btn-unstate" @click.prevent.stop="closeDrawer()"
+                        data-hs-overlay="#drawerOrganisation">Cancel</button>
                     <button type="submit" class="btn-primary">
                         <SpringSpinner :size="4" color="#FFF" class="text-white" v-if="isSubmitting" />
                         <Icon icon="material-symbols:add" color="white" width="20" height="20" v-else></Icon>
@@ -68,32 +72,33 @@ import * as yup from "yup"
 import { Icon } from "@iconify/vue";
 import { toast } from '../../../../utils/index';
 import { myfetch } from "@/api/myfetch";
+import { useAuth } from '@/store/authentication'
 import { computed } from 'vue'
 import { useManagement } from '@/store/management'
-import { CirclesToRhombusesSpinner, SpringSpinner } from 'epic-spinners'
+import { SpringSpinner } from 'epic-spinners'
 import { Field, Form, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
 
 const store = useManagement()
+const Authstore = useAuth()
 const { addOrg } = store
 const orgs = computed(() => store.orgs)
 const lookupsALL = computed(() => store.getLookups)
+const user = computed(() => Authstore.getCurrentUser)
 const initialOrgValue = {
     code: '',
     name: '',
     description: '',
-    parent_org_id: '',
+    organization_parent_id: '',
     lookup_id: '',
 }
 const OrgSchema = yup.object({
     code: yup.string().required().label("Code"),
     name: yup.string().required().label("Name"),
     description: yup.string().required().label("Description"),
-    parent_org_id: yup.string().max(100).nullable().label("Parent Org ID"),
+    organization_parent_id: yup.string().max(100).nullable().label("Parent Org ID"),
     lookup_id: yup.string().required().min(2).label("Lookup ID"),
 })
-function closeDrawer() {
 
-}
 
 async function submitOrg(values, { resetForm, setFieldError }: SubmissionContext) {
     try {
@@ -101,11 +106,11 @@ async function submitOrg(values, { resetForm, setFieldError }: SubmissionContext
         const payload = {
             ...values, createdBy: user.value._id
         }
-        const { isFetching, error, data, response, statusCode } = await myfetch(api.getOrgs).post(payload).json()
-        // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)
+        const { error, data, response, statusCode } = await myfetch(api.getOrgs).post(payload).json()
+
         if (response.value?.ok) {
             toast.success("Organization added successfully! ")
-            closeDrawer
+            closeDrawer()
             resetForm()
             await addOrg(data.value)
         } else {
@@ -123,8 +128,12 @@ async function submitOrg(values, { resetForm, setFieldError }: SubmissionContext
         return false
     }
 }
-function onInvalidOrg(ctx: InvalidSubmissionContext) {
-
+function onInvalidOrg({ errors }: InvalidSubmissionContext) {
+    console.log('Invalid: ', errors);
+}
+function closeDrawer() {
+    const drawerOrg = document.getElementById('drawerOrganisation');
+    window.HSOverlay.close(drawerOrg)
 }
 </script>
 

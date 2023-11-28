@@ -109,16 +109,19 @@ import { CirclesToRhombusesSpinner } from 'epic-spinners'
 import { Field, Form, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption, TransitionRoot, ComboboxButton } from '@headlessui/vue'
 import { myfetch } from '@/api/myfetch';
+import { useEmployee } from "@/store/employee";
 
 
-const store = useManagement()
+const storeMgt = useManagement()
+const storeEmp = useEmployee()
 const orgID = ref<string>('1452')
 const showDrawer = ref(false)
 const initialLookupsValue = ref([])
 const affectationSchema = ref([])
-const employees = computed(() => store.employees)
-const positions = computed(() => store.positionsInOrg)
+const employees = computed(() => storeEmp.employees)
+const positions = computed(() => storeEmp.positionsInOrg)
 
+const { addAffectation } = storeEmp
 let selectedEmployeeID = ref(employees.value[0].id)
 let query = ref('')
 let filteredEmployee = computed(() =>

@@ -1,7 +1,7 @@
 import { axios } from "./myaxios"
 
 export default {
-  getOrgs: "/orgs",
+  getOrgs: "/organizations",
   getClasses: "/classes", // /employees
   getLookups: "/lookups",
   getEmployees: "/employees",

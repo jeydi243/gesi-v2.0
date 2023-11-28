@@ -21,6 +21,7 @@
             <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitLookups"
                 v-slot="{ isSubmitting, values }" :validation-schema="lookupsSchema" :initial-values="initialLookupsValue"
                 @invalid-submit="onInvalidLookups">
+                {{ values }}
                 <div
                     class=" col items-center mb-5 justify-center bg-gray-100 w-full h-12 rounded-md my-auto border text-center select-none align-middle border-cyan-300 border-dashed">
                     Classe: {{ currentClasse?._id }}
@@ -119,13 +120,13 @@ async function submitLookups(values, { resetForm, setFieldError }: SubmissionCon
     try {
         // console.log("submitLookups....");
         const payload = {
-            ...values, classe_id: currentClasse.value?.id, createdBy: user.value._id
+            ...values, createdBy: user.value._id
         }
         const { isFetching, error, data, response, statusCode } = await myfetch(api.getLookups).post(payload).json()
         // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)
         if (response.value?.ok) {
             toast.success("Lookups added successfully! ")
-            closeDrawer
+            closeDrawer()
             resetForm()
             await addLookups(data.value)
         } else {

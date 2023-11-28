@@ -4,27 +4,10 @@ import { IEmployee } from "@/models/employee";
 import { useAuth } from "./authentication";
 import { useConfig } from "./config";
 import { $Fetch } from "ofetch";
+import { IClasse } from "@/models/classe";
+import { IPosition } from "@/models/position";
+import { ILookups } from "@/models/lookup";
 
-export interface ILookups {
-  _id?: string;
-  classe_id: string;
-  code: string;
-  parent_lookups_id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  description: string;
-}
-
-export interface IClasse {
-  _id?: string;
-  id?: string;
-  code: string;
-  parent_classe_id?: string;
-  name: string;
-  description: string;
-  current: boolean;
-}
 export interface IStoreManagement {
   laptops: [];
   routeurs: [];
@@ -44,7 +27,6 @@ export const useManagement = defineStore("management", {
     error: "",
     routeurs: [],
     organizations: [],
-    affectationsEmployees: [],
     positions: [],
     classes: [
       {
@@ -64,7 +46,6 @@ export const useManagement = defineStore("management", {
     ],
     lookups: [],
     documents: [],
-    employees: [],
   }),
 
   actions: {
@@ -73,10 +54,10 @@ export const useManagement = defineStore("management", {
         const config = useConfig();
         this.myfetch = config.myfetch;
 
+        await this.getAllClasses();
         await this.getAllLookups();
         await this.getAllDocuments();
-        await this.getAllEmployees();
-        await this.getAllClasses();
+        await this.getAllOrgs();
       } catch (error: any) {
         console.log(error);
       }
@@ -96,29 +77,6 @@ export const useManagement = defineStore("management", {
           return true;
         }
 
-        return false;
-      } catch (er) {
-        console.log(er);
-      }
-    },
-    async getAllEmployees() {
-      this.employees = [];
-      try {
-        const employees: Array<IEmployee> = await this.myfetch!<
-          Array<IEmployee>
-        >(mgntAPI.getEmployees, { method: "GET" });
-        console.log(
-          `%cFetch successfully ${employees.length} Employees !`,
-          "color: #0080c0; font-weight: bold;"
-        );
-        if (employees) {
-          if (employees.length > 0) {
-            employees.forEach((em) => this.employees.unshift(em));
-          } else {
-            this.employees = employees;
-          }
-          return true;
-        }
         return false;
       } catch (er) {
         console.log(er);
@@ -172,68 +130,28 @@ export const useManagement = defineStore("management", {
         console.log(er);
       }
     },
-    async deleteEmployee(employeeID) {
+    async getAllOrgs() {
+      this.organizations = [];
       try {
-        const { status } = await mgntAPI.deleteEmployee(employeeID);
-        if (status == 200 || status == 201) {
-          const index = this.employees.findIndex(
-            (emp) => emp._id == employeeID
-          );
-          if (index != -1) this.employees.splice(index, 1);
-          else {
-            console.log("Can't find this employee");
-            return false;
+        const orgsALL = await this.myfetch!<Array<IOrganization>>(
+          "/organizations",
+          {
+            method: "GET",
           }
-          return true;
-        }
-        return false;
-      } catch (er) {
-        console.log(er);
-        return false;
-      }
-    },
-    async employeeById(employeeID) {
-      try {
-        const { data, status } = await mgntAPI.employeeBy(employeeID);
-        if (status == 200 || status == 201) {
-          const index = this.employees.findIndex(
-            (emp) => emp._id == employeeID
-          );
-          this.employees[index] = data[0];
-          return true;
-        }
-        return false;
-      } catch (er) {
-        console.log(er);
-      }
-    },
-    async addExperience(id, experience) {
-      try {
-        const { data, status } = await mgntAPI.addExperience(id, experience);
-        if (status == 200 || status == 201) {
-          const index = this.employees.findIndex((emp) => emp._id == data.id);
-          this.employees[index]!.experiences!.unshift(data);
-          return true;
-        }
-        return false;
-      } catch (er) {
-        console.log(er);
-        return false;
-      }
-    },
-    async addEmployee(newEmployee) {
-      try {
-        const { data, status, headers } = await mgntAPI.addEmployee(
-          newEmployee
+        ); // await mgntAPI.getClasses()
+        console.log({ orgsALL });
+
+        console.log(
+          `%cFetch successfully ${orgsALL.length} organizations !`,
+          "color: #ff8040; font-weight: bold;"
         );
-        if (status == 200 || status == 201) {
-          console.log({ data });
-          this.employees.unshift({ ...data, show: false });
-          return true;
-        } else if (status == 304) {
-          console.log("Employee already exists. HEARDS=>", headers);
+
+        if (orgsALL.length > 0) {
+          orgsALL.forEach((classe) => this.organizations.unshift(classe));
+        } else {
+          this.organizations = orgsALL;
         }
-        console.log(data);
+
         return false;
       } catch (er) {
         console.log(er);
@@ -263,14 +181,7 @@ export const useManagement = defineStore("management", {
         return false;
       }
     },
-    async addAffectation(newOrg: IOrganization) {
-      try {
-        this.affectationsEmployees.unshift(newOrg);
-      } catch (er) {
-        console.log("POP:", er);
-        return false;
-      }
-    },
+
     async addClasse(newClasse: IClasse) {
       const { getCurrentUser } = useAuth();
       try {
@@ -291,264 +202,7 @@ export const useManagement = defineStore("management", {
         return false;
       }
     },
-    async addEducation(employeeID, education) {
-      try {
-        const { data, status } = await mgntAPI.addEducation(
-          employeeID,
-          education
-        );
-        if (status == 201 || status === 200) {
-          let index = this.employees.findIndex((em) => em._id == employeeID);
-          this.employees[index].educations.push(data);
-          return true;
-        }
-        return false;
-      } catch (err) {
-        console.log(err);
-        return false;
-      }
-    },
-    async addEmergencyContact(employeeID, contact) {
-      try {
-        const { data, status } = await mgntAPI.addEmergencyContact(
-          employeeID,
-          contact
-        );
-        if (status == 201 || status === 200) {
-          let index = this.employees.findIndex((em) => em._id == employeeID);
-          this.employees[index].contacts.unshift(data);
-          return true;
-        }
-        return false;
-      } catch (err) {
-        console.log(err);
-        return false;
-      }
-    },
-    async deleteEducation(employeeID, educationID) {
-      try {
-        const { data, status, headers } = await mgntAPI.deleteEducation(
-          employeeID,
-          educationID
-        );
-        console.log(status);
-        if ((status == 200 || status == 201) && data != "") {
-          const indexEmp = this.employees.findIndex(
-            (emp) => emp._id == employeeID
-          );
-          const indexEduc = this.employees[indexEmp].educations.findIndex(
-            (educ) => educ.id == educationID
-          );
-          if (indexEduc != -1) {
-            this.employees[indexEmp].educations.splice(indexEduc, 1);
-            return true;
-          } else {
-            return false;
-          }
-        } else if (status == 304) {
-          console.log({ headers });
-        }
-        return false;
-      } catch (er) {
-        console.log(er);
-        return false;
-      }
-    },
-    /**
-     * Delete a contact.
-     *
-     * @param {type} employeeID - The ID of the employee.
-     * @param {type} contactID - The ID of the contact.
-     * @return {type} True if the contact was deleted successfully, false otherwise.
-     */
-    async deleteContact(employeeID, contactID) {
-      try {
-        const { data, status, headers } = await mgntAPI.deleteContact(
-          employeeID,
-          contactID
-        );
-        if ((status == 200 || status == 201) && data != "") {
-          const indexEmp = this.employees.findIndex(
-            (emp) => emp._id == employeeID
-          );
-          const indexContact = this.employees[indexEmp].contacts.findIndex(
-            (educ) => educ.id == contactID
-          );
-          if (indexContact != -1) {
-            this.employees[indexEmp].contacts.splice(indexContact, 1);
-            return true;
-          } else {
-            console.log("Ce contact n'exige déja plus");
-            return false;
-          }
-        } else if (status == 304) {
-          console.log({ headers });
-        }
-        return false;
-      } catch (er) {
-        console.log(er);
-        return false;
-      }
-    },
-    async deleteExperience(employeeID, experienceID) {
-      try {
-        const { status, headers } = await mgntAPI.deleteExperience(
-          employeeID,
-          experienceID
-        );
-        if (status == 200 || status == 201) {
-          const index = this.employees.findIndex(
-            (emp) => emp._id == employeeID
-          );
-          console.log({ index });
-          const indexExp = this.employees[index].educations.findIndex(
-            (educ) => educ.id == experienceID
-          );
-          if (indexExp != -1) {
-            this.employees[index].educations.splice(indexExp, 1);
-            return true;
-          } else {
-            return false;
-          }
-        } else if (status == 304) {
-          console.log({ headers });
-          return false;
-        }
-        return false;
-      } catch (er) {
-        console.log(er);
-        return false;
-      }
-    },
-    async updateExperience(employeeID, experienceID, experience) {
-      try {
-        const { data, status, headers } = await mgntAPI.updateExperience(
-          employeeID,
-          { id: experienceID, ...experience }
-        );
-        console.log({ data, status, headers });
-        if ((status == 200 || status == 201) && data != "") {
-          const index = this.employees.findIndex(
-            (emp) => emp._id == employeeID
-          );
-          const indexExp = this.employees[index]!.experiences!.findIndex(
-            (exp) => exp.id == experienceID
-          );
-          if (indexExp != -1) {
-            this.employees[index]!.experiences![indexExp] = data;
-          } else {
-            return false;
-          }
-          return true;
-        } else if (status == 304) {
-          console.log("Experience already exists ", headers);
-          return false;
-        }
-      } catch (er) {
-        console.log(er);
-        return false;
-      }
-    },
-    async updateEducation(employeeID, educationID, education) {
-      try {
-        const { data, status, headers } = await mgntAPI.updateEducation(
-          employeeID,
-          { id: educationID, ...education }
-        );
-        if ((status == 200 || status == 201) && data != "") {
-          const index = this.employees.findIndex(
-            (emp) => emp._id == employeeID
-          );
-          const indexExp = this.employees[index].educations.findIndex(
-            (educ) => educ.id == educationID
-          );
-          if (indexExp != -1) {
-            this.employees[index].educations[indexExp] = data;
-          } else {
-            return false;
-          }
-          return true;
-        } else if (status == 304) {
-          console.log("Education can't be updated ", headers);
-          return false;
-        }
-      } catch (er) {
-        console.log(er);
-        return false;
-      }
-    },
-    async updateBiography(employeeID, biography) {
-      try {
-        const { data, status } = await mgntAPI.updateBiography(
-          employeeID,
-          biography
-        );
-        if ((status == 200 || status == 201) && data != "") {
-          const index = this.employees.findIndex(
-            (emp) => emp._id == employeeID
-          );
-          if (index != -1) {
-            this.employees[index].biography = biography;
-          } else {
-            return false;
-          }
-          return true;
-        } else if (status == 304) {
-          console.log("Biography can't be updated ");
-          return false;
-        }
-      } catch (er) {
-        console.log(er);
-      }
-    },
-    async changedoc(employeeID, newDoc) {
-      try {
-        const { data, status } = await mgntAPI.updateDocument({
-          employeeID,
-          ...newDoc,
-        });
-        if ((status == 200 || status == 201) && data != "") {
-          const index = this.employees.findIndex(
-            (emp) => emp._id == employeeID
-          );
-          if (index != -1) {
-            this.employees[index]!.resume_file = data; //link to file on server
-          } else {
-            return false;
-          }
-          return true;
-        } else if (status == 304) {
-          console.log("Biography can't be updated ");
-          return false;
-        }
-      } catch (er) {
-        console.log(er);
-      }
-    },
-    async updateOnboarding(employeeID, onboarding) {
-      try {
-        const { data, status } = await mgntAPI.updateOnboarding(
-          employeeID,
-          onboarding
-        );
-        if ((status == 200 || status == 201) && data != "") {
-          const index = this.employees.findIndex(
-            (emp) => emp._id == employeeID
-          );
-          if (index != -1) {
-            this.employees[index].onboarding = onboarding;
-          } else {
-            return false;
-          }
-          return true;
-        } else if (status == 304) {
-          console.log("Onboarding can't be updated ");
-          return false;
-        }
-      } catch (er) {
-        console.log(er);
-      }
-    },
+
     async addDocument(newDocument) {
       try {
         const { data, status } = await mgntAPI.addDocument(newDocument);
@@ -668,17 +322,13 @@ export const useManagement = defineStore("management", {
   getters: {
     filieres: (state) =>
       state.organizations.filter((fil) => fil.lookups_id == "10"),
+    orgs: (state) => state.organizations,
     errorCall: (state) => state.error,
     getLaptops: (state) => state.laptops,
     getRouteurs: (state) => state.routeurs,
     getdocuments: (state) => state.documents,
-    getEmployees: (state) => state.employees,
-    getTeachers: (state) => (filter) => state.employees,
     currentClasse: (state) => state.classes.filter((e) => e.current === true),
-    positionsInOrg: (state) => (orgID) =>
-      state.positions.filter((e) => e.organisationID === orgID),
-    getPositions: (state) => (filter) =>
-      state.positions.filter((e) => e.name == filter),
+
     getClasses:
       (state) =>
       (search = "") =>
@@ -691,9 +341,11 @@ export const useManagement = defineStore("management", {
                 classe.code.includes(search)
             ),
     getClasses2: (state) => state.classes, //: state.classes.filter((classe) => classe.name.includes(search) || classe.description.includes(search)),
-    getLookups: (state) => (classeID?: string) =>
-      classeID == ""
-        ? state.lookups
-        : state.lookups.filter((lookups) => lookups.classe_id == classeID),
+    getLookups:
+      (state) =>
+      (classeID: string = "") =>
+        classeID == ""
+          ? state.lookups
+          : state.lookups.filter((lookups) => lookups.classe_id == classeID),
   },
 });
