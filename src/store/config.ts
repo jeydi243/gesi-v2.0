@@ -62,7 +62,7 @@ export const useConfig = defineStore("config", {
         mouseHover: false,
         children: [
           { text: "Contents", to: "/contents", icon: "zondicons:book-reference", active: false, mouseHover: false },
-          { text: "Filieres", to: "/filieres", icon: "material-symbols-light:background-dot-large-sharp", active: false, mouseHover: false },
+          { text: "Organisations", to: "/orgs", icon: "material-symbols-light:background-dot-large-sharp", active: false, mouseHover: false },
           { text: "Employees", to: "/employees", icon: "solar:user-id-linear", active: false, mouseHover: false },
           { text: "Documents", to: "/documents", icon: "solar:folder-with-files-broken", active: false, mouseHover: false },
           // { text: "Classes", to: "/classes", icon: "message-square", active: false, mouseHover: false },

@@ -200,12 +200,12 @@ const managementRoutes = [
           ),
       },
       {
-        path: "filieres",
+        path: "orgs",
         meta: { layout: "main" },
-        name: "filieres-index",
+        name: "orgs-index",
         component: () =>
           import(
-            /* webpackChunkName: "management" */ "./views/management/filieres.vue"
+            /* webpackChunkName: "management" */ "./views/management/organisations/index.vue"
           ),
       },
       {

@@ -80,7 +80,7 @@ import * as yup from "yup"
 import { useToast } from 'vue-toastification';
 import { PlusIcon, CheckIcon, ChevronDoubleDownIcon } from "@heroicons/vue/solid";
 import { CirclesToRhombusesSpinner } from "epic-spinners"
-import { Field, Form, ErrorMessage, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
+import { Field, Form, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
 import { ref, computed } from 'vue'
 import { useManagement } from "@/store/management";
 import { useAuth } from "@/store/authentication";
@@ -119,7 +119,7 @@ async function submitLookups(values, { resetForm, setFieldError }: SubmissionCon
     try {
         // console.log("submitLookups....");
         const payload = {
-            ...values, classe_id: currentClasse.value?._id, createdBy: user.value._id
+            ...values, classe_id: currentClasse.value?.id, createdBy: user.value._id
         }
         const { isFetching, error, data, response, statusCode } = await myfetch(api.getLookups).post(payload).json()
         // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)

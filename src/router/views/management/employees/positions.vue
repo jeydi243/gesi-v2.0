@@ -7,8 +7,8 @@
                     <label for="fff" class="fl-label">Search</label>
                 </div>
                 <div class="row h-10 w-full  align-middle items-center justify-between">
-                    <span class=" text-xl"> Organisations</span>
-                    <button type="button" @click="setisOpenAddDialog(true)">
+                    <span class=" text-xl">Organisations</span>
+                    <button type="button" data-hs-overlay="#drawerOrganisation">
                         <PlusIcon class="h-5 w-5 text-teal-500" />
                     </button>
                 </div>
