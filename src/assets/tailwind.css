@@ -56,6 +56,11 @@ tr .custom-th {
   @apply first-letter:uppercase text-left pl-1 table-cell;
 }
 
+.fl-input-file{
+  @apply block w-full mb-5 text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400;
+}
+
+
 .nav {
   @apply container mx-auto bg-gray-800 bg-opacity-0 h-14 w-full inline-flex space-x-32 items-center absolute justify-center z-10 top-0 right-0;
 }

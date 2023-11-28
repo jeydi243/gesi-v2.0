@@ -7,7 +7,7 @@
             <div class="row w-full text-2xl font-bold"> Affectation </div>
             <button type="button"
                 class="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white text-sm dark:text-gray-500 dark:hover:text-gray-400 dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800"
-                data-hs-overlay="#drawerOP">
+                data-hs-overlay="#drawerAffectation">
                 <span class="sr-only">Close modal</span>
                 <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -18,30 +18,57 @@
             </button>
         </div>
         <div class="p-4 h-full">
-            <!-- <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitAffectation"
+            <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitAffectation"
                 v-slot="{ isSubmitting }" :validation-schema="affectationSchema" :initial-values="initialLookupsValue"
                 @invalid-submit="onInvalidAffectation">
 
-                <Field as="select" name="classe_id" v-slot="{ errorMessage }" class="fl-select2-small peer">
-                    <option selected>Choisis un employée</option>
-                    <option v-for="{ id, middle_name, last_name, first_name } in employees" :key='id' :value="id">
-                        {{ last_name }}</option>
+                <!-- <Field as="select" name="classe_id" v-slot="{ errorMessage }"
+                    class="fl-select2-small peer text-black bg-gray-100">
+                    <option selected class="text-black">Choisis une fonction</option>
+                    <option v-for="{ id, name } in positions(orgID)" :key='id' :value="id" class="text-black">
+                        {{ name }}</option>
+                    <p>{{ errorMessage }}</p>
+                </Field> -->
+                <Field name="positionID" id="positionID" as="select" class="form-select block w-full"
+                    v-slot="{ errorMessage }">
+                    <option value="CD" selected>RDC (Congo)</option>
+                    <option v-for="{ id, name } in positions(orgID)" :key='id' :value="id" class="text-black">
+                        {{ name }}</option>
+                    <p>{{ errorMessage }}</p>
                 </Field>
 
                 <Combobox v-model="selectedEmployeeID">
-                    <ComboboxInput @change="query = $event.target.value" :displayValue="(person) => person.last_name" />
-                    <ComboboxOptions>
-                        <ComboboxOption v-for="person in filteredEmployee" :key="person.id" :value="person.id"
-                            as="template" v-slot="{ active, selected }">
-                            <li :class="{
-                                'bg-blue-500 text-white': active,
-                                'bg-white text-black': !active,
-                            }">
-                                <CheckIcon v-show="selected" />
-                                {{ person.last_name }}
-                            </li>
-                        </ComboboxOption>
-                    </ComboboxOptions>
+                    <div class="relative mt-1 bg-gray-50">
+                        <div
+                            classe="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+                            <ComboboxInput @change="query = $event.target.value"
+                                :displayValue="(person) => person.last_name"
+                                class="w-full border-none py-2 pl-3 pr-10 text-sm border-b-2 rounded-lg border border-gray-500 leading-5 bg-gray-100 text-gray-900 focus:ring-0" />
+                            <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
+                                <Icon icon="akar-icons:chevron-vertical" class="h-5 w-5 text-gray-400" aria-hidden="true" />
+                            </ComboboxButton>
+                        </div>
+                        <TransitionRoot leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0"
+                            @after-leave="query = ''">
+
+                            <ComboboxOptions>
+                                <div v-if="filteredEmployee.length === 0 && query !== ''"
+                                    class="relative cursor-default select-none px-4 py-2 text-gray-700">
+                                    Aucun employée trouvé
+                                </div>
+                                <ComboboxOption v-for="person in filteredEmployee" :key="person.id" :value="person"
+                                    as="template" v-slot="{ active, selected }">
+                                    <li class="flex flex-row" :class="{
+                                        'bg-[#4e35bc] text-white': active,
+                                        'bg-white text-black': !active,
+                                    }">
+                                        <Icon icon="ic:outline-check" v-show="selected" />
+                                        {{ person.last_name }}
+                                    </li>
+                                </ComboboxOption>
+                            </ComboboxOptions>
+                        </TransitionRoot>
+                    </div>
                 </Combobox>
 
                 <Field name="name" v-slot="{ field, errorMessage }">
@@ -51,20 +78,14 @@
                         <p class="input-error">{{ errorMessage }}</p>
                     </div>
                 </Field>
-                <Field name="code" v-slot="{ field, errorMessage }">
+                <Field name="file" v-slot="{ field, errorMessage }">
                     <div class="relative">
-                        <input v-bind="field" type="text" id="code" class="fl-input-small peer" placeholder=" " />
-                        <label for="code" class="fl-label">Code</label>
-                        <p class="input-error">{{ errorMessage }}</p>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            for="small_size">Fichier</label>
+                        <input class="fl-input-file" id="small_size" type="file">
+
                     </div>
                 </Field>
-                <Field name="description" v-slot="{ field, errorMessage }">
-                    <label for="message"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                    <textarea v-bind="field" id="message" rows="4" class="fl-textarea"
-                        placeholder="Write your thoughts here..."></textarea>
-                </Field>
-
                 <div class="row h-1/2 w-full justify-between ">
                     <button class="btn-unstate" @click.prevent.stop="toggle()">Cancel</button>
                     <button type="submit" class="btn-primary">
@@ -73,29 +94,33 @@
                         <CirclesToRhombusesSpinner :size="5" color="#FFF" class="text-white" v-if="isSubmitting" />
                     </button>
                 </div>
-            </Form> -->
+            </Form>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { ref, computed } from 'vue'
 import { useManagement } from '@/store/management'
 import { CirclesToRhombusesSpinner } from 'epic-spinners'
 import { Field, Form, InvalidSubmissionContext } from "vee-validate"
-import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption, TransitionRoot } from '@headlessui/vue'
+import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption, TransitionRoot, ComboboxButton } from '@headlessui/vue'
+
 
 const store = useManagement()
+const orgID = ref<string>('1452')
 const showDrawer = ref(false)
 const initialLookupsValue = ref([])
 const affectationSchema = ref([])
 const employees = computed(() => store.employees)
+const positions = computed(() => store.positionsInOrg)
 
-let selectedEmployeeID = ref(employees[0].id)
+let selectedEmployeeID = ref(employees.value[0].id)
 let query = ref('')
 let filteredEmployee = computed(() =>
     query.value === ''
-        ? employees
+        ? employees.value
         : employees.value.filter((person) =>
             person.last_name
                 .toLowerCase()

@@ -15,6 +15,17 @@ export interface ILookups {
   updatedAt: Date;
   description: string;
 }
+export interface IPosition {
+  _id?: string;
+  id?: string;
+  code: string;
+  name: string;
+  description: string;
+  organisationID: string;
+  parent_position_id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 export interface IClasse {
   _id?: string;
   code: string;
@@ -33,6 +44,7 @@ export interface IStoreManagement {
   documents: Array<any>;
   organizations: Array<IOrganization>;
   employees: Array<IEmployee>;
+  positions: Array<IPosition>;
   filieres?: Array<any>;
 }
 
@@ -42,6 +54,7 @@ export const useManagement = defineStore("management", {
     error: "",
     routeurs: [],
     organizations: [],
+    positions: [],
     classes: [
       {
         name: "Type d'organisation",
@@ -655,7 +668,11 @@ export const useManagement = defineStore("management", {
     getdocuments: (state) => state.documents,
     getEmployees: (state) => state.employees,
     getTeachers: (state) => (filter) => state.employees,
-    currentClasse: (state) => state.classes.find((e) => e.current === true),
+    currentClasse: (state) => state.classes.filter((e) => e.current === true),
+    positionsInOrg: (state) => (orgID) =>
+      state.positions.filter((e) => e.organisationID === orgID),
+    getPositions: (state) => (filter) =>
+      state.positions.filter((e) => e.name == filter),
     getClasses:
       (state) =>
       (search = "") =>

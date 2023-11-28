@@ -126,7 +126,7 @@ const employeesRoutes = {
       name: "fonctions-employees",
       component: () =>
         import(
-          /* webpackChunkName: "employees" */ "./views/management/employees/fonctions.vue"
+          /* webpackChunkName: "employees" */ "./views/management/employees/positions.vue"
         ),
     },
     {

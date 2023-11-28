@@ -40,9 +40,9 @@ import { onLeaveTop, onEnter, onBeforeEnter, goto } from "@/utils/index"
 const store = useManagement()
 const currentTab = computed(() => tabsEmp.value.find((tab) => tab.current).name.toLowerCase())
 const tabsEmp = ref([
-	{ name: "Annuaire", current: true, route: 'employees-index' },
-	{ name: "Fonctions", current: false, route: 'fonctions-employees' },
-	{ name: "Affectation d'employés", current: false, route: 'affectations-employees' },
+	{ name: "Index", current: true, route: 'employees-index' },
+	{ name: "Positions", current: false, route: 'fonctions-employees' },
+	{ name: "Staff assignments", current: false, route: 'affectations-employees' },
 ])
 function changeTab(index) {
 	const currentTrue = tabsEmp.value.findIndex((tab) => tab.current == true)

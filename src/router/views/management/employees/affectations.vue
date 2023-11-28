@@ -6,8 +6,7 @@
                 <button @click.prevent="store.getAllEmployees" class="btn-primary mr-1">
                     <Icon icon="heroicons:arrow-path-20-solid" color="white" height="20" width="20" />
                 </button>
-                <button type="button" class="btn-primary" data-hs-overlay="#drawerAffectation"
-                    data-drawer-toggle="drawer-example" aria-controls="drawer-example">
+                <button type="button" class="btn-primary" data-hs-overlay="#drawerAffectation">
                     <Icon icon="heroicons:user-plus-20-solid" color="white" height="20" width="20" />
                     <span class="self-center ml-2">Affecter</span>
                 </button>
@@ -92,37 +91,21 @@
                 </tbody>
             </table>
         </div>
-        
-        <DrawerAffectation ref="drawerAffectation" />
+
+        <DrawerAffectation ref="drawerAffectationPr" />
 
     </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
-import { CheckIcon } from '@heroicons/vue/solid'
 import { useManagement } from '@/store/management'
-import { ref, computed } from 'vue'
 import { InvalidSubmissionContext } from "vee-validate"
-
 import DrawerAffectation from './affectations/DrawerAffectation.vue'
-const drawerAffectation = ref<InstanceType<typeof DrawerAffectation> | null>(null)
+
+const drawerAffectationPr = ref<InstanceType<typeof DrawerAffectation> | null>(null)
 const store = useManagement()
-
-
-function closeDrawer() {
-    console.log("Leka..");
-
-}
-
-function onInvalidAffectation(ctx: InvalidSubmissionContext) {
-    console.log("Leka..");
-}
-
-function submitAffectation(values) {
-    console.log("Leka..");
-
-}
 
 </script>
 
