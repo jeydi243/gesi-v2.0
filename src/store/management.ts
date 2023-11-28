@@ -15,17 +15,7 @@ export interface ILookups {
   updatedAt: Date;
   description: string;
 }
-export interface IPosition {
-  _id?: string;
-  id?: string;
-  code: string;
-  name: string;
-  description: string;
-  organisationID: string;
-  parent_position_id: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+
 export interface IClasse {
   _id?: string;
   id?: string;
@@ -44,7 +34,6 @@ export interface IStoreManagement {
   myfetch?: $Fetch;
   documents: Array<any>;
   organizations: Array<IOrganization>;
-  employees: Array<IEmployee>;
   positions: Array<IPosition>;
   filieres?: Array<any>;
 }
@@ -55,6 +44,7 @@ export const useManagement = defineStore("management", {
     error: "",
     routeurs: [],
     organizations: [],
+    affectationsEmployees: [],
     positions: [],
     classes: [
       {
@@ -91,7 +81,6 @@ export const useManagement = defineStore("management", {
         console.log(error);
       }
     },
-
     async getAllDocuments() {
       this.documents = [];
       try {
@@ -261,6 +250,22 @@ export const useManagement = defineStore("management", {
       const { getCurrentUser } = useAuth();
       try {
         this.lookups!.unshift(newLookups);
+      } catch (er) {
+        console.log("POP:", er);
+        return false;
+      }
+    },
+    async addOrg(newOrg: IOrganization) {
+      try {
+        this.organizations.unshift(newOrg);
+      } catch (er) {
+        console.log("POP:", er);
+        return false;
+      }
+    },
+    async addAffectation(newOrg: IOrganization) {
+      try {
+        this.affectationsEmployees.unshift(newOrg);
       } catch (er) {
         console.log("POP:", er);
         return false;

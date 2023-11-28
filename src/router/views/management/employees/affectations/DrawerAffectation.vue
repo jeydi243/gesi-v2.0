@@ -100,12 +100,15 @@
 </template>
 
 <script setup lang="ts">
+import api from "@/api/management"
 import { Icon } from '@iconify/vue'
+import { toast } from '../../../../utils/index';
 import { ref, computed } from 'vue'
 import { useManagement } from '@/store/management'
 import { CirclesToRhombusesSpinner } from 'epic-spinners'
-import { Field, Form, InvalidSubmissionContext } from "vee-validate"
+import { Field, Form, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption, TransitionRoot, ComboboxButton } from '@headlessui/vue'
+import { myfetch } from '@/api/myfetch';
 
 
 const store = useManagement()
@@ -134,8 +137,31 @@ function toggle() {
 function onInvalidAffectation(ctx: InvalidSubmissionContext) {
     showDrawer.value = !showDrawer.value
 }
-function submitAffectation(values) {
-    //todo
+async function submitAffectation(values, { resetForm, setFieldError }: SubmissionContext) {
+    try {
+        const payload = {
+            ...values, createdBy: user.value._id
+        }
+        const { isFetching, error, data, response, statusCode } = await myfetch(api.getAffectations).post(payload).json()
+        // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)
+        if (response.value?.ok) {
+            toast.success("Organization added successfully! ")
+            resetForm()
+            await addAffectation(data.value)
+        } else {
+            if ('validationerror' in data.value) {
+                toast.error(`Can't add new org! Correct all error field before submit`)
+                setFieldError(data.value.field, `${data.value.message}`)
+            }
+        }
+        console.log({ data: data.value });
+        console.log({ statusCode: statusCode.value });
+        console.log({ error: error.value });
+        console.log({ response: response.value });
+    } catch (error) {
+        console.log(error)
+        return false
+    }
 }
 
 defineExpose({ showDrawer })

@@ -1,12 +1,14 @@
 import { axios } from "./myaxios"
 
 export default {
-  routeDocuments: "/management/documents",
-  routeFilieres: "/management/filieres",
-  routeEmployees: "/employees", // /employees
+  getOrgs: "/orgs",
   getClasses: "/classes", // /employees
   getLookups: "/lookups",
   getEmployees: "/employees",
+  routeFilieres: "/management/filieres",
+  routeDocuments: "/management/documents",
+  routeEmployees: "/employees", // /employees
+  getAffectations: "/affectations",
   getDocuments: async function () {
     return axios.get(`${this.routeDocuments}`)
   },

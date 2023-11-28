@@ -20,7 +20,9 @@
         <div class="p-4 h-full">
             <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitOrg" v-slot="{ isSubmitting }"
                 :validation-schema="OrgSchema" :initial-values="initialOrgValue" @invalid-submit="onInvalidOrg">
-                <Field as="select" name="parent_org_id" v-slot="{ field, errorMessage }" class="fl-select-small peer">
+                <Field as="select" name="parent_org_id" v-slot="{ field, errorMessage }"
+                    class="fl-select-small peer bg-gray-50">
+                    <option value="" selected>Choose parent Organisation</option>
                     <option v-for="{ id, name } in orgs" :key='id' :value="id"> {{ name }}</option>
                 </Field>
                 <Field name="name" v-slot="{ field, errorMessage }">
@@ -38,26 +40,21 @@
                     </div>
                 </Field>
                 <Field name="description" v-slot="{ field, errorMessage }">
-                    <label for="message"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
                     <textarea v-bind="field" id="message" rows="4" class="fl-textarea"
-                        placeholder="Write your thoughts here..."></textarea>
+                        placeholder="Write down a description."></textarea>
                 </Field>
-                <Field as="select" name="parent_lookup_id" v-slot="{ field, errorMessage }" class="fl-select-small peer">
-                    <option selected>Choose a country</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="FR">France</option>
-                    <option value="DE">Germany</option>
-
+                <Field as="select" name="lookup_id" v-slot="{ errorMessage }" class="fl-select-small peer bg-gray-50">
+                    <option value="" selected>Choose type of Organisation</option>
+                    <option v-for="lookup in lookupsALL" :value="lookup.id">{{ lookup.name }}</option>
+                    <span>{{ errorMessage }}</span>
                 </Field>
                 <!-- {{ values }} -->
-                <div class="row h-1/2 w-full justify-between ">
+                <div class="footer row h-1/2 w-full justify-between ">
                     <button class="btn-unstate" @click.prevent.stop="closeDrawer()">Cancel</button>
                     <button type="submit" class="btn-primary">
-                        <box-icon type="solid" name="file-plus" color="white"></box-icon>
-                        <span class="font-bold text-white">Add</span>
-                        <CirclesToRhombusesSpinner :size="5" color="#FFF" class="text-white" v-if="isSubmitting" />
+                        <SpringSpinner :size="4" color="#FFF" class="text-white" v-if="isSubmitting" />
+                        <Icon icon="material-symbols:add" color="white" width="20" height="20" v-else></Icon>
+                        <span class="font-bold text-white">New org</span>
                     </button>
                 </div>
             </Form>
@@ -66,14 +63,20 @@
 </template>
 
 <script setup lang="ts">
+import api from "@/api/management"
 import * as yup from "yup"
+import { Icon } from "@iconify/vue";
+import { toast } from '../../../../utils/index';
+import { myfetch } from "@/api/myfetch";
 import { computed } from 'vue'
 import { useManagement } from '@/store/management'
-import { Field, Form, InvalidSubmissionContext } from "vee-validate"
-import { PlusIcon, CheckIcon, ChevronDoubleDownIcon } from "@heroicons/vue/solid";
+import { CirclesToRhombusesSpinner, SpringSpinner } from 'epic-spinners'
+import { Field, Form, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
 
 const store = useManagement()
+const { addOrg } = store
 const orgs = computed(() => store.orgs)
+const lookupsALL = computed(() => store.getLookups)
 const initialOrgValue = {
     code: '',
     name: '',
@@ -86,13 +89,39 @@ const OrgSchema = yup.object({
     name: yup.string().required().label("Name"),
     description: yup.string().required().label("Description"),
     parent_org_id: yup.string().max(100).nullable().label("Parent Org ID"),
-    lookup_id: yup.string().nullable().label("Lookup ID"),
+    lookup_id: yup.string().required().min(2).label("Lookup ID"),
 })
 function closeDrawer() {
 
 }
-function submitOrg(values) {
 
+async function submitOrg(values, { resetForm, setFieldError }: SubmissionContext) {
+    try {
+        // console.log("submitLookups....");
+        const payload = {
+            ...values, createdBy: user.value._id
+        }
+        const { isFetching, error, data, response, statusCode } = await myfetch(api.getOrgs).post(payload).json()
+        // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)
+        if (response.value?.ok) {
+            toast.success("Organization added successfully! ")
+            closeDrawer
+            resetForm()
+            await addOrg(data.value)
+        } else {
+            if ('validationerror' in data.value) {
+                toast.error(`Can't add new org! Correct all error field before submit`)
+                setFieldError(data.value.field, `${data.value.message}`)
+            }
+        }
+        console.log({ data: data.value });
+        console.log({ statusCode: statusCode.value });
+        console.log({ error: error.value });
+        console.log({ response: response.value });
+    } catch (error) {
+        console.log(error)
+        return false
+    }
 }
 function onInvalidOrg(ctx: InvalidSubmissionContext) {
 
