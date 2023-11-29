@@ -90,21 +90,20 @@
       <DialogDeleteLookup ref="dialogDeleteLookup" :lookupID="toDeleteLookup?._id" />
 
     </div>
-
-
   </div>
 </template>
 
 <script setup lang="ts">
-import DialogDeleteLookup from './lookups/DialogDeleteLookup.vue'
-import DialogAddClasse from './lookups/DialogAddClasse.vue'
-import DrawerAddLookup from './lookups/DrawerAddLookup.vue'
+import DialogDeleteLookup from './DialogDeleteLookup.vue'
+import DialogAddClasse from './DialogAddClasse.vue'
+import DrawerAddLookup from './DrawerAddLookup.vue'
 import { gsap } from "gsap"
 import { myfetch } from "@/api/myfetch";
-import { IClasse } from '@/store/management'
 import { ref, computed, watch } from "vue"
-import { useManagement, ILookups } from '@/store/management';
+import { useManagement } from '@/store/management';
 import { PlusIcon, } from "@heroicons/vue/solid";
+import { ILookups } from '@/models/lookup';
+import { IClasse } from '@/models/classe';
 
 
 let _searchLookups = ref<string>('')

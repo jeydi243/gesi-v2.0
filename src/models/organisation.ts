@@ -3,7 +3,7 @@ interface IOrganization {
   name: string;
   code: string;
   description: string;
-  created: string;
+  createdAt: Date;
   updatedBy: string;
   organization_parent_id: string | null;
   lookup_id: string;

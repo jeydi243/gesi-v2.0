@@ -38,6 +38,7 @@ const store = useManagement()
 const isOpenDeleteDialog = ref(false)
 const { getAllOrgs } = store
 const { orgID } = defineProps(['orgID'])
+let deleteOrgID = ref('')
 async function deleteOrgs() {
     try {
         const { isFetching: f, error, data, response, statusCode } = await myfetch(api.getOrgs + '/' + orgID).delete().json()
@@ -61,13 +62,14 @@ async function deleteOrgs() {
 function closeDialog() {
     isOpenDeleteDialog.value = false;
 }
-function openDialog(orgID?: string) {
-    console.log('Why...DELETE');
+function openDialog(orgID: string) {
+    console.log('Why...DELETE', orgID);
+    deleteOrgID.value = orgID
     isOpenDeleteDialog.value = true;
 }
 
 defineExpose({
-    closeDialog, openDialog,
+    closeDialog, openDialog
 })
 </script>
   

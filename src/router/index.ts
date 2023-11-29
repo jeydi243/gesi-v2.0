@@ -232,7 +232,7 @@ const managementRoutes = [
         name: "lookups",
         component: () =>
           import(
-            /* webpackChunkName: "management" */ "./views/management/lookups.vue"
+            /* webpackChunkName: "management" */ "./views/management/lookups/lookups.vue"
           ),
       },
     ],

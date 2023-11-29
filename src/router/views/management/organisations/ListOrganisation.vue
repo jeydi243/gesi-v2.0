@@ -5,20 +5,13 @@
                 <div
                     class="flex flex-row px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
                     <div class="flex items-center flex-1 space-x-4">
-                        <h5>
-                            <span class="text-gray-500">All Products:</span>
-                            <span class="dark:text-white">123456</span>
-                        </h5>
-                        <h5>
-                            <span class="text-gray-500">Total sales:</span>
-                            <span class="dark:text-white">$88.4k</span>
-                        </h5>
+
                     </div>
                     <div
                         class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
                         <button type="button" class="btn-primary" data-hs-overlay="#drawerOrganisation">
                             <Icon icon="material-symbols:add" height="20" width="20" />
-                            Add new org
+                            New org
                         </button>
                         <button type="button" @click="refresh"
                             class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
@@ -50,7 +43,8 @@
                                 <th scope="col" class="px-4 py-3">Name</th>
                                 <th scope="col" class="px-4 py-3">Code</th>
                                 <th scope="col" class="px-4 py-3">Description</th>
-                                <th scope="col" class="px-4 py-3">Lookups</th>
+                                <th scope="col" class="px-4 py-3">Type</th>
+                                <th scope="col" class="px-4 py-3">Parent organization</th>
                                 <th scope="col" class="px-4 py-3">Created</th>
                                 <th scope="col" class="px-4 py-3">Last Update</th>
                                 <th scope="col" class="px-4 py-3">Actions</th>
@@ -68,9 +62,8 @@
                                         <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
                                     </div>
                                 </td>
-                                <th scope="row"
-                                    class="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-
+                                <th
+                                    class="flex items-center bg-transparent px-4 py-2 align-middle  text-center font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     {{ org.name }}
                                 </th>
                                 <td class="px-4 py-2">
@@ -85,9 +78,11 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{
-                                    org.lookup_id }}</td>
+                                    org.lookup_id?.name }}</td>
                                 <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{
-                                    org.created }}</td>
+                                    org.organization_parent_id?.name }}</td>
+                                <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{
+                                    org.createdAt }}</td>
 
                                 <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{
                                     org.updatedBy }}
@@ -169,7 +164,7 @@ import { useManagement } from '@/store/management'
 import DialogDeleteOrg from './DialogDeleteOrg.vue';
 
 const dailogDeleteOrg = ref<InstanceType<typeof DialogDeleteOrg | null>>(null)
-                        
+
 
 const store = useManagement()
 const orgs = computed(() => store.orgs)
