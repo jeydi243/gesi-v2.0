@@ -181,6 +181,14 @@ export const useManagement = defineStore("management", {
         return false;
       }
     },
+    async addPosition(newPostion: IPosition) {
+      try {
+        this.positions.unshift(newPostion);
+      } catch (er) {
+        console.log("POP:", er);
+        return false;
+      }
+    },
 
     async addClasse(newClasse: IClasse) {
       const { getCurrentUser } = useAuth();
@@ -321,7 +329,7 @@ export const useManagement = defineStore("management", {
   },
   getters: {
     filieres: (state) =>
-      state.organizations.filter((fil) => fil.lookups_id == "10"),
+      state.organizations.filter((fil) => fil.lookup_id == "10"),
     orgs: (state) => state.organizations,
     errorCall: (state) => state.error,
     getLaptops: (state) => state.laptops,

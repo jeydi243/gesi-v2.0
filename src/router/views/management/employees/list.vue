@@ -1,7 +1,7 @@
 <template>
 	<!-- <Transition mode="out-in" name="fadeSlideX"> -->
 	<div class="flex flex-col justify-between">
-		
+
 		<div class="card row w-full mb-4 justify-between">
 			<span class="text-4xl font-bold border-0 border-l-4 border-l-yellow-400 pl-2">Employees</span>
 			<div class="row">
@@ -90,12 +90,11 @@
 
 <script setup>
 import { computed } from "vue"
-import { useRouter, useRoute } from "vue-router"
 import { beforeEnterList, enterList, leaveList, goto, chance } from "@/utils/index"
-import { useManagement } from "@/store/management"
 import { UserAddIcon, DotsHorizontalIcon, MailIcon, PhoneIcon, PencilIcon, UserIcon, RefreshIcon } from "@heroicons/vue/solid"
+import { useEmployee } from "@/store/employee";
 
-const store = useManagement()
+const store = useEmployee()
 
 const employees = computed(() => store.employees)
 </script>

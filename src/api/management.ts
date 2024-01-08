@@ -5,6 +5,7 @@ export default {
   getClasses: "/classes", // /employees
   getLookups: "/lookups",
   getEmployees: "/employees",
+  getPositions: "/positions",
   routeFilieres: "/management/filieres",
   routeDocuments: "/management/documents",
   routeEmployees: "/employees", // /employees

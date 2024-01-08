@@ -1,11 +1,11 @@
 export interface IPosition {
-    _id?: string;
-    id?: string;
-    code: string;
-    name: string;
-    description: string;
-    organisationID: string;
-    parent_position_id: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
+  id: string;
+  title: string;
+  org_id: string;
+  job_description: string;
+  report_to: string;
+  employment_type: string;
+  status: string;
+  startDate: Date;
+  endDate: Date;
+}

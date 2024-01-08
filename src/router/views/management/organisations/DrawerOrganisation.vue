@@ -1,6 +1,6 @@
 <template>
     <div id="drawerOrganisation"
-        class="hs-overlay hs-overlay-open:translate-x-0 hidden -translate-x-full fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700"
+        class="hs-overlay hs-overlay-open:translate-x-0 hidden hs-overlay-backdrop-open:backdrop-blur-sm -translate-x-full fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700"
         tabindex="-1">
         <div class="flex justify-between items-center py-2 px-2 border-b dark:border-gray-400">
 
@@ -21,7 +21,7 @@
             <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitOrg"
                 v-slot="{ isSubmitting, values }" :validation-schema="OrgSchema" :initial-values="initialOrgValue"
                 @invalid-submit="onInvalidOrg">
-                {{ values }}
+                
                 <Field as="select" name="organization_parent_id" v-slot="{ field, errorMessage }"
                     class="fl-select-small peer bg-gray-50">
                     <option value="" selected>Choose parent Organisation</option>
@@ -80,10 +80,10 @@ import { Field, Form, InvalidSubmissionContext, SubmissionContext } from "vee-va
 
 const store = useManagement()
 const Authstore = useAuth()
+const user = computed(() => Authstore.getCurrentUser)
 const { addOrg } = store
 const orgs = computed(() => store.orgs)
 const lookupsALL = computed(() => store.getLookups)
-const user = computed(() => Authstore.getCurrentUser)
 const initialOrgValue = {
     code: '',
     name: '',

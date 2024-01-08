@@ -344,6 +344,7 @@ import ModalDocument from './components/ModalDocument.vue'
 import ModalEducation from './components/ModalEducation.vue'
 import ModalExperience from './components/ModalExperience.vue'
 import ModalDeleteEmployee from './components/ModalDeleteEmployee.vue'
+import { useEmployee } from '@/store/employee';
 
 
 const modalContact = ref<InstanceType<typeof ModalContact> | null>(null)
@@ -354,8 +355,9 @@ const modalDeleteEmployee = ref<InstanceType<typeof ModalDeleteEmployee> | null>
 
 const route = useRoute()
 const store = useManagement()
+const storeEmp = useEmployee()
 const error = computed(() => store.error)
-const userData = computed(() => store.employees.find((emp) => emp._id == route.params.id))
+const userData = computed(() => storeEmp.employees.find((emp) => emp._id == route.params.id))
 const edit_mode = ref(false)
 const onboardings = computed(() => Object.fromEntries(new Map(userData.value?.onboarding.map((obj) => [obj["field"], obj["state"]]))))
 const showModalAddExper = ref(false)

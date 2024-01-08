@@ -3,7 +3,7 @@
     <div class="grid grid-cols-4 gap-4 h-screen">
       <div class="col-span-1 bg-white p-2 h-full rounded-md ml-3 hover:shadow-lg transition-all duration-700">
         <div class="search">
-          <input type="text" class="fl-input-small" placeholder="Type something..." v-model="_searchClasse">
+          <input type="text" autocomplete="off" class="fl-input-small" placeholder="Type something..." v-model="_searchClasse">
         </div>
         <div class="row-reverse h-10 w-full  align-middle items-center">
           <button type="button" @click="setisOpenAddDialog(true)">
@@ -24,7 +24,7 @@
       <div class="col-span-3 bg-white p-2 h-full rounded-md ml-3">
         <div id="rowd">
           <div class="flex flex-row-reverse justify-between mb-2">
-            <button :v-if="currentClasse?._id" class="btn-primary" data-hs-overlay="#drawerOP">
+            <button type="button" @click="drawerLookup?.openDrawer(currentClasse)" class="btn-primary" data-hs-overlay="#drawerAddLookup" data-drawer-target="drawerAddLookup" data-drawer-toggle="drawerAddLookup">
               <PlusIcon class="h-5 w-5 text-white" />
               <span class="self-center ml-2"> Add lookup </span>
             </button>

@@ -825,7 +825,6 @@ module.exports = {
   variants: {
     borderColor: ["responsive", "hover", "focus", "focus-within"],
   },
-
   variantOrder: ["first", "last", "odd", "even", "visited", "checked", "empty", "read-only", "group-hover", "group-focus", "focus-within", "hover", "focus", "focus-visible", "active", "disabled"],
   extend: {
     backdropBlur: {
@@ -834,11 +833,11 @@ module.exports = {
     },
   },
   plugins: [
-    require("preline/plugin"),
-    require("@headlessui/tailwindcss"),
     require("@tailwindcss/forms")({
       strategy: "class",
     }),
+    require("preline/plugin"),
+    require("@headlessui/tailwindcss"),
     require("@tailwindcss/aspect-ratio"),
     require('flowbite/plugin')
   ],

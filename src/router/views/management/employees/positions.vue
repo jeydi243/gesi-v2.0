@@ -7,7 +7,7 @@
                     <label for="fff" class="fl-label">Search</label>
                 </div>
                 <div class="row h-10 w-full  align-middle items-center justify-between">
-                    <span class=" text-xl">Organisations</span>
+                    <span class=" text-base">Organisations</span>
                     <button type="button" data-hs-overlay="#drawerOrganisation">
                         <PlusIcon class="h-5 w-5 text-teal-500" />
                     </button>
@@ -26,13 +26,13 @@
             <div class="col-span-3 bg-white p-2 h-full rounded-md ml-3">
                 <div id="rowd">
                     <div class="flex flex-row-reverse justify-between mb-2">
-                        <button :v-if="currentPosition?._id" class="btn-primary" data-hs-overlay="#drawerOP">
+                        <button :v-if="currentPosition?._id" class="btn-primary" @click="dialogPosition?.toggle">
                             <PlusIcon class="h-5 w-5 text-white" />
-                            <span class="self-center ml-2"> Add position </span>
+                            <span class="self-center ml-2"> New position </span>
                         </button>
                         <div class="search w-[300px]">
                             <input type="text" class="fl-input-small w-[300px]" placeholder="Type name of lookup..."
-                                v-model="_searchLookups">
+                                v-model="_searchPosition">
                         </div>
                     </div>
                     <div class="flex flex-col">
@@ -70,7 +70,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                            <tr v-for="lookups in lookupsALL">
+                                            <tr v-for="lookups in positionsALL">
                                                 <td class="py-3 pl-4 ">
                                                     <div class="flex items-center h-5">
                                                         <input id="hs-table-checkbox-1" type="checkbox"
@@ -100,39 +100,40 @@
                 </div>
             </div>
 
-            <!-- <DrawerAddLookup ref="drawerLookup" :positionID="currentPosition?._id" />
+            <!-- <DrawerAddLookup ref="drawerLookup" :positionID="currentPosition?._id" />-->
             <DialogAddPosition ref="dialogPosition" />
-            <DialogDeleteLookup ref="dialogDeleteLookup" :lookupID="toDeleteLookup?._id" /> -->
+            <!-- <DialogDeleteLookup ref="dialogDeleteLookup" :lookupID="toDeleteLookup?._id" />  -->
 
         </div>
 
-        
+
     </div>
 </template>
   
 <script setup lang="ts">
 // import DialogDeleteLookup from './lookups/DialogDeleteLookup.vue'
-// import DialogAddPosition from './lookups/DialogAddPosition.vue'
+import DialogAddPosition from './components/DialogAddPosition.vue'
 // import DrawerAddLookup from './lookups/DrawerAddLookup.vue'
 import { gsap } from "gsap"
 import { myfetch } from "@/api/myfetch";
-import { IPosition } from '@/store/management'
 import { ref, computed, watch } from "vue"
-import { useManagement, ILookups } from '@/store/management';
+import { useManagement } from '@/store/management';
 import { PlusIcon, } from "@heroicons/vue/solid";
+import { useEmployee } from "@/store/employee";
+import { ILookups } from "@/models/lookup";
+import { IPosition } from "@/models/position";
 
-
-let _searchLookups = ref<string>('')
 let _searchPosition = ref<string>('')
 const store = useManagement()
+const storeEmployee = useEmployee()
 const isOpenAddDialog = ref(false)
-const toDeleteLookup = ref<ILookups | null>(null)
+const toDeleteLookup = ref<IPosition | null>(null)
 const currentPosition = ref<IPosition>()
-const positionsALL = computed(() => store.getPositions(_searchPosition.value))
+const positionsALL = computed(() => storeEmployee.getPositions(_searchPosition.value))
 const lookupsALL = computed(() => store.getLookups(currentPosition.value?._id))
 
 // const drawerLookup = ref<InstanceType<typeof DrawerAddLookup> | null>(null)
-// const dialogPosition = ref<InstanceType<typeof DialogAddPosition> | null>(null)
+const dialogPosition = ref<InstanceType<typeof DialogAddPosition> | null>(null)
 // const dialogDeleteLookup = ref<InstanceType<typeof DialogDeleteLookup> | null>(null)
 
 
@@ -162,7 +163,7 @@ function changePosition(position: IPosition) {
     currentPosition.value = position
 }
 
-function openDeleteDialog(should: boolean = true, payload: null | ILookups) {
+function openDeleteDialog(should: boolean = true, payload: null | IPosition) {
     // dialogDeleteLookup.value?.openDialog()
 }
 

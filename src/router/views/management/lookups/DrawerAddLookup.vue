@@ -1,13 +1,12 @@
 <template>
-    <div id="drawerOP"
-        class="hs-overlay hs-overlay-open:translate-x-0 hidden -translate-x-full fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700"
+    <div id="drawerAddLookup"
+        class="fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700"
         tabindex="-1">
         <div class="flex justify-between items-center py-2 px-2 border-b dark:border-gray-400">
-
             <div class="row w-full text-2xl font-bold"> Add Lookups </div>
             <button type="button"
                 class="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white text-sm dark:text-gray-500 dark:hover:text-gray-400 dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800"
-                data-hs-overlay="#drawerOP">
+                @click="closeDrawer">
                 <span class="sr-only">Close modal</span>
                 <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -17,21 +16,34 @@
                 </svg>
             </button>
         </div>
-        <div class="p-4 h-full">
+        <div class="p-4 h-full overflow-y-auto">
             <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitLookups"
                 v-slot="{ isSubmitting, values }" :validation-schema="lookupsSchema" :initial-values="initialLookupsValue"
-                @invalid-submit="onInvalidLookups">
+                @invalid-submit="onInvalidLookups" :initial-touched="lookupTouched">
                 {{ values }}
-                <div
-                    class=" col items-center mb-5 justify-center bg-gray-100 w-full h-12 rounded-md my-auto border text-center select-none align-middle border-cyan-300 border-dashed">
-                    Classe: {{ currentClasse?._id }}
+                <!-- <div
+                    class=" col items-center mb-1 justify-center bg-gray-100 w-full h-12 rounded-md my-auto border text-center select-none align-middle border-cyan-300 border-dashed">
+                    {{ currentClasse?._id }}
+                </div> -->
+                <div class="relative">
+                    <input type="text" name="classeID" v-model="currentClasse.name" disabled class="fl-input-small peer" />
+                    <label for="classeID" class="fl-label">Classe</label>
                 </div>
-                <Field as="select" name="classe_id" v-slot="{ field, errorMessage }" class="fl-select-small peer">
-                    <option v-for="{ _id: id, name } in classesALL" :key='id' :value="id"
-                        :selected="id == currentClasse?._id">
-                        {{ name }}</option>
-
-                </Field>
+                <!-- <Field as="select" name="classe_id" class="fl-select-small peer bg-gray-50">
+                    <option v-for="{ _id, name } in classesALL" :key='_id' :value="_id"
+                        :selected="_id === currentClasse?._id">
+                        {{ name }}
+                    </option>
+                </Field> -->
+                <!-- {{ currentClasse._id }} -->
+                <!-- <Field name="classe_id" v-slot="{ field, errorMessage }">
+                    <div class="relative ">
+                        <input v-bind="field" type="text" id="classe_id" :value="currentClasse._id"
+                            class="fl-input-small peer" placeholder=" " />
+                        <label for="classe_id" class="fl-label">Classe à cacher</label>
+                        <p class="input-error">{{ errorMessage }}</p>
+                    </div>
+                </Field> -->
                 <Field name="name" v-slot="{ field, errorMessage }">
                     <div class="relative">
                         <input v-bind="field" type="text" id="name" class="fl-input-small peer" placeholder=" " />
@@ -51,16 +63,15 @@
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
                     <textarea v-bind="field" id="message" rows="4" class="fl-textarea"
                         placeholder="Write your thoughts here..."></textarea>
+                    <p class="input-error">{{ errorMessage }}</p>
                 </Field>
-                <Field as="select" name="parent_lookup_id" v-slot="{ field, errorMessage }" class="fl-select-small peer">
-                    <option selected>Choose a country</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="FR">France</option>
-                    <option value="DE">Germany</option>
+                <Field as="select" name="parent_lookup_id" v-slot="{ errorMessage }"
+                    class="fl-select-small peer bg-gray-50">
+                    <option v-for="{ _id: id, name } in lookupsALL" :key='id' :value="id"
+                        :selected="id == currentClasse?._id">
+                        {{ name }}</option>
 
                 </Field>
-                <!-- {{ values }} -->
                 <div class="row h-1/2 w-full justify-between ">
                     <button class="btn-unstate" @click.prevent.stop="closeDrawer()">Cancel</button>
                     <button type="submit" class="btn-primary">
@@ -79,19 +90,21 @@ import api from "@/api/management"
 import { myfetch } from "@/api/myfetch";
 import * as yup from "yup"
 import { useToast } from 'vue-toastification';
-import { PlusIcon, CheckIcon, ChevronDoubleDownIcon } from "@heroicons/vue/solid";
 import { CirclesToRhombusesSpinner } from "epic-spinners"
 import { Field, Form, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
 import { ref, computed } from 'vue'
 import { useManagement } from "@/store/management";
 import { useAuth } from "@/store/authentication";
-
+import { Drawer } from 'flowbite'
+import { IClasse } from "@/models/classe";
 const auth = useAuth()
 const user = computed(() => auth.getCurrentUser)
 const toast = useToast()
 const store = useManagement()
 const classesALL = computed(() => store.getClasses())
-const currentClasse = computed(() => store.currentClasse)
+const lookupsALL = computed(() => store.getLookups())
+// const currentClasse = computed(() => store.currentClasse)
+const currentClasse = ref<IClasse | null>(null)
 const lookupsSchema = yup.object({
     code: yup.string().required().label("Code"),
     name: yup.string().required().label("Name"),
@@ -99,19 +112,39 @@ const lookupsSchema = yup.object({
     parent_lookup_id: yup.string().nullable().label("Parent Lookup"),
     description: yup.string().required().label("Description")
 })
-const isOpenDrawer = ref(false)
-const initialLookupsValue = {
-    classe_id: null,
+// const size = ref<'default' | 'large' | 'small'>('large')
+// const value1 = ref('')
+let initialLookupsValue = ref({
+    classe_id: '',
     parent_lookup_id: null,
     code: "code of new lookups",
     name: "New lookups",
     description: "description of new lookups"
+})
+const { addLookups } = store
+const lookupTouched = { classe_id: true }
+function closeDrawer() {
+    // const drawer = new HSOverlay(document.getElementById('drawerAddLookup'));
+    // window.HSOverlay.close(drawerOP)
+    // drawer.close()
+    const drawerFL = new Drawer(document.getElementById('drawerAddLookup'))
+    drawerFL.hide();
 }
-const { addLookups, getAllLookups } = store
-function closeDrawer(val: boolean = false) {
-    isOpenDrawer.value = val
-    const drawerOP = document.getElementById('drawerOP');
-    window.HSOverlay.close(drawerOP)
+function openDrawer(payload: IClasse) {
+    // const drawer = new HSOverlay(document.getElementById('drawerAddLookup'));
+    // window.HSOverlay.open(drawerOP)
+    // drawer.open()
+    // HSOverlay.open("#drawerAddLookup");
+    console.log('Payload is ', payload);
+
+    currentClasse.value = payload
+    initialLookupsValue.value.classe_id = payload._id
+
+
+
+    const drawerFL = new Drawer(document.getElementById('drawerAddLookup'))
+    drawerFL.toggle()
+
 }
 function onInvalidLookups(ctx: InvalidSubmissionContext) {
     console.log(ctx.errors);
@@ -122,6 +155,7 @@ async function submitLookups(values, { resetForm, setFieldError }: SubmissionCon
         const payload = {
             ...values, createdBy: user.value._id
         }
+        payload.classe_id = currentClasse.value?._id
         const { isFetching, error, data, response, statusCode } = await myfetch(api.getLookups).post(payload).json()
         // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)
         if (response.value?.ok) {
@@ -145,8 +179,35 @@ async function submitLookups(values, { resetForm, setFieldError }: SubmissionCon
     }
 }
 defineExpose({
-    closeDrawer
+    closeDrawer, openDrawer
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.demo-date-picker {
+    display: flex;
+    width: 100%;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.demo-date-picker .block {
+    width: 100%;
+}
+
+.demo-date-picker .block:last-child {
+    border-right: none;
+}
+
+.my_hide {
+    visibility: hidden;
+    display: none;
+}
+
+.demo-date-picker .demonstration {
+    display: block;
+    color: var(--el-text-color-secondary);
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+</style>

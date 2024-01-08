@@ -118,7 +118,7 @@ const employeesRoutes = {
       name: "affectations-employees",
       component: () =>
         import(
-          /* webpackChunkName: "employees" */ "./views/management/employees/affectations.vue"
+          /* webpackChunkName: "employees" */ "./views/management/employees/affectations/index.vue"
         ),
     },
     {
@@ -307,7 +307,6 @@ const router = createRouter({
 router.onError((error: any) => {
   console.error(error);
 });
-
 router.afterEach((to, from, failure) => {
   if (isNavigationFailure(failure, NavigationFailureType.aborted)) {
     console.error(

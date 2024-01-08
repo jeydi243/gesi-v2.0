@@ -21,8 +21,6 @@
 			<router-view v-slot="{ Component, route }">
 				<Transition name="fadeSlideX" mode="out-in">
 					<div :key="route.name">
-
-
 						<component :is="Component" />
 					</div>
 				</Transition>

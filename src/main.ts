@@ -9,7 +9,8 @@ import("@headlessui/vue");
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 // import { configure } from "vee-validate";
-
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
 const pinia = createPinia();
 let app = createApp(App);
@@ -39,6 +40,7 @@ app.config.warnHandler = (msg, instance, trace) => {
   console.log(instance, JSON.stringify(trace, null, 4));
   console.log(msg);
 };
+app.use(ElementPlus)
 app.use(Toast);
 app.use(pinia);
 app.use(router);
