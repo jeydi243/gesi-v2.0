@@ -9,9 +9,9 @@
                     </div>
                     <div
                         class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
-                        <button type="button" class="btn-primary" data-hs-overlay="#drawerOrganisation">
+                        <button type="button" class="btn-primary" @click="drawerOrg?.toggle">
                             <Icon icon="material-symbols:add" height="20" width="20" />
-                            New org
+                            New 
                         </button>
                         <button type="button" @click="refresh"
                             class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
@@ -97,7 +97,7 @@
                                                 stroke-width="2" d="m1 1 4 4 4-4" />
                                         </svg>
                                     </button> -->
-                                    <button id="dropdownDividerButton" type="button" data-dropdown-toggle="dropdownDivider"
+                                    <button @click="drawerOrg?.edit(org)" id="dropdownDividerButton" type="button" data-dropdown-toggle="dropdownDivider"
                                         class="btn-unstate">
                                         Editer
                                     </button>
@@ -198,6 +198,7 @@
             </div>
         </div>
         <DialogDeleteOrg ref="dailogDeleteOrg" />
+        <DrawerOrganisation ref="drawerOrg" />
     </section>
 </template>
 
@@ -206,12 +207,15 @@ import { Icon } from '@iconify/vue'
 import { ref, computed } from 'vue'
 import { useManagement } from '@/store/management'
 import DialogDeleteOrg from './DialogDeleteOrg.vue';
+import DrawerOrganisation from './DrawerOrganisation.vue'
 
 const dailogDeleteOrg = ref<InstanceType<typeof DialogDeleteOrg | null>>(null)
 
+const drawerOrg = ref<InstanceType<typeof DrawerOrganisation> | null>(null)
+
 
 const store = useManagement()
-const orgs = computed(() => store.orgs)
+const orgs = computed(() => store.getOrgs)
 const { getAllOrgs } = store
 
 async function refresh() {

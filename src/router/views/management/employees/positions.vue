@@ -3,7 +3,7 @@
         <div class="grid grid-cols-4 gap-4 h-screen">
             <div class="col-span-1 bg-white p-2 h-full rounded-md ml-3 hover:shadow-lg transition-all duration-700">
                 <div class="search relative">
-                    <input type="text" name="fff" class="fl-input-small" placeholder="" v-model="_searchPosition">
+                    <input type="text" name="fff" class="fl-input-small" placeholder="" v-model="_searchOrg">
                     <label for="fff" class="fl-label">Search</label>
                 </div>
                 <div class="row h-10 w-full  align-middle items-center justify-between">
@@ -14,24 +14,25 @@
                 </div>
                 <!-- Positions: {{ positionsALL }} -->
                 <!-- Positions2: {{ positionsALL2.filter(d => d.code == _searchPosition) }} -->
-                <div @click="changePosition(position)" v-for="(position, key) in positionsALL" :key="key"
-                    :class="{ 'bg-blue-50': position._id == currentPosition?._id }"
+                {{ orgsALL }}
+                <div @click="changeOrganization(org)" v-for="(org, key) in orgsALL" :key="key"
+                    :class="{ 'bg-blue-50': org._id == currentOrg?._id }"
                     class="hover:bg-blue-100 pt-2 pl-2 pb-2 hover:bg-opacity- h-[55px] w-full cursor-default  hover:outline-1 hover transition-all duration-1000">
                     <p>
-                        <strong>{{ position.name }}</strong>
+                        <strong>{{ org.name }}</strong>
                     </p>
-                    <h1 class="text-xs">{{ position.code }}</h1>
+                    <h1 class="text-xs">{{ org.code }}</h1>
                 </div>
             </div>
             <div class="col-span-3 bg-white p-2 h-full rounded-md ml-3">
                 <div id="rowd">
                     <div class="flex flex-row-reverse justify-between mb-2">
-                        <button :v-if="currentPosition?._id" class="btn-primary" @click="dialogPosition?.toggle">
+                        <button :v-if="currentOrg?._id" class="btn-primary" @click="dialogPosition?.toggle">
                             <PlusIcon class="h-5 w-5 text-white" />
                             <span class="self-center ml-2"> New position </span>
                         </button>
                         <div class="search w-[300px]">
-                            <input type="text" class="fl-input-small w-[300px]" placeholder="Type name of lookup..."
+                            <input type="text" class="fl-input-small w-[300px]" placeholder="Type name of position..."
                                 v-model="_searchPosition">
                         </div>
                     </div>
@@ -54,10 +55,13 @@
                                                     Code</th>
                                                 <th scope="col"
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                                    Name</th>
+                                                    Title</th>
                                                 <th scope="col"
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                                    Description</th>
+                                                    Department</th>
+                                                <th scope="col"
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                    Job Description</th>
                                                 <th scope="col"
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                                     Created
@@ -70,7 +74,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                            <tr v-for="lookups in positionsALL">
+                                            <tr v-for="position in positionsALL">
                                                 <td class="py-3 pl-4 ">
                                                     <div class="flex items-center h-5">
                                                         <input id="hs-table-checkbox-1" type="checkbox"
@@ -79,16 +83,18 @@
                                                     </div>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                    {{ lookups.code }}</td>
+                                                    {{ position.code }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{
-                                                    lookups.name }}</td>
+                                                    position.title }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{
-                                                    lookups.description }}</td>
+                                                    position.org_id.name }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{
-                                                    lookups.createdAt }}</td>
+                                                    position.job_description }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{
+                                                    new Date(position.createdAt).toLocaleDateString() }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <a class="text-blue-500 hover:text-blue-700 cursor-pointer"
-                                                        @click="openDeleteDialog(true, lookups)">Delete</a>
+                                                        @click="openDeleteDialog(true, position)">Delete</a>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -102,7 +108,7 @@
 
             <!-- <DrawerAddLookup ref="drawerLookup" :positionID="currentPosition?._id" />-->
             <DialogAddPosition ref="dialogPosition" />
-            <!-- <DialogDeleteLookup ref="dialogDeleteLookup" :lookupID="toDeleteLookup?._id" />  -->
+            <DialogDeletePosition ref="dialogDeletePosition" :positionID="toDeletePosition?._id" />
 
         </div>
 
@@ -111,33 +117,32 @@
 </template>
   
 <script setup lang="ts">
-// import DialogDeleteLookup from './lookups/DialogDeleteLookup.vue'
-import DialogAddPosition from './components/DialogAddPosition.vue'
 // import DrawerAddLookup from './lookups/DrawerAddLookup.vue'
+import DialogDeletePosition from './components/DialogDeletePosition.vue'
+import DialogAddPosition from './components/DialogAddPosition.vue'
 import { gsap } from "gsap"
-import { myfetch } from "@/api/myfetch";
 import { ref, computed, watch } from "vue"
 import { useManagement } from '@/store/management';
 import { PlusIcon, } from "@heroicons/vue/solid";
 import { useEmployee } from "@/store/employee";
-import { ILookups } from "@/models/lookup";
 import { IPosition } from "@/models/position";
 
+
 let _searchPosition = ref<string>('')
+let _searchOrg = ref<string>('')
 const store = useManagement()
 const storeEmployee = useEmployee()
-const isOpenAddDialog = ref(false)
-const toDeleteLookup = ref<IPosition | null>(null)
-const currentPosition = ref<IPosition>()
+const toDeletePosition = ref<IPosition | null>(null)
+const currentOrg = ref<IOrganization>()
 const positionsALL = computed(() => storeEmployee.getPositions(_searchPosition.value))
-const lookupsALL = computed(() => store.getLookups(currentPosition.value?._id))
+const orgsALL = computed(() => store.getOrganisations(_searchOrg))
 
 // const drawerLookup = ref<InstanceType<typeof DrawerAddLookup> | null>(null)
 const dialogPosition = ref<InstanceType<typeof DialogAddPosition> | null>(null)
-// const dialogDeleteLookup = ref<InstanceType<typeof DialogDeleteLookup> | null>(null)
+const dialogDeletePosition = ref<InstanceType<typeof DialogDeletePosition> | null>(null)
 
 
-watch(currentPosition, (newval, oldval) => {
+watch(currentOrg, (newval, oldval) => {
     if (newval != oldval)
         gsap.fromTo(
             "#rowd",
@@ -153,18 +158,15 @@ watch(currentPosition, (newval, oldval) => {
             }
         )
 })
-function setisOpenAddDialog(value: boolean = false) {
-    isOpenAddDialog.value = value
-    console.log('Before');
-    // dialogPosition.value?.openDialog()
-    console.log('After');
-}
-function changePosition(position: IPosition) {
-    currentPosition.value = position
-}
 
+function changeOrganization(position: IOrganization) {
+    currentOrg.value = position
+}
 function openDeleteDialog(should: boolean = true, payload: null | IPosition) {
-    // dialogDeleteLookup.value?.openDialog()
+    toDeletePosition.value = payload
+    dialogDeletePosition.value?.toggle()
+    console.log('Log here ',payload);
+    
 }
 
 </script>

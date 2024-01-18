@@ -17,7 +17,7 @@ export interface IStoreManagement {
   myfetch?: $Fetch;
   documents: Array<any>;
   organizations: Array<IOrganization>;
-  positions: Array<IPosition>;
+
   filieres?: Array<any>;
 }
 
@@ -27,7 +27,7 @@ export const useManagement = defineStore("management", {
     error: "",
     routeurs: [],
     organizations: [],
-    positions: [],
+
     classes: [
       {
         name: "Type d'organisation",
@@ -181,14 +181,6 @@ export const useManagement = defineStore("management", {
         return false;
       }
     },
-    async addPosition(newPostion: IPosition) {
-      try {
-        this.positions.unshift(newPostion);
-      } catch (er) {
-        console.log("POP:", er);
-        return false;
-      }
-    },
 
     async addClasse(newClasse: IClasse) {
       const { getCurrentUser } = useAuth();
@@ -330,7 +322,11 @@ export const useManagement = defineStore("management", {
   getters: {
     filieres: (state) =>
       state.organizations.filter((fil) => fil.lookup_id == "10"),
-    orgs: (state) => state.organizations,
+    getOrgs: (state) => state.organizations,
+    getOrganisations: (state) => (search) =>
+      search == ""
+        ? state.organizations
+        : state.organizations.filter((org) => org.name.includes(search)),
     errorCall: (state) => state.error,
     getLaptops: (state) => state.laptops,
     getRouteurs: (state) => state.routeurs,

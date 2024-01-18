@@ -5,10 +5,12 @@ import mgntAPI from "@/api/management";
 import { $Fetch } from "ofetch";
 import { useManagement } from "./management";
 import { useConfig } from "./config";
+import { IPosition } from "@/models/position";
 
 export interface IStoreEmployee {
   affectationsEmployees: Array<IAffectation>;
   myfetch?: $Fetch;
+  positions: Array<IPosition>;
   employees: Array<IEmployee>;
 }
 
@@ -16,6 +18,7 @@ export const useEmployee = defineStore("employee", {
   state: (): IStoreEmployee => ({
     employees: [],
     affectationsEmployees: [],
+    positions: [],
   }),
   actions: {
     async init() {
@@ -23,6 +26,7 @@ export const useEmployee = defineStore("employee", {
         const config = useConfig();
         this.myfetch = config.myfetch;
         await this.getAllEmployees();
+        await this.getAllPositions();
       } catch (error) {}
     },
     async getAllEmployees() {
@@ -46,6 +50,38 @@ export const useEmployee = defineStore("employee", {
         return false;
       } catch (er) {
         console.log(er);
+      }
+    },
+    async getAllPositions() {
+      this.positions = [];
+      try {
+        const data: Array<IPosition> = await this.myfetch!<Array<IPosition>>(
+          mgntAPI.getPositions,
+          { method: "GET" }
+        );
+        console.log(
+          `%cFetch successfully ${data.length} Positions !`,
+          "color: #8080ff; font-weight: bold;"
+        );
+        if (data) {
+          if (data.length > 0) {
+            data.forEach((em) => this.positions.unshift(em));
+          } else {
+            this.positions = data;
+          }
+          return true;
+        }
+        return false;
+      } catch (er) {
+        console.log(er);
+      }
+    },
+    async addPosition(newPostion: IPosition) {
+      try {
+        this.positions.unshift(newPostion);
+      } catch (er) {
+        console.log("POP:", er);
+        return false;
       }
     },
     async addEducation(employeeID, education) {
@@ -247,6 +283,29 @@ export const useEmployee = defineStore("employee", {
         return false;
       }
     },
+    async deletePosition(positionID) {
+      try {
+        const data = await this.myfetch!(mgntAPI.deletePosition, {
+          body: { positionID },
+          method: "DELETE",
+        });
+        if (data) {
+          const index = this.positions.findIndex(
+            (emp) => emp._id == positionID
+          );
+          if (index != -1) this.positions.splice(index, 1);
+          else {
+            console.log("Can't find this position");
+            return false;
+          }
+          return true;
+        }
+        return false;
+      } catch (er) {
+        console.log(er);
+        return false;
+      }
+    },
     async employeeById(employeeID) {
       try {
         const { data, status } = await mgntAPI.employeeBy(employeeID);
@@ -379,12 +438,16 @@ export const useEmployee = defineStore("employee", {
     getEmployees: (state) => state.employees,
     getTeachers: (state) => (filter) => state.employees,
     positionsInOrg: (state) => (orgID) => {
-      const store = useManagement();
-      return store.positions.filter((e) => e.organisationID === orgID);
+      // const store = useManagement();
+      return state.positions.filter((e) => e.org_id === orgID);
     },
-    getPositions: (state) => (filter) => {
-      const store = useManagement();
-      return store.positions.filter((e) => e.name == filter);
-    },
+    getPositions:
+      (state) =>
+      (filter = "") => {
+        // const store = useManagement();
+        return filter != ""
+          ? state.positions.filter((e) => e.title == filter)
+          : state.positions;
+      },
   },
 });

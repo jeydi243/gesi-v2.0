@@ -6,6 +6,7 @@ export default {
   getLookups: "/lookups",
   getEmployees: "/employees",
   getPositions: "/positions",
+  deletePosition: "/positions",
   routeFilieres: "/management/filieres",
   routeDocuments: "/management/documents",
   routeEmployees: "/employees", // /employees

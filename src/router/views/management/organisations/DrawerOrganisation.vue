@@ -1,13 +1,13 @@
 <template>
     <div id="drawerOrganisation"
-        class="hs-overlay hs-overlay-open:translate-x-0 hidden hs-overlay-backdrop-open:backdrop-blur-sm -translate-x-full fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700"
+        class="fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700"
         tabindex="-1">
         <div class="flex justify-between items-center py-2 px-2 border-b dark:border-gray-400">
 
-            <div class="row w-full text-2xl font-bold"> Add Organisation </div>
+            <div class="row w-full text-2xl font-bold">Organisation </div>
             <button type="button"
                 class="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white text-sm dark:text-gray-500 dark:hover:text-gray-400 dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800"
-                data-hs-overlay="#drawerOrganisation">
+                @click="closeDrawer">
                 <span class="sr-only">Close modal</span>
                 <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -21,7 +21,7 @@
             <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitOrg"
                 v-slot="{ isSubmitting, values }" :validation-schema="OrgSchema" :initial-values="initialOrgValue"
                 @invalid-submit="onInvalidOrg">
-                
+
                 <Field as="select" name="organization_parent_id" v-slot="{ field, errorMessage }"
                     class="fl-select-small peer bg-gray-50">
                     <option value="" selected>Choose parent Organisation</option>
@@ -73,18 +73,20 @@ import { Icon } from "@iconify/vue";
 import { toast } from '../../../../utils/index';
 import { myfetch } from "@/api/myfetch";
 import { useAuth } from '@/store/authentication'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useManagement } from '@/store/management'
 import { SpringSpinner } from 'epic-spinners'
 import { Field, Form, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
+import { Drawer } from 'flowbite';
 
+let drawer: Drawer | null = null
 const store = useManagement()
 const Authstore = useAuth()
 const user = computed(() => Authstore.getCurrentUser)
 const { addOrg } = store
-const orgs = computed(() => store.orgs)
+const orgs = computed(() => store.getOrgs)
 const lookupsALL = computed(() => store.getLookups)
-const initialOrgValue = {
+let initialOrgValue: IOrganization = {
     code: '',
     name: '',
     description: '',
@@ -99,7 +101,9 @@ const OrgSchema = yup.object({
     lookup_id: yup.string().required().min(2).label("Lookup ID"),
 })
 
-
+onMounted(() => {
+    drawer = new Drawer(document.getElementById('drawerOrganisation'))
+})
 async function submitOrg(values, { resetForm, setFieldError }: SubmissionContext) {
     try {
         // console.log("submitLookups....");
@@ -132,9 +136,22 @@ function onInvalidOrg({ errors }: InvalidSubmissionContext) {
     console.log('Invalid: ', errors);
 }
 function closeDrawer() {
-    const drawerOrg = document.getElementById('drawerOrganisation');
-    window.HSOverlay.close(drawerOrg)
+    // const drawerOrg = document.getElementById('drawerOrganisation');
+    // window.HSOverlay.close(drawerOrg)
+    drawer?.hide()
 }
+function toggle() {
+    drawer?.toggle()
+}
+function edit(paylod: IOrganization) {
+    toggle()
+    console.log('You send ', paylod);
+    initialOrgValue = paylod
+
+}
+defineExpose({
+    toggle, edit
+})
 </script>
 
 <style scoped></style>

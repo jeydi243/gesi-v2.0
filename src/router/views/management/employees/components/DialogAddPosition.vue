@@ -23,11 +23,134 @@
                 <!-- Modal body -->
                 <div class="p-4 md:p-5">
                     <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitPosition"
-                        v-slot="{ isSubmitting }" :validation-schema="PositionSchema" :initial-values="initialPosition"
-                        @invalid-submit="onInvalidPosition">
+                        v-slot="{ isSubmitting, values, resetForm }" :validation-schema="PositionSchema"
+                        :initial-values="initialPosition" @invalid-submit="onInvalidPosition">
+                        {{ values }}
+                        <Field name="title" v-slot="{ field, errorMessage }">
+                            <div class="relative">
+                                <input v-bind="field" type="text" id="title" class="fl-input-small peer" placeholder=" " />
+                                <label for="title" class="fl-label">Title</label>
+                                <p class="input-error">{{ errorMessage }}</p>
+                            </div>
+                        </Field>
+                        <Field name="job_description" v-slot="{ field, errorMessage }">
+                            <div class="relative">
+                                <input v-bind="field" type="text" id="job_description" class="fl-input-small peer"
+                                    placeholder=" " />
+                                <label for="job_description" class="fl-label">Job description</label>
+                                <p class="input-error">{{ errorMessage }}</p>
+                            </div>
+                        </Field>
+                        <Field name="status" v-slot="{ field, errorMessage }">
+                            <div class="relative">
+                                <input v-bind="field" type="text" id="status" class="fl-input-small peer" placeholder=" " />
+                                <label for="status" class="fl-label">status</label>
+                                <p class="input-error">{{ errorMessage }}</p>
+                            </div>
+                        </Field>
+                        <!-- <Field as="select" name="org_id" v-slot="{ errorMessage }" class="fl-select-small peer bg-gray-50">
+                            <option v-for="{ _id: id, name } in orgs" :key='id' :value="id">
+                                {{ name }}</option>
 
-                        <div class="flex justify-end">
-                            <button type="button" class="btn-primary">Add</button>
+                        </Field> -->
+                        <Field as="div" class="bg-red-500 w-full h-10" name="org_id" v-slot="{ field }">
+                            <div class="relative">
+                                <select v-bind="field" class="peer p-2 pe-9 text-black outline-none block w-full bg-gray-100 border-none focus:border-solid focus:border-b-2 focus:border-blue-500 text-sm focus:ring-transparent disabled:opacity-50 disabled:pointer-events-none focus:pt-6
+                                        focus:pb-2
+                                        [&:not(:placeholder-shown)]:pt-6
+                                        [&:not(:placeholder-shown)]:pb-2
+                                        autofill:pt-6">
+                                    <option selected>Open this select dmenu</option>
+                                    <option v-for="{ _id: id, name } in orgs" :key='id' :value="id">
+                                        {{ name }}</option>
+                                </select>
+                                <label class="absolute top-0 start-0 p-2 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+                                        peer-focus:text-xs
+                                        peer-focus:-translate-y-1.5
+                                        peer-focus:text-gray-500
+                                        peer-[:not(:placeholder-shown)]:text-xs
+                                        peer-[:not(:placeholder-shown)]:-translate-y-1.5
+                                        peer-[:not(:placeholder-shown)]:text-gray-500">Departement</label>
+                            </div>
+                        </Field>
+                        <!-- <Field as="select" name="report_to" v-slot="{ errorMessage }"
+                            class="fl-select-small peer bg-gray-50">
+                            <option v-for="{ _id: id, name } in positions" :key='id' :value="id">
+                                {{ name }}</option>
+
+                        </Field> -->
+                        <Field as="div" class="bg-red-500 w-full h-10" name="report_to" v-slot="{ field, errorMessage }">
+                            <div class="relative">
+                                <select v-bind="field" class="peer p-2 pe-9 text-black outline-none block w-full bg-gray-100 border-none focus:border-solid focus:border-b-2 focus:border-blue-500 text-sm focus:ring-transparent disabled:opacity-50 disabled:pointer-events-none focus:pt-6
+                                        focus:pb-2
+                                        [&:not(:placeholder-shown)]:pt-6
+                                        [&:not(:placeholder-shown)]:pb-2
+                                        autofill:pt-6">
+                                    <option selected>Open this select dmenu</option>
+                                    <option v-for="{ _id: id, name } in positions" :key='id' :value="id">
+                                        {{ name }}</option>
+                                </select>
+                                <label class="absolute top-0 start-0 p-2 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+                                        peer-focus:text-xs
+                                        peer-focus:-translate-y-1.5
+                                        peer-focus:text-gray-500
+                                        peer-[:not(:placeholder-shown)]:text-xs
+                                        peer-[:not(:placeholder-shown)]:-translate-y-1.5
+                                        peer-[:not(:placeholder-shown)]:text-gray-500">Report to</label>
+                            </div>
+                            <p class="input-error">{{ errorMessage }}</p>
+                        </Field>
+                        <!-- <Field as="select" name="employment_type" v-slot="{ errorMessage }"
+                            class="fl-select-small peer bg-gray-50">
+                            <option v-for="{ _id: id, name } in employment_types" :key='id' :value="id">
+                                {{ name }}</option>
+
+                            <label for="employment_type">Employment Type</label>
+                        </Field> -->
+                        <Field as="div" class="bg-red-500 w-full h-10" name="employment_type" v-slot="{ field }">
+                            <div class="relative">
+                                <select v-bind="field" class="peer p-2 pe-9  outline-none block w-full bg-gray-100 border-none focus:border-solid focus:border-b-2 focus:border-blue-500 text-sm focus:ring-transparent disabled:opacity-50 disabled:pointer-events-none focus:pt-6
+                                        focus:pb-2
+                                        [&:not(:placeholder-shown)]:pt-6
+                                        [&:not(:placeholder-shown)]:pb-2
+                                        autofill:pt-6">
+                                    <option selected>Open this select dmenu</option>
+                                    <option v-for="{ _id: id, name } in employment_types" :key='id' :value="id">
+                                        {{ name }}</option>
+                                </select>
+                                <label class="absolute top-0 start-0 p-2 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+                                        peer-focus:text-xs
+                                        peer-focus:-translate-y-1.5
+                                        peer-focus:text-gray-500
+                                        peer-[:not(:placeholder-shown)]:text-xs
+                                        peer-[:not(:placeholder-shown)]:-translate-y-1.5
+                                        peer-[:not(:placeholder-shown)]:text-gray-500">Employment Type</label>
+                            </div>
+                        </Field>
+                        <div class="row w-full justify-between">
+                            <Field name="startDate" v-slot="{ field, errorMessage }">
+                                <div class="relative">
+                                    <input v-bind="field" type="date" id="startDate" class="fl-input-small peer"
+                                        placeholder=" " />
+                                    <label for="startDate" class="fl-label">Start Date</label>
+                                    <p class="input-error">{{ errorMessage }}</p>
+                                </div>
+                            </Field>
+                            <Field name="endDate" v-slot="{ field, errorMessage }">
+                                <div class="relative">
+                                    <input v-bind="field" type="date" id="endDate" class="fl-input-small peer"
+                                        placeholder=" " />
+                                    <label for="endDate" class="fl-label">End Date</label>
+                                    <p class="input-error">{{ errorMessage }}</p>
+                                </div>
+                            </Field>
+                        </div>
+
+                        <div class="flex justify-between mt-5">
+                            <button type="button" class="btn-unstate" @click="resetForm(); toggle()">Cancel</button>
+                            <button type="submit" class="btn-primary">
+                                <Icon icon="material-symbols:add" height="20" width="20" /> Add
+                            </button>
                         </div>
                     </Form>
                 </div>
@@ -38,6 +161,7 @@
 
 <script setup lang="ts">
 import { onMounted, computed, ref } from 'vue'
+import { Icon } from '@iconify/vue'
 import { parseISO } from "date-fns"
 import { isLength } from 'validator'
 import { Field, Form, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
@@ -48,14 +172,19 @@ import { myfetch } from "@/api/myfetch";
 import api from "@/api/management"
 import * as yup from "yup"
 import { useManagement } from '@/store/management';
+import { useEmployee } from '@/store/employee';
 
+let modal: Modal | null = null
+const { classeID, action } = defineProps(['classeID', 'action'])
 const Authstore = useAuth()
 const store = useManagement()
+const storeEmp = useEmployee()
 const user = computed(() => Authstore.getCurrentUser)
-let modal: Modal | null = null
-const { employeeID, action } = defineProps(['employeeID', 'action'])
+const orgs = computed(() => store.getOrgs)
+const positions = computed(() => storeEmp.getPositions)
+const employment_types = computed(() => store.getLookups(classeID))
 const showModal = ref<boolean>(false)
-const { addPosition } = store
+const { addPosition } = storeEmp
 onMounted(() => {
     modal = new Modal(document.getElementById('modal-position'))
 })
@@ -75,23 +204,31 @@ const PositionSchema = yup.object({
     status: yup.string().required().label("Status"),
     org_id: yup.string().required().label("Departement"),
     endDate: yup.date().required().label("End date"),
-    report_to: yup.string().required().label("Manager"),
+    report_to: yup.string().nullable().label("Manager"),
     job_description: yup.string().required().label("Job description"),
     employment_type: yup.string().required().label("Employment type"),
     startDate: yup.date().required().label("Start Date"),
 })
 
 
-function onInvalidContact({ values, results, errors }) {
-    console.log("Invalid experience ", errors)
-}
+
 function toggle() {
     modal?.toggle()
-    showModal.value = !showModal.value
+
 }
 
 function onInvalidPosition(ctx: InvalidSubmissionContext) {
     // showDrawer.value = !showDrawer.value
+    console.log(ctx.errors);
+
+}
+function removeEmptyKeys(obj) {
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key) && obj[key] === "") {
+            delete obj[key];
+        }
+    }
+    return obj;
 }
 async function submitPosition(values, { resetForm, setFieldError }: SubmissionContext) {
     try {
@@ -101,12 +238,13 @@ async function submitPosition(values, { resetForm, setFieldError }: SubmissionCo
         const { error, data, response, statusCode } = await myfetch(api.getPositions).post(payload).json()
         // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)
         if (response.value?.ok) {
-            toast.success("Organization added successfully! ")
+            toast.success("Position added successfully! ")
             resetForm()
+            toggle()
             await addPosition(data.value)
         } else {
             if ('validationerror' in data.value) {
-                toast.error(`Can't add new org! Correct all error field before submit`)
+                toast.error(`Can't add new position! Correct all error field before submit`)
                 setFieldError(data.value.field, `${data.value.message}`)
             }
         }
