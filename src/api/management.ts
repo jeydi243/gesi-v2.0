@@ -10,7 +10,7 @@ export default {
   routeFilieres: "/management/filieres",
   routeDocuments: "/management/documents",
   routeEmployees: "/employees", // /employees
-  getAffectations: "/affectations",
+  getAssignments: "/assignments",
   getDocuments: async function () {
     return axios.get(`${this.routeDocuments}`)
   },

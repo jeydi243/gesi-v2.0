@@ -323,10 +323,12 @@ export const useManagement = defineStore("management", {
     filieres: (state) =>
       state.organizations.filter((fil) => fil.lookup_id == "10"),
     getOrgs: (state) => state.organizations,
-    getOrganisations: (state) => (search) =>
-      search == ""
-        ? state.organizations
-        : state.organizations.filter((org) => org.name.includes(search)),
+    getOrganisations:
+      (state) =>
+      (search = "") =>
+        search == ""
+          ? state.organizations
+          : state.organizations.filter((org) => org.name.includes(search)),
     errorCall: (state) => state.error,
     getLaptops: (state) => state.laptops,
     getRouteurs: (state) => state.routeurs,

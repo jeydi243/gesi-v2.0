@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { IAffectation } from "../models/affectations";
+import { IAssignment } from "../models/assignement";
 import { IEmployee } from "@/models/employee";
 import mgntAPI from "@/api/management";
 import { $Fetch } from "ofetch";
@@ -8,7 +8,7 @@ import { useConfig } from "./config";
 import { IPosition } from "@/models/position";
 
 export interface IStoreEmployee {
-  affectationsEmployees: Array<IAffectation>;
+  assignements: Array<IAssignment>;
   myfetch?: $Fetch;
   positions: Array<IPosition>;
   employees: Array<IEmployee>;
@@ -17,7 +17,7 @@ export interface IStoreEmployee {
 export const useEmployee = defineStore("employee", {
   state: (): IStoreEmployee => ({
     employees: [],
-    affectationsEmployees: [],
+    assignements: [],
     positions: [],
   }),
   actions: {
@@ -27,6 +27,7 @@ export const useEmployee = defineStore("employee", {
         this.myfetch = config.myfetch;
         await this.getAllEmployees();
         await this.getAllPositions();
+        await this.getAllAssignements();
       } catch (error) {}
     },
     async getAllEmployees() {
@@ -68,6 +69,29 @@ export const useEmployee = defineStore("employee", {
             data.forEach((em) => this.positions.unshift(em));
           } else {
             this.positions = data;
+          }
+          return true;
+        }
+        return false;
+      } catch (er) {
+        console.log(er);
+      }
+    },
+    async getAllAssignements() {
+      this.positions = [];
+      try {
+        const data: Array<IAssignment> = await this.myfetch!<
+          Array<IAssignment>
+        >(mgntAPI.getAssignments, { method: "GET" });
+        console.log(
+          `%cFetch successfully ${data.length} Assignments !`,
+          "color: #8080ff; font-weight: bold;"
+        );
+        if (data) {
+          if (data.length > 0) {
+            data.forEach((em) => this.assignements.unshift(em));
+          } else {
+            this.assignements = data;
           }
           return true;
         }
@@ -401,9 +425,9 @@ export const useEmployee = defineStore("employee", {
         console.log(er);
       }
     },
-    async addAffectation(newAffectation: IAffectation) {
+    async addAffectation(newAffectation: IAssignment) {
       try {
-        this.affectationsEmployees.unshift(newAffectation);
+        this.assignements.unshift(newAffectation);
       } catch (er) {
         console.log("POP:", er);
         return false;
@@ -439,8 +463,9 @@ export const useEmployee = defineStore("employee", {
     getTeachers: (state) => (filter) => state.employees,
     positionsInOrg: (state) => (orgID) => {
       // const store = useManagement();
-      return state.positions.filter((e) => e.org_id === orgID);
+      return state.positions.filter((e) => e.org_id._id === orgID);
     },
+    getAssignements: (state) => state.assignements,
     getPositions:
       (state) =>
       (filter = "") => {

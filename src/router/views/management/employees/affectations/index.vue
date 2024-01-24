@@ -6,28 +6,30 @@
                 <button @click.prevent="getAllEmployees" class="btn-primary mr-1">
                     <Icon icon="heroicons:arrow-path-20-solid" color="white" height="20" width="20" />
                 </button>
-                <button type="button" class="btn-primary" data-hs-overlay="#drawerAffectation">
+                <button type="button" class="btn-primary" @click="drawerAffectation?.toggle">
                     <Icon icon="heroicons:user-plus-20-solid" color="white" height="20" width="20" />
                     <span class="self-center ml-2">Affecter</span>
                 </button>
             </div>
         </div>
 
+        <!-- {{ assignementsALL }} -->
+
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">
-                            Product name
+                            Employee
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Color
+                            Position
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Category
+                            From
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Price
+                            To
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="sr-only">Edit</span>
@@ -35,54 +37,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
+                    <tr v-for="{ employee_id, position_id, from, to } in assignementsALL"
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Apple MacBook Pro 17"
+                        <th scope="row" class="px-6">
+                            <a class="cursor-pointer" @click.prevent.stop="showDetails(employee_id._id)">{{ employee_id.last_name }}</a>
                         </th>
                         <td class="px-6 py-4">
-                            Silver
+                            {{ position_id.title }}
                         </td>
                         <td class="px-6 py-4">
-                            Laptop
+                            {{ new Date(from).toLocaleDateString() }}
                         </td>
                         <td class="px-6 py-4">
-                            $2999
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr
-                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Microsoft Surface Pro
-                        </th>
-                        <td class="px-6 py-4">
-                            White
-                        </td>
-                        <td class="px-6 py-4">
-                            Laptop PC
-                        </td>
-                        <td class="px-6 py-4">
-                            $1999
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Magic Mouse 2
-                        </th>
-                        <td class="px-6 py-4">
-                            Black
-                        </td>
-                        <td class="px-6 py-4">
-                            Accessories
-                        </td>
-                        <td class="px-6 py-4">
-                            $99
+                            {{ new Date(to).toLocaleDateString() }}
                         </td>
                         <td class="px-6 py-4 text-right">
                             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
@@ -92,21 +59,30 @@
             </table>
         </div>
 
-        <DrawerAffectation ref="drawerAffectationPr" />
+
+        <DrawerAffectation ref="drawerAffectation" />
+        <DrawerDetailsEmp ref="drawerDetailsEmp" />
 
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { Icon } from '@iconify/vue'
-import { InvalidSubmissionContext } from "vee-validate"
 import DrawerAffectation from './DrawerAffectation.vue'
+import DrawerDetailsEmp from './DrawerDetailsEmp.vue'
 import { useEmployee } from '@/store/employee'
 
-const drawerAffectationPr = ref<InstanceType<typeof DrawerAffectation> | null>(null)
+const drawerAffectation = ref<InstanceType<typeof DrawerAffectation> | null>(null)
+const drawerDetailsEmp = ref<InstanceType<typeof DrawerDetailsEmp> | null>(null)
 const store = useEmployee()
 const { getAllEmployees } = store
+
+const assignementsALL = computed(() => store.getAssignements)
+
+function showDetails(employeeID) {
+    drawerDetailsEmp.value?.toggle({ employeeID })
+}
 </script>
 
 <style scoped></style>

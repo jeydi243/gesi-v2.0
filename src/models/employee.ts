@@ -5,6 +5,7 @@ export interface IEmployee extends IPerson {
   contacts: Array<any>;
   images?: Array<string>;
   experiences?: Array<any>;
+  skills?: Array<any>;
   telephones: Array<any>;
   biography?: string;
   hire_date?: string;

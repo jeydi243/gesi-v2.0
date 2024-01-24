@@ -14,7 +14,7 @@
                 </div>
                 <!-- Positions: {{ positionsALL }} -->
                 <!-- Positions2: {{ positionsALL2.filter(d => d.code == _searchPosition) }} -->
-                {{ orgsALL }}
+                <!-- {{ orgsALL }} -->
                 <div @click="changeOrganization(org)" v-for="(org, key) in orgsALL" :key="key"
                     :class="{ 'bg-blue-50': org._id == currentOrg?._id }"
                     class="hover:bg-blue-100 pt-2 pl-2 pb-2 hover:bg-opacity- h-[55px] w-full cursor-default  hover:outline-1 hover transition-all duration-1000">
@@ -73,8 +73,9 @@
                                                 </th>
                                             </tr>
                                         </thead>
+
                                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                            <tr v-for="position in positionsALL">
+                                            <tr v-for="position in positionsinOrg">
                                                 <td class="py-3 pl-4 ">
                                                     <div class="flex items-center h-5">
                                                         <input id="hs-table-checkbox-1" type="checkbox"
@@ -135,7 +136,8 @@ const storeEmployee = useEmployee()
 const toDeletePosition = ref<IPosition | null>(null)
 const currentOrg = ref<IOrganization>()
 const positionsALL = computed(() => storeEmployee.getPositions(_searchPosition.value))
-const orgsALL = computed(() => store.getOrganisations(_searchOrg))
+const positionsinOrg = computed(() => storeEmployee.positionsInOrg(currentOrg.value?._id))
+const orgsALL = computed(() => store.getOrganisations(_searchOrg.value))
 
 // const drawerLookup = ref<InstanceType<typeof DrawerAddLookup> | null>(null)
 const dialogPosition = ref<InstanceType<typeof DialogAddPosition> | null>(null)
@@ -165,8 +167,8 @@ function changeOrganization(position: IOrganization) {
 function openDeleteDialog(should: boolean = true, payload: null | IPosition) {
     toDeletePosition.value = payload
     dialogDeletePosition.value?.toggle()
-    console.log('Log here ',payload);
-    
+    console.log('Log here ', payload);
+
 }
 
 </script>

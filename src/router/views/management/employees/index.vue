@@ -11,7 +11,8 @@
 			<div class="row mb-5">
 				<template v-for="(tab, indexTab) in tabsEmp" :key="indexTab">
 					<a class="btn-tab2 align-middle items-center row" :class="{ 'btn-tab-active2': tab.current }"
-						@click="changeTab(indexTab)">
+						@click.prevent.stop="changeTab(indexTab)">
+						<Icon :icon="tab.icon" class="self-center text-center mr-2" />
 						{{ filters.firstUpper(tab.name) }}
 						<box-icon v-if="indexTab != 0" name="lock-alt" type="regular"
 							:color="!tab.current ? 'gray' : 'blue'" size="sm" class="self-center text-center"></box-icon>
@@ -34,13 +35,14 @@ import { computed, ref } from "vue"
 import { useManagement } from "@/store/management"
 import { UseOnline } from "@vueuse/components"
 import { onLeaveTop, onEnter, onBeforeEnter, goto } from "@/utils/index"
+import { Icon } from '@iconify/vue'
 
 const store = useManagement()
 const currentTab = computed(() => tabsEmp.value.find((tab) => tab.current).name.toLowerCase())
 const tabsEmp = ref([
-	{ name: "Index", current: true, route: 'employees-index' },
-	{ name: "Positions", current: false, route: 'fonctions-employees' },
-	{ name: "Staff assignments", current: false, route: 'affectations-employees' },
+	{ name: "Index", current: true, route: 'employees-index', icon: "solar:clipboard-list-bold" },
+	{ name: "Positions", current: false, route: 'fonctions-employees', icon: "solar:laptop-minimalistic-bold-duotone" },
+	{ name: "Staff assignments", current: false, route: 'affectations-employees', icon: "solar:user-check-line-duotone" },
 ])
 function changeTab(index) {
 	const currentTrue = tabsEmp.value.findIndex((tab) => tab.current == true)

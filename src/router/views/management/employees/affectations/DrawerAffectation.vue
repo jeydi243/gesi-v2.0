@@ -1,10 +1,10 @@
 <template>
     <div id="drawerAffectation"
-        class="hs-overlay hs-overlay-open:translate-x-0 hidden -translate-x-full fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700"
+        class="fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700"
         tabindex="-1">
         <div class="flex justify-between items-center py-2 px-2 border-b dark:border-gray-400">
-            <div class="row w-full text-2xl font-bold"> Assignement of </div>
-            <button type="button"
+            <div class="row w-full text-lg font-bold"> Assignement of </div>
+            <button type="button" @click="close"
                 class="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white text-sm dark:text-gray-500 dark:hover:text-gray-400 dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800"
                 data-hs-overlay="#drawerAffectation">
                 <span class="sr-only">Close modal</span>
@@ -18,74 +18,79 @@
         </div>
         <div class="p-4 h-full">
             <Form class="col justify-between w-full space-y-4 mt-4 h-full" @submit="submitAffectation"
-                v-slot="{ isSubmitting }" :validation-schema="affectationSchema" :initial-values="initialLookupsValue"
+                v-slot="{ isSubmitting }" :validation-schema="assignmentSchema" :initial-values="initialAssignmentValue"
                 @invalid-submit="onInvalidAffectation">
-
-                <!-- <Field as="select" name="classe_id" v-slot="{ errorMessage }"
-                    class="fl-select2-small peer text-black bg-gray-100">
-                    <option selected class="text-black">Choisis une fonction</option>
-                    <option v-for="{ id, name } in positions(orgID)" :key='id' :value="id" class="text-black">
-                        {{ name }}</option>
-                    <p>{{ errorMessage }}</p>
-                </Field> -->
-                <Field name="positionID" id="positionID" as="select" class="form-select block w-full"
-                    v-slot="{ errorMessage }">
-                    <label for="positionID">Position</label>
-                    <option value="CD" selected>Manager IT</option>
-                    <option v-for="{ id, name } in positions(orgID)" :key='id' :value="id" class="text-black">
-                        {{ name }}</option>
-                    <p>{{ errorMessage }}</p>
+                <!-- {{ positionsALL() }} -->
+                <Field as="div" class="bg-red-500 w-full h-10" name="position_id" v-slot="{ field }">
+                    <div class="relative">
+                        <select v-bind="field" class="peer p-2 pe-9 text-black outline-none block w-full bg-gray-100 border-none focus:border-solid focus:border-b-2 focus:border-blue-500 text-sm focus:ring-transparent disabled:opacity-50 disabled:pointer-events-none focus:pt-6
+                                        focus:pb-2
+                                        [&:not(:placeholder-shown)]:pt-6
+                                        [&:not(:placeholder-shown)]:pb-2
+                                        autofill:pt-6">
+                            <option selected>Select position</option>
+                            <option v-for="{ _id: id, title } in positionsALL()" :key='id' :value="id">
+                                {{ title }}</option>
+                        </select>
+                        <label class="absolute top-0 start-0 p-2 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+                                        peer-focus:text-xs
+                                        peer-focus:-translate-y-1.5
+                                        peer-focus:text-gray-500
+                                        peer-[:not(:placeholder-shown)]:text-xs
+                                        peer-[:not(:placeholder-shown)]:-translate-y-1.5
+                                        peer-[:not(:placeholder-shown)]:text-gray-500">Position</label>
+                    </div>
+                </Field>
+                <Field as="div" class="bg-red-500 w-full h-10" name="employee_id" v-slot="{ field }">
+                    <div class="relative">
+                        <select v-bind="field" class="peer p-2 pe-9 text-black outline-none block w-full bg-gray-100 border-none focus:border-solid focus:border-b-2 focus:border-blue-500 text-sm focus:ring-transparent disabled:opacity-50 disabled:pointer-events-none focus:pt-6
+                                        focus:pb-2
+                                        [&:not(:placeholder-shown)]:pt-6
+                                        [&:not(:placeholder-shown)]:pb-2
+                                        autofill:pt-6">
+                            <option selected>Select employee</option>
+                            <option v-for="{ _id: id, first_name, last_name } in employees" :key='id' :value="id">
+                                {{ first_name }}{{ last_name }}</option>
+                        </select>
+                        <label class="absolute top-0 start-0 p-2 h-full truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none
+                                        peer-focus:text-xs
+                                        peer-focus:-translate-y-1.5
+                                        peer-focus:text-gray-500
+                                        peer-[:not(:placeholder-shown)]:text-xs
+                                        peer-[:not(:placeholder-shown)]:-translate-y-1.5
+                                        peer-[:not(:placeholder-shown)]:text-gray-500">Employee</label>
+                    </div>
                 </Field>
 
-                <Combobox >
-                    <div class="relative mt-1 bg-gray-50">
-                        <div
-                            classe="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
-                            <ComboboxLabel>Employee</ComboboxLabel>
-                            <ComboboxInput @change="query = $event.target.value"
-                                :displayValue="(person) => person.last_name"
-                                class="w-full border-none py-2 pl-3 pr-10 text-sm border-b-2 rounded-lg border border-gray-500 leading-5 bg-gray-100 text-gray-900 focus:ring-0" />
-                            <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
-                                <Icon icon="akar-icons:chevron-vertical" class="h-5 w-5 text-gray-400" aria-hidden="true" />
-                            </ComboboxButton>
-                        </div>
-                        <TransitionRoot leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0"
-                            @after-leave="query = ''">
-
-                            <ComboboxOptions>
-                                <div v-if="filteredEmployee.length === 0 && query !== ''"
-                                    class="relative cursor-default select-none px-4 py-2 text-gray-700">
-                                    Aucun employée trouvé
-                                </div>
-                                <ComboboxOption v-for="person in filteredEmployee" :key="person._id" :value="person"
-                                    as="template" v-slot="{ active, selected }">
-                                    <li class="flex flex-row ui-active:bg-blue-500 ui-active:text-white ui-not-active:bg-white ui-not-active:text-black"
-                                        :class="{
-                                            'bg-[#4e35bc] text-white': active,
-                                            'bg-white text-black': !active,
-                                        }">
-                                        <Icon icon="ic:outline-check" v-show="selected" />
-                                        {{ person.last_name }}
-                                    </li>
-                                </ComboboxOption>
-                            </ComboboxOptions>
-                        </TransitionRoot>
-                    </div>
-                </Combobox>
-                Myselect
-                <MySelect />
                 <Field name="file" v-slot="{ field, errorMessage }">
                     <div class="relative">
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="small_size">Proof
-                            Document</label>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="small_size">
+                            Document
+                        </label>
                         <input v-bind="field" class="fl-input-file" id="small_size" type="file">
                         <span>{{ errorMessage }}</span>
                     </div>
                 </Field>
+                <div class="row w-full justify-between">
+                    <Field name="from" v-slot="{ field, errorMessage }">
+                        <div class="relative mr-1">
+                            <input v-bind="field" type="date" id="from" class="fl-input-small peer" placeholder=" " />
+                            <label for="from" class="fl-label">From Date</label>
+                            <p class="input-error">{{ errorMessage }}</p>
+                        </div>
+                    </Field>
+                    <Field name="to" v-slot="{ field, errorMessage }">
+                        <div class="relative">
+                            <input v-bind="field" type="date" id="to" class="fl-input-small peer" placeholder=" " />
+                            <label for="to" class="fl-label">To Date</label>
+                            <p class="input-error">{{ errorMessage }}</p>
+                        </div>
+                    </Field>
+                </div>
                 <div class="row h-1/2 w-full justify-between ">
-                    <button class="btn-unstate" @click.prevent.stop="toggle()">Cancel</button>
+                    <button class="btn-unstate" @click.prevent.stop="close">Cancel</button>
                     <button type="submit" class="btn-primary">
-                        <Icon type="solid" icon="ic:sharp-plus" color="white" />
+                        <Icon type="solid" icon="ic:sharp-plus" color="white" height="20" width="20" />
                         <span class="font-bold text-white">Add</span>
                         <CirclesToRhombusesSpinner :size="3" color="#FFF" class="text-white" v-if="isSubmitting" />
                     </button>
@@ -99,54 +104,64 @@
 import api from "@/api/management"
 import { Icon } from '@iconify/vue'
 import { toast } from '@/utils/index';
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useManagement } from '@/store/management'
 import { CirclesToRhombusesSpinner } from 'epic-spinners'
 import { Field, Form, InvalidSubmissionContext, SubmissionContext } from "vee-validate"
-import { Combobox, ComboboxInput, ComboboxLabel, ComboboxOptions, ComboboxOption, TransitionRoot, ComboboxButton } from '@headlessui/vue'
 import { myfetch } from '@/api/myfetch';
 import { useEmployee } from "@/store/employee";
 import MySelect from '@/components/my-select.vue'
+import { Drawer } from 'flowbite'
+import { useAuth } from "@/store/authentication";
+import * as yup from "yup"
 
 const storeMgt = useManagement()
 const storeEmp = useEmployee()
 const orgID = ref<string>('1452')
 const showDrawer = ref(false)
-const initialLookupsValue = ref([])
-const affectationSchema = ref([])
+const initialAssignmentValue = ref({
+    position_id: '',
+    employee_id: "",
+    from: '',
+    to: ''
+})
+const assignmentSchema = ref({
+    position_id: yup.string().required().label("Position"),
+    employee_id: yup.string().required().label("Employee"),
+    from: yup.string().required().label("From date"),
+    to: yup.string().nullable().label("From date")
+})
 const employees = computed(() => storeEmp.getEmployees)
-const positions = computed(() => storeEmp.positionsInOrg)
+const positionsALL = computed(() => storeEmp.getPositions)
+const Authstore = useAuth()
+const user = computed(() => Authstore.getCurrentUser)
 
 const { addAffectation } = storeEmp
 let selectedEmployeeID = ref<string | null>(null)
 let query = ref('')
-let filteredEmployee = computed(() =>
-    query.value === ''
-        ? employees.value
-        : employees.value.filter((person) =>
-            person.last_name
-                .toLowerCase()
-                .replace(/\s+/g, '')
-                .includes(query.value.toLowerCase().replace(/\s+/g, ''))
-        )
-)
+let drawer: Drawer | null = null;
 function toggle() {
-    showDrawer.value = !showDrawer.value
+    drawer?.toggle()
+}
+function close() {
+    drawer?.hide()
 }
 function onInvalidAffectation(ctx: InvalidSubmissionContext) {
     showDrawer.value = !showDrawer.value
 }
+
 async function submitAffectation(values, { resetForm, setFieldError }: SubmissionContext) {
     try {
         const payload = {
             ...values, createdBy: user.value._id
         }
-        const { error, data, response, statusCode } = await myfetch(api.getAffectations).post(payload).json()
+        const { error, data, response, statusCode } = await myfetch(api.getAssignments).post(payload).json()
         // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)
         if (response.value?.ok) {
-            toast.success("Organization added successfully! ")
+            toast.success("Assignment added successfully! ")
             resetForm()
             await addAffectation(data.value)
+            toggle()
         } else {
             if ('validationerror' in data.value) {
                 toast.error(`Can't add new org! Correct all error field before submit`)
@@ -162,8 +177,12 @@ async function submitAffectation(values, { resetForm, setFieldError }: Submissio
         return false
     }
 }
+onMounted(() => {
+    drawer = new Drawer(document.getElementById('drawerAffectation'))
+})
 
-defineExpose({ showDrawer })
+defineExpose({ showDrawer, toggle })
+
 </script>
 
 <style scoped></style>
