@@ -1,12 +1,13 @@
 <template>
     <div id="drawerOrganisation"
-        class="fixed top-0 left-0 transition-all duration-300 transform h-full max-w-xs w-full z-[60] bg-white border-r dark:bg-gray-800 dark:border-gray-700">
+        class="fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white w-80 dark:bg-gray-800"
+        tabindex="-1">
         <div class="flex justify-between items-center py-2 px-2 border-b dark:border-gray-400">
 
             <div class="row w-full text-2xl font-bold">Organisation </div>
             <button type="button"
                 class="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white text-sm dark:text-gray-500 dark:hover:text-gray-400 dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800"
-                @click.prevent="closeDrawer">
+                @click.prevent.stop="close">
                 <span class="sr-only">Close modal</span>
                 <Icon icon="solar:close-square-bold" />
             </button>
@@ -46,11 +47,11 @@
                 </Field>
                 <!-- {{ values }} -->
                 <div class="footer row h-1/2 w-full justify-between ">
-                    <button class="btn-unstate" @click.prevent.stop="closeDrawer">Cancel</button>
+                    <button class="btn-unstate" @click.prevent.stop="close">Cancel</button>
                     <button type="submit" class="btn-primary">
                         <SpringSpinner :size="4" color="#FFF" class="text-white" v-if="isSubmitting" />
                         <Icon icon="material-symbols:add" color="white" width="20" height="20" v-else></Icon>
-                        <span class="font-bold text-white">New org</span>
+                        <span class="font-bold text-white">Create</span>
                     </button>
                 </div>
             </Form>
@@ -93,9 +94,13 @@ const OrgSchema = yup.object({
     lookup_id: yup.string().required().min(2).label("Lookup ID"),
 })
 
-onMounted(() => {
-    drawer = new Drawer(document.getElementById('drawerOrganisation'))
-})
+// onMounted(() => {
+//     drawer = new Drawer(document.getElementById('drawerOrganisation'), {
+//         backdrop: true, placement: "right", edge: false,
+//         edgeOffset: '',
+//     })
+//     drawer.hide()
+// })
 async function submitOrg(values, { resetForm, setFieldError }: SubmissionContext) {
     try {
         // console.log("submitLookups....");
@@ -127,12 +132,17 @@ async function submitOrg(values, { resetForm, setFieldError }: SubmissionContext
 function onInvalidOrg({ errors }: InvalidSubmissionContext) {
     console.log('Invalid: ', errors);
 }
-function closeDrawer() {
-    // const drawerOrg = document.getElementById('drawerOrganisation');
-    // window.HSOverlay.close(drawerOrg)
+function close() {
+    drawer = new Drawer(document.getElementById('drawerOrganisation'), {
+        backdrop: true, placement: "right"
+    })
     drawer?.hide()
+    console.log('Close drawer please... ', drawer);
 }
 function toggle() {
+    drawer = new Drawer(document.getElementById('drawerOrganisation'), {
+        backdrop: true, placement: "right"
+    })
     drawer?.toggle()
 }
 function edit(payload: IOrganization) {

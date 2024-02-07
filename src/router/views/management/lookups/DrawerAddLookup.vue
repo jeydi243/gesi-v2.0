@@ -6,7 +6,7 @@
             <div class="row w-full text-2xl font-bold"> Add Lookups </div>
             <button type="button"
                 class="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white text-sm dark:text-gray-500 dark:hover:text-gray-400 dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800"
-                @click="closeDrawer">
+                @click.prevent.stop="close">
                 <span class="sr-only">Close modal</span>
                 <svg class="w-3.5 h-3.5" width="8" height="8" viewBox="0 0 8 8" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -29,21 +29,6 @@
                     <input type="text" name="classeID" v-model="currentClasse.name" disabled class="fl-input-small peer" />
                     <label for="classeID" class="fl-label">Classe</label>
                 </div>
-                <!-- <Field as="select" name="classe_id" class="fl-select-small peer bg-gray-50">
-                    <option v-for="{ _id, name } in classesALL" :key='_id' :value="_id"
-                        :selected="_id === currentClasse?._id">
-                        {{ name }}
-                    </option>
-                </Field> -->
-                <!-- {{ currentClasse._id }} -->
-                <!-- <Field name="classe_id" v-slot="{ field, errorMessage }">
-                    <div class="relative ">
-                        <input v-bind="field" type="text" id="classe_id" :value="currentClasse._id"
-                            class="fl-input-small peer" placeholder=" " />
-                        <label for="classe_id" class="fl-label">Classe à cacher</label>
-                        <p class="input-error">{{ errorMessage }}</p>
-                    </div>
-                </Field> -->
                 <Field name="name" v-slot="{ field, errorMessage }">
                     <div class="relative">
                         <input v-bind="field" type="text" id="name" class="fl-input-small peer" placeholder=" " />
@@ -73,7 +58,7 @@
 
                 </Field>
                 <div class="row h-1/2 w-full justify-between ">
-                    <button class="btn-unstate" @click.prevent.stop="closeDrawer()">Cancel</button>
+                    <button class="btn-unstate" @click.prevent.stop="close()">Cancel</button>
                     <button type="submit" class="btn-primary">
                         <box-icon type="solid" name="file-plus" color="white"></box-icon>
                         <span class="font-bold text-white">Add</span>
@@ -123,27 +108,20 @@ let initialLookupsValue = ref({
 })
 const { addLookups } = store
 const lookupTouched = { classe_id: true }
-function closeDrawer() {
-    // const drawer = new HSOverlay(document.getElementById('drawerAddLookup'));
-    // window.HSOverlay.close(drawerOP)
-    // drawer.close()
+
+
+function close() {
     const drawerFL = new Drawer(document.getElementById('drawerAddLookup'))
     drawerFL.hide();
 }
-function openDrawer(payload: IClasse) {
-    // const drawer = new HSOverlay(document.getElementById('drawerAddLookup'));
-    // window.HSOverlay.open(drawerOP)
-    // drawer.open()
-    // HSOverlay.open("#drawerAddLookup");
-    console.log('Payload is ', payload);
-
-    currentClasse.value = payload
-    initialLookupsValue.value.classe_id = payload._id
-
-
+function open(payload: IClasse | undefined) {
 
     const drawerFL = new Drawer(document.getElementById('drawerAddLookup'))
     drawerFL.toggle()
+    console.log('Payload is ', payload);
+
+    currentClasse.value = payload
+    initialLookupsValue.value.classe_id = payload?._id
 
 }
 function onInvalidLookups(ctx: InvalidSubmissionContext) {
@@ -160,7 +138,7 @@ async function submitLookups(values, { resetForm, setFieldError }: SubmissionCon
         // const { data, isFinished, error } = await useAxios(api.getLookups, { method: 'POST', data: payload }, instance)
         if (response.value?.ok) {
             toast.success("Lookups added successfully! ")
-            closeDrawer()
+            close()
             resetForm()
             await addLookups(data.value)
         } else {
@@ -179,7 +157,7 @@ async function submitLookups(values, { resetForm, setFieldError }: SubmissionCon
     }
 }
 defineExpose({
-    closeDrawer, openDrawer
+    close, open
 })
 </script>
 

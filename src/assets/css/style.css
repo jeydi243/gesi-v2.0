@@ -2648,10 +2648,6 @@ input:checked + .toggle-bg{
   border-color: rgb(229 231 235 / var(--tw-divide-opacity));
 }
 
-.self-auto{
-  align-self: auto;
-}
-
 .self-center{
   align-self: center;
 }

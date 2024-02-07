@@ -3,16 +3,17 @@
     <div class="grid grid-cols-4 gap-4 h-screen">
       <div class="col-span-1 bg-white p-2 h-full rounded-md ml-3 hover:shadow-lg transition-all duration-700">
         <div class="search">
-          <input type="text" autocomplete="off" class="fl-input-small" placeholder="Type something..." v-model="_searchClasse">
+          <input type="text" autocomplete="off" class="fl-input-small" placeholder="Type something..."
+            v-model="_searchClasse">
         </div>
         <div class="row-reverse h-10 w-full  align-middle items-center">
-          <button type="button" @click="setisOpenAddDialog(true)">
+          <button type="button" @click.prevent.stop="setisOpenAddDialog(true)">
             <PlusIcon class="h-5 w-5 text-teal-500" />
           </button>
         </div>
         <!-- Classes: {{ classesALL }} -->
         <!-- Classes2: {{ classesALL2.filter(d => d.code == _searchClasse) }} -->
-        <div @click="changeClasse(classe)" v-for="(classe, key) in classesALL" :key="key"
+        <div @click.prevent.stop="changeClasse(classe)" v-for="(classe, key) in classesALL" :key="key"
           :class="{ 'bg-blue-50': classe._id == currentClasse?._id }"
           class="hover:bg-blue-100 pt-2 pl-2 pb-2 hover:bg-opacity- h-[55px] w-full cursor-default  hover:outline-1 hover transition-all duration-1000">
           <p>
@@ -24,7 +25,9 @@
       <div class="col-span-3 bg-white p-2 h-full rounded-md ml-3">
         <div id="rowd">
           <div class="flex flex-row-reverse justify-between mb-2">
-            <button type="button" @click="drawerLookup?.openDrawer(currentClasse)" class="btn-primary" data-hs-overlay="#drawerAddLookup" data-drawer-target="drawerAddLookup" data-drawer-toggle="drawerAddLookup">
+            <button type="button" @click.prevent.stop="drawerLookup?.open(currentClasse)" class="btn-primary"
+              data-hs-overlay="#drawerAddLookup" data-drawer-target="drawerAddLookup"
+              data-drawer-toggle="drawerAddLookup">
               <PlusIcon class="h-5 w-5 text-white" />
               <span class="self-center ml-2"> Add lookup </span>
             </button>
@@ -73,7 +76,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ lookups.createdAt }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <a class="text-blue-500 hover:text-blue-700 cursor-pointer"
-                            @click="openDeleteDialog(true, lookups)">Delete</a>
+                            @click.prevent.stop="openDeleteDialog(true, lookups)">Delete</a>
                         </td>
                       </tr>
                     </tbody>

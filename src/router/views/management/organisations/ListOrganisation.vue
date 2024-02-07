@@ -9,9 +9,9 @@
                     </div>
                     <div
                         class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
-                        <button type="button" class="btn-primary" @click="drawerOrg?.toggle">
+                        <button type="button" class="btn-primary" @click.prevent.stop="drawerOrg?.toggle">
                             <Icon icon="material-symbols:add" height="20" width="20" />
-                            New 
+                            New
                         </button>
                         <button type="button" @click="refresh"
                             class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
@@ -97,8 +97,8 @@
                                                 stroke-width="2" d="m1 1 4 4 4-4" />
                                         </svg>
                                     </button> -->
-                                    <button @click="drawerOrg?.edit(org)" id="dropdownDividerButton" type="button" data-dropdown-toggle="dropdownDivider"
-                                        class="btn-unstate">
+                                    <button @click.prevent.stop="drawerOrg?.edit(org)" id="dropdownDividerButton" type="button"
+                                        data-dropdown-toggle="dropdownDivider" class="btn-unstate">
                                         Editer
                                     </button>
                                     <div class="hs-dropdown relative inline-flex [--trigger:hover]">
@@ -197,7 +197,7 @@
                 </nav>
             </div>
         </div>
-        <DialogDeleteOrg ref="dailogDeleteOrg" />
+        <DialogDeleteOrg ref="dailogDeleteOrg" :orgID="1" />
         <DrawerOrganisation ref="drawerOrg" />
     </section>
 </template>
@@ -210,7 +210,6 @@ import DialogDeleteOrg from './DialogDeleteOrg.vue';
 import DrawerOrganisation from './DrawerOrganisation.vue'
 
 const dailogDeleteOrg = ref<InstanceType<typeof DialogDeleteOrg | null>>(null)
-
 const drawerOrg = ref<InstanceType<typeof DrawerOrganisation> | null>(null)
 
 
